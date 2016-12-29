@@ -1,0 +1,585 @@
+
+1. Update href="{{urlExport}}" to v-bind:href="urlExport"
+  Line 13: components/crud/Button.vue
+  Reason: Interpolation within attributes has been removed
+  More info: http://vuejs.org/guide/migration.html#Interpolation-within-Attributes
+
+2. Remove the built-in json filter, as output is now automatically nicely formatted
+  Line 24: components/crud/Button.vue
+  Reason: Built-in filters have been removed in favor of external, specialized utility libraries
+  More info: http://vuejs.org/guide/migration.html#Replacing-the-json-Filter
+
+3. Replace ready with mounted, then use Vue.nextTick if you need an in-document guarantee
+  Line 32: components/crud/Button.vue
+  Reason: ready lifecycle hook has been removed
+  More info: http://vuejs.org/guide/migration.html#ready
+
+4. Replace this.$dispatch('executeAction', 'add') to use a global event bus or vuex (see link below for implementation details)
+  Line 46: components/crud/Button.vue
+  Reason: $dispatch and $broadcast have been removed because the pattern doesn't scale well
+  More info: http://vuejs.org/guide/migration.html#dispatch-and-broadcast
+
+5. Replace this.$dispatch('selectFile') to use a global event bus or vuex (see link below for implementation details)
+  Line 50: components/crud/Button.vue
+  Reason: $dispatch and $broadcast have been removed because the pattern doesn't scale well
+  More info: http://vuejs.org/guide/migration.html#dispatch-and-broadcast
+
+6. Update maxlength={{field.maxlength}} to v-bind:maxlength="field.maxlength"
+  Line 66: components/crud/Form.vue
+  Reason: Interpolation within attributes has been removed
+  More info: http://vuejs.org/guide/migration.html#Interpolation-within-Attributes
+
+7. Update placeholder={{field.placeholder}} to v-bind:placeholder="field.placeholder"
+  Line 67: components/crud/Form.vue
+  Reason: Interpolation within attributes has been removed
+  More info: http://vuejs.org/guide/migration.html#Interpolation-within-Attributes
+
+8. Update required={{field.required}} to v-bind:required="field.required"
+  Line 69: components/crud/Form.vue
+  Reason: Interpolation within attributes has been removed
+  More info: http://vuejs.org/guide/migration.html#Interpolation-within-Attributes
+
+9. Update maxlength={{field.maxlength}} to v-bind:maxlength="field.maxlength"
+  Line 84: components/crud/Form.vue
+  Reason: Interpolation within attributes has been removed
+  More info: http://vuejs.org/guide/migration.html#Interpolation-within-Attributes
+
+10. Update placeholder={{field.placeholder}} to v-bind:placeholder="field.placeholder"
+  Line 85: components/crud/Form.vue
+  Reason: Interpolation within attributes has been removed
+  More info: http://vuejs.org/guide/migration.html#Interpolation-within-Attributes
+
+11. Update required={{field.required}} to v-bind:required="field.required"
+  Line 87: components/crud/Form.vue
+  Reason: Interpolation within attributes has been removed
+  More info: http://vuejs.org/guide/migration.html#Interpolation-within-Attributes
+
+12. Update maxlength={{field.maxlength}} to v-bind:maxlength="field.maxlength"
+  Line 102: components/crud/Form.vue
+  Reason: Interpolation within attributes has been removed
+  More info: http://vuejs.org/guide/migration.html#Interpolation-within-Attributes
+
+13. Update placeholder={{field.placeholder}} to v-bind:placeholder="field.placeholder"
+  Line 103: components/crud/Form.vue
+  Reason: Interpolation within attributes has been removed
+  More info: http://vuejs.org/guide/migration.html#Interpolation-within-Attributes
+
+14. Update checked={{field.checked}} to v-bind:checked="field.checked"
+  Line 104: components/crud/Form.vue
+  Reason: Interpolation within attributes has been removed
+  More info: http://vuejs.org/guide/migration.html#Interpolation-within-Attributes
+
+15. Update required={{field.required}} to v-bind:required="field.required"
+  Line 106: components/crud/Form.vue
+  Reason: Interpolation within attributes has been removed
+  More info: http://vuejs.org/guide/migration.html#Interpolation-within-Attributes
+
+16. Update id="{{field.name}}" to v-bind:id="field.name"
+  Line 116: components/crud/Form.vue
+  Reason: Interpolation within attributes has been removed
+  More info: http://vuejs.org/guide/migration.html#Interpolation-within-Attributes
+
+17. Update required={{field.required}} to v-bind:required="field.required"
+  Line 119: components/crud/Form.vue
+  Reason: Interpolation within attributes has been removed
+  More info: http://vuejs.org/guide/migration.html#Interpolation-within-Attributes
+
+18. Update value={{op.id}} to v-bind:value="op.id"
+  Line 125: components/crud/Form.vue
+  Reason: Interpolation within attributes has been removed
+  More info: http://vuejs.org/guide/migration.html#Interpolation-within-Attributes
+
+19. Update label={{op.value}} to v-bind:label="op.value"
+  Line 126: components/crud/Form.vue
+  Reason: Interpolation within attributes has been removed
+  More info: http://vuejs.org/guide/migration.html#Interpolation-within-Attributes
+
+20. Update class="glyphicon glyphicon-{{itemStatus}}" to v-bind:class="'glyphicon glyphicon-' + itemStatus"
+  Line 137: components/crud/Form.vue
+  Reason: Interpolation within attributes has been removed
+  More info: http://vuejs.org/guide/migration.html#Interpolation-within-Attributes
+
+21. Remove the built-in json filter, as output is now automatically nicely formatted
+  Line 164: components/crud/Form.vue
+  Reason: Built-in filters have been removed in favor of external, specialized utility libraries
+  More info: http://vuejs.org/guide/migration.html#Replacing-the-json-Filter
+
+22. Replace ready with mounted, then use Vue.nextTick if you need an in-document guarantee
+  Line 181: components/crud/Form.vue
+  Reason: ready lifecycle hook has been removed
+  More info: http://vuejs.org/guide/migration.html#ready
+
+23. Replace this.$set(field.name, e.target.value) with Vue.set(this, field.name, e.target.value)
+  Line 214: components/crud/Form.vue
+  Reason: Array extensions for the reactivity system have been removed
+  More info: http://vuejs.org/guide/migration.html#Array-prototype-set
+
+24. Replace this.$set(this.fields[key].name,'1') with Vue.set(this, this.fields[key].name, '1')
+  Line 219: components/crud/Form.vue
+  Reason: Array extensions for the reactivity system have been removed
+  More info: http://vuejs.org/guide/migration.html#Array-prototype-set
+
+25. Replace this.$set(field.table, options) with Vue.set(this, field.table, options)
+  Line 228: components/crud/Form.vue
+  Reason: Array extensions for the reactivity system have been removed
+  More info: http://vuejs.org/guide/migration.html#Array-prototype-set
+
+26. Replace this.$set(this.fields[i].name,'1') with Vue.set(this, this.fields[i].name, '1')
+  Line 242: components/crud/Form.vue
+  Reason: Array extensions for the reactivity system have been removed
+  More info: http://vuejs.org/guide/migration.html#Array-prototype-set
+
+27. Replace this.$set(field.table, option) with Vue.set(this, field.table, option)
+  Line 263: components/crud/Form.vue
+  Reason: Array extensions for the reactivity system have been removed
+  More info: http://vuejs.org/guide/migration.html#Array-prototype-set
+
+28. Replace this.$dispatch('progressBarStart') to use a global event bus or vuex (see link below for implementation details)
+  Line 353: components/crud/Form.vue
+  Reason: $dispatch and $broadcast have been removed because the pattern doesn't scale well
+  More info: http://vuejs.org/guide/migration.html#dispatch-and-broadcast
+
+29. Replace this.$dispatch('progressBarFinish') to use a global event bus or vuex (see link below for implementation details)
+  Line 363: components/crud/Form.vue
+  Reason: $dispatch and $broadcast have been removed because the pattern doesn't scale well
+  More info: http://vuejs.org/guide/migration.html#dispatch-and-broadcast
+
+30. Replace this.$dispatch('progressBarFinish') to use a global event bus or vuex (see link below for implementation details)
+  Line 368: components/crud/Form.vue
+  Reason: $dispatch and $broadcast have been removed because the pattern doesn't scale well
+  More info: http://vuejs.org/guide/migration.html#dispatch-and-broadcast
+
+31. Replace this.$dispatch('activateCrud', false) to use a global event bus or vuex (see link below for implementation details)
+  Line 373: components/crud/Form.vue
+  Reason: $dispatch and $broadcast have been removed because the pattern doesn't scale well
+  More info: http://vuejs.org/guide/migration.html#dispatch-and-broadcast
+
+32. Replace this.$dispatch('reloadTable') to use a global event bus or vuex (see link below for implementation details)
+  Line 385: components/crud/Form.vue
+  Reason: $dispatch and $broadcast have been removed because the pattern doesn't scale well
+  More info: http://vuejs.org/guide/migration.html#dispatch-and-broadcast
+
+33. Replace this.$dispatch('displayAlert', (response.status==200) to use a global event bus or vuex (see link below for implementation details)
+  Line 389: components/crud/Form.vue
+  Reason: $dispatch and $broadcast have been removed because the pattern doesn't scale well
+  More info: http://vuejs.org/guide/migration.html#dispatch-and-broadcast
+
+34. Replace this.$dispatch('expandCrud') to use a global event bus or vuex (see link below for implementation details)
+  Line 399: components/crud/Form.vue
+  Reason: $dispatch and $broadcast have been removed because the pattern doesn't scale well
+  More info: http://vuejs.org/guide/migration.html#dispatch-and-broadcast
+
+35. Replace this.$set(field.table, option) with Vue.set(this, field.table, option)
+  Line 448: components/crud/Form.vue
+  Reason: Array extensions for the reactivity system have been removed
+  More info: http://vuejs.org/guide/migration.html#Array-prototype-set
+
+36. Replace this.$set(field.name, options[key].id) with Vue.set(this, field.name, options[key].id)
+  Line 484: components/crud/Form.vue
+  Reason: Array extensions for the reactivity system have been removed
+  More info: http://vuejs.org/guide/migration.html#Array-prototype-set
+
+37. Replace this.$set(field.table, options) with Vue.set(this, field.table, options)
+  Line 488: components/crud/Form.vue
+  Reason: Array extensions for the reactivity system have been removed
+  More info: http://vuejs.org/guide/migration.html#Array-prototype-set
+
+38. Replace this.$set(this.fields[i].name,'1') with Vue.set(this, this.fields[i].name, '1')
+  Line 538: components/crud/Form.vue
+  Reason: Array extensions for the reactivity system have been removed
+  More info: http://vuejs.org/guide/migration.html#Array-prototype-set
+
+39. Update maxlength={{field.maxlength}} to v-bind:maxlength="field.maxlength"
+  Line 71: components/crud/FormModal.vue
+  Reason: Interpolation within attributes has been removed
+  More info: http://vuejs.org/guide/migration.html#Interpolation-within-Attributes
+
+40. Update placeholder={{field.placeholder}} to v-bind:placeholder="field.placeholder"
+  Line 72: components/crud/FormModal.vue
+  Reason: Interpolation within attributes has been removed
+  More info: http://vuejs.org/guide/migration.html#Interpolation-within-Attributes
+
+41. Update required={{field.required}} to v-bind:required="field.required"
+  Line 74: components/crud/FormModal.vue
+  Reason: Interpolation within attributes has been removed
+  More info: http://vuejs.org/guide/migration.html#Interpolation-within-Attributes
+
+42. Update maxlength={{field.maxlength}} to v-bind:maxlength="field.maxlength"
+  Line 89: components/crud/FormModal.vue
+  Reason: Interpolation within attributes has been removed
+  More info: http://vuejs.org/guide/migration.html#Interpolation-within-Attributes
+
+43. Update placeholder={{field.placeholder}} to v-bind:placeholder="field.placeholder"
+  Line 90: components/crud/FormModal.vue
+  Reason: Interpolation within attributes has been removed
+  More info: http://vuejs.org/guide/migration.html#Interpolation-within-Attributes
+
+44. Update required={{field.required}} to v-bind:required="field.required"
+  Line 92: components/crud/FormModal.vue
+  Reason: Interpolation within attributes has been removed
+  More info: http://vuejs.org/guide/migration.html#Interpolation-within-Attributes
+
+45. Update maxlength={{field.maxlength}} to v-bind:maxlength="field.maxlength"
+  Line 107: components/crud/FormModal.vue
+  Reason: Interpolation within attributes has been removed
+  More info: http://vuejs.org/guide/migration.html#Interpolation-within-Attributes
+
+46. Update placeholder={{field.placeholder}} to v-bind:placeholder="field.placeholder"
+  Line 108: components/crud/FormModal.vue
+  Reason: Interpolation within attributes has been removed
+  More info: http://vuejs.org/guide/migration.html#Interpolation-within-Attributes
+
+47. Update checked={{field.checked}} to v-bind:checked="field.checked"
+  Line 109: components/crud/FormModal.vue
+  Reason: Interpolation within attributes has been removed
+  More info: http://vuejs.org/guide/migration.html#Interpolation-within-Attributes
+
+48. Update required={{field.required}} to v-bind:required="field.required"
+  Line 111: components/crud/FormModal.vue
+  Reason: Interpolation within attributes has been removed
+  More info: http://vuejs.org/guide/migration.html#Interpolation-within-Attributes
+
+49. Update id="{{field.name}}" to v-bind:id="field.name"
+  Line 121: components/crud/FormModal.vue
+  Reason: Interpolation within attributes has been removed
+  More info: http://vuejs.org/guide/migration.html#Interpolation-within-Attributes
+
+50. Update required={{field.required}} to v-bind:required="field.required"
+  Line 124: components/crud/FormModal.vue
+  Reason: Interpolation within attributes has been removed
+  More info: http://vuejs.org/guide/migration.html#Interpolation-within-Attributes
+
+51. Update value={{op.id}} to v-bind:value="op.id"
+  Line 130: components/crud/FormModal.vue
+  Reason: Interpolation within attributes has been removed
+  More info: http://vuejs.org/guide/migration.html#Interpolation-within-Attributes
+
+52. Update label={{op.value}} to v-bind:label="op.value"
+  Line 131: components/crud/FormModal.vue
+  Reason: Interpolation within attributes has been removed
+  More info: http://vuejs.org/guide/migration.html#Interpolation-within-Attributes
+
+53. Update class="glyphicon glyphicon-{{itemStatus}}" to v-bind:class="'glyphicon glyphicon-' + itemStatus"
+  Line 142: components/crud/FormModal.vue
+  Reason: Interpolation within attributes has been removed
+  More info: http://vuejs.org/guide/migration.html#Interpolation-within-Attributes
+
+54. Remove the built-in json filter, as output is now automatically nicely formatted
+  Line 167: components/crud/FormModal.vue
+  Reason: Built-in filters have been removed in favor of external, specialized utility libraries
+  More info: http://vuejs.org/guide/migration.html#Replacing-the-json-Filter
+
+55. Replace ready with mounted, then use Vue.nextTick if you need an in-document guarantee
+  Line 191: components/crud/FormModal.vue
+  Reason: ready lifecycle hook has been removed
+  More info: http://vuejs.org/guide/migration.html#ready
+
+56. Replace this.$set(field.name, e.target.value) with Vue.set(this, field.name, e.target.value)
+  Line 223: components/crud/FormModal.vue
+  Reason: Array extensions for the reactivity system have been removed
+  More info: http://vuejs.org/guide/migration.html#Array-prototype-set
+
+57. Replace this.$set(this.fields[key].name,'1') with Vue.set(this, this.fields[key].name, '1')
+  Line 228: components/crud/FormModal.vue
+  Reason: Array extensions for the reactivity system have been removed
+  More info: http://vuejs.org/guide/migration.html#Array-prototype-set
+
+58. Replace this.$set(field.table, options) with Vue.set(this, field.table, options)
+  Line 237: components/crud/FormModal.vue
+  Reason: Array extensions for the reactivity system have been removed
+  More info: http://vuejs.org/guide/migration.html#Array-prototype-set
+
+59. Replace this.$set(this.fields[i].name,'1') with Vue.set(this, this.fields[i].name, '1')
+  Line 251: components/crud/FormModal.vue
+  Reason: Array extensions for the reactivity system have been removed
+  More info: http://vuejs.org/guide/migration.html#Array-prototype-set
+
+60. Replace this.$set(field.table, option) with Vue.set(this, field.table, option)
+  Line 272: components/crud/FormModal.vue
+  Reason: Array extensions for the reactivity system have been removed
+  More info: http://vuejs.org/guide/migration.html#Array-prototype-set
+
+61. Replace this.$dispatch('activateCrud', false) to use a global event bus or vuex (see link below for implementation details)
+  Line 364: components/crud/FormModal.vue
+  Reason: $dispatch and $broadcast have been removed because the pattern doesn't scale well
+  More info: http://vuejs.org/guide/migration.html#dispatch-and-broadcast
+
+62. Replace this.$dispatch('reloadTable') to use a global event bus or vuex (see link below for implementation details)
+  Line 376: components/crud/FormModal.vue
+  Reason: $dispatch and $broadcast have been removed because the pattern doesn't scale well
+  More info: http://vuejs.org/guide/migration.html#dispatch-and-broadcast
+
+63. Replace this.$dispatch('displayAlert', (response.status==200) to use a global event bus or vuex (see link below for implementation details)
+  Line 380: components/crud/FormModal.vue
+  Reason: $dispatch and $broadcast have been removed because the pattern doesn't scale well
+  More info: http://vuejs.org/guide/migration.html#dispatch-and-broadcast
+
+64. Replace this.$dispatch('expandCrud') to use a global event bus or vuex (see link below for implementation details)
+  Line 390: components/crud/FormModal.vue
+  Reason: $dispatch and $broadcast have been removed because the pattern doesn't scale well
+  More info: http://vuejs.org/guide/migration.html#dispatch-and-broadcast
+
+65. Replace this.$set(field.table, option) with Vue.set(this, field.table, option)
+  Line 439: components/crud/FormModal.vue
+  Reason: Array extensions for the reactivity system have been removed
+  More info: http://vuejs.org/guide/migration.html#Array-prototype-set
+
+66. Replace this.$set(field.name, options[key].id) with Vue.set(this, field.name, options[key].id)
+  Line 475: components/crud/FormModal.vue
+  Reason: Array extensions for the reactivity system have been removed
+  More info: http://vuejs.org/guide/migration.html#Array-prototype-set
+
+67. Replace this.$set(field.table, options) with Vue.set(this, field.table, options)
+  Line 479: components/crud/FormModal.vue
+  Reason: Array extensions for the reactivity system have been removed
+  More info: http://vuejs.org/guide/migration.html#Array-prototype-set
+
+68. Replace this.$set(this.fields[i].name,'1') with Vue.set(this, this.fields[i].name, '1')
+  Line 530: components/crud/FormModal.vue
+  Reason: Array extensions for the reactivity system have been removed
+  More info: http://vuejs.org/guide/migration.html#Array-prototype-set
+
+69. Replace this.$dispatch('reloadTable') to use a global event bus or vuex (see link below for implementation details)
+  Line 149: components/crud/Import.vue
+  Reason: $dispatch and $broadcast have been removed because the pattern doesn't scale well
+  More info: http://vuejs.org/guide/migration.html#dispatch-and-broadcast
+
+70. Replace this.$dispatch('displayAlert', 'success', response.message + ' (200) to use a global event bus or vuex (see link below for implementation details)
+  Line 157: components/crud/Import.vue
+  Reason: $dispatch and $broadcast have been removed because the pattern doesn't scale well
+  More info: http://vuejs.org/guide/migration.html#dispatch-and-broadcast
+
+71. Replace this.$dispatch('displayAlert', 'danger', response.message + ' (400) to use a global event bus or vuex (see link below for implementation details)
+  Line 161: components/crud/Import.vue
+  Reason: $dispatch and $broadcast have been removed because the pattern doesn't scale well
+  More info: http://vuejs.org/guide/migration.html#dispatch-and-broadcast
+
+72. Update href="{{url}}" to v-bind:href="url"
+  Line 7: components/crud/Link.vue
+  Reason: Interpolation within attributes has been removed
+  More info: http://vuejs.org/guide/migration.html#Interpolation-within-Attributes
+
+73. Replace ready with mounted, then use Vue.nextTick if you need an in-document guarantee
+  Line 16: components/crud/Link.vue
+  Reason: ready lifecycle hook has been removed
+  More info: http://vuejs.org/guide/migration.html#ready
+
+74. Update required={{select.required}} to v-bind:required="select.required"
+  Line 95: components/crud/Table.vue
+  Reason: Interpolation within attributes has been removed
+  More info: http://vuejs.org/guide/migration.html#Interpolation-within-Attributes
+
+75. Update value={{op.id}} to v-bind:value="op.id"
+  Line 102: components/crud/Table.vue
+  Reason: Interpolation within attributes has been removed
+  More info: http://vuejs.org/guide/migration.html#Interpolation-within-Attributes
+
+76. Update label={{op.value}} to v-bind:label="op.value"
+  Line 103: components/crud/Table.vue
+  Reason: Interpolation within attributes has been removed
+  More info: http://vuejs.org/guide/migration.html#Interpolation-within-Attributes
+
+77. Switch argument order in v-for="(key, value) in row" to (value, key)
+  Line 148: components/crud/Table.vue
+  Reason: Argument order for v-for has been updated to match JavaScript conventions
+  More info: http://vuejs.org/guide/migration.html#v-for-Argument-Order-for-Objects
+
+78. Update href="{{info.url}}" to v-bind:href="info.url"
+  Line 168: components/crud/Table.vue
+  Reason: Interpolation within attributes has been removed
+  More info: http://vuejs.org/guide/migration.html#Interpolation-within-Attributes
+
+79. Update href="{{action.url}}" to v-bind:href="action.url"
+  Line 174: components/crud/Table.vue
+  Reason: Interpolation within attributes has been removed
+  More info: http://vuejs.org/guide/migration.html#Interpolation-within-Attributes
+
+80. Remove the built-in json filter, as output is now automatically nicely formatted
+  Line 225: components/crud/Table.vue
+  Reason: Built-in filters have been removed in favor of external, specialized utility libraries
+  More info: http://vuejs.org/guide/migration.html#Replacing-the-json-Filter
+
+81. Replace ready with mounted, then use Vue.nextTick if you need an in-document guarantee
+  Line 248: components/crud/Table.vue
+  Reason: ready lifecycle hook has been removed
+  More info: http://vuejs.org/guide/migration.html#ready
+
+82. Replace this.$dispatch('rowSelected', row) to use a global event bus or vuex (see link below for implementation details)
+  Line 298: components/crud/Table.vue
+  Reason: $dispatch and $broadcast have been removed because the pattern doesn't scale well
+  More info: http://vuejs.org/guide/migration.html#dispatch-and-broadcast
+
+83. Replace this.$set(this.selects[i].name,'1') with Vue.set(this, this.selects[i].name, '1')
+  Line 426: components/crud/Table.vue
+  Reason: Array extensions for the reactivity system have been removed
+  More info: http://vuejs.org/guide/migration.html#Array-prototype-set
+
+84. Replace this.$set(select.table, option) with Vue.set(this, select.table, option)
+  Line 449: components/crud/Table.vue
+  Reason: Array extensions for the reactivity system have been removed
+  More info: http://vuejs.org/guide/migration.html#Array-prototype-set
+
+85. Replace this.$dispatch('displayAlert', (response.status==200) to use a global event bus or vuex (see link below for implementation details)
+  Line 454: components/crud/Table.vue
+  Reason: $dispatch and $broadcast have been removed because the pattern doesn't scale well
+  More info: http://vuejs.org/guide/migration.html#dispatch-and-broadcast
+
+86. Replace ready with mounted, then use Vue.nextTick if you need an in-document guarantee
+  Line 11: components/languages/Languages.vue
+  Reason: ready lifecycle hook has been removed
+  More info: http://vuejs.org/guide/migration.html#ready
+
+87. Replace v-link="subOption.method" with the new <router-link> component (see link below for details)
+  Line 24: components/menus/SubMenu.vue
+  Reason: The v-link directive has been replaced with the new <router-link> component
+  More info: http://vuejs.org/guide/migration-vue-router.html#v-link
+
+88. Replace ready with mounted, then use Vue.nextTick if you need an in-document guarantee
+  Line 76: components/menus/SubMenu.vue
+  Reason: ready lifecycle hook has been removed
+  More info: http://vuejs.org/guide/migration.html#ready
+
+89. Replace v-link="menu.initialURL" with the new <router-link> component (see link below for details)
+  Line 21: components/menus/TopMenu.vue
+  Reason: The v-link directive has been replaced with the new <router-link> component
+  More info: http://vuejs.org/guide/migration-vue-router.html#v-link
+
+90. Replace ready with mounted, then use Vue.nextTick if you need an in-document guarantee
+  Line 37: components/menus/TopMenu.vue
+  Reason: ready lifecycle hook has been removed
+  More info: http://vuejs.org/guide/migration.html#ready
+
+91. Update class="popup-position popup-{{type}}" to v-bind:class="'popup-position popup-' + type"
+  Line 64: components/messages/PopUp.vue
+  Reason: Interpolation within attributes has been removed
+  More info: http://vuejs.org/guide/migration.html#Interpolation-within-Attributes
+
+92. Replace ready with mounted, then use Vue.nextTick if you need an in-document guarantee
+  Line 82: components/messages/PopUp.vue
+  Reason: ready lifecycle hook has been removed
+  More info: http://vuejs.org/guide/migration.html#ready
+
+93. Update style="width: {{progress}}%" to v-bind:style="'width: ' + progress + '%'"
+  Line 20: components/old/progressbar/ProgressBar.vue
+  Reason: Interpolation within attributes has been removed
+  More info: http://vuejs.org/guide/migration.html#Interpolation-within-Attributes
+
+94. Replace ready with mounted, then use Vue.nextTick if you need an in-document guarantee
+  Line 37: components/old/progressbar/ProgressBar.vue
+  Reason: ready lifecycle hook has been removed
+  More info: http://vuejs.org/guide/migration.html#ready
+
+95. Replace this.$broadcast('activeWindow') to use a global event bus or vuex (see link below for implementation details)
+  Line 44: old/app.js
+  Reason: $dispatch and $broadcast have been removed because the pattern doesn't scale well
+  More info: http://vuejs.org/guide/migration.html#dispatch-and-broadcast
+
+96. Replace this.$dispatch('activeCrud', this.open) to use a global event bus or vuex (see link below for implementation details)
+  Line 29: old/Button2.js
+  Reason: $dispatch and $broadcast have been removed because the pattern doesn't scale well
+  More info: http://vuejs.org/guide/migration.html#dispatch-and-broadcast
+
+97. Replace this.$dispatch('activeCrud', false) to use a global event bus or vuex (see link below for implementation details)
+  Line 26: old/Form2.js
+  Reason: $dispatch and $broadcast have been removed because the pattern doesn't scale well
+  More info: http://vuejs.org/guide/migration.html#dispatch-and-broadcast
+
+98. Replace this.$broadcast('activeWindow') to use a global event bus or vuex (see link below for implementation details)
+  Line 16: old/main2.js
+  Reason: $dispatch and $broadcast have been removed because the pattern doesn't scale well
+  More info: http://vuejs.org/guide/migration.html#dispatch-and-broadcast
+
+99. Replace this.$broadcast('displayCrud', val) to use a global event bus or vuex (see link below for implementation details)
+  Line 32: old/main.js
+  Reason: $dispatch and $broadcast have been removed because the pattern doesn't scale well
+  More info: http://vuejs.org/guide/migration.html#dispatch-and-broadcast
+
+100. Replace this.$broadcast('displayCrud', true) to use a global event bus or vuex (see link below for implementation details)
+  Line 35: old/main.js
+  Reason: $dispatch and $broadcast have been removed because the pattern doesn't scale well
+  More info: http://vuejs.org/guide/migration.html#dispatch-and-broadcast
+
+101. Replace this.$broadcast(action) to use a global event bus or vuex (see link below for implementation details)
+  Line 36: old/main.js
+  Reason: $dispatch and $broadcast have been removed because the pattern doesn't scale well
+  More info: http://vuejs.org/guide/migration.html#dispatch-and-broadcast
+
+102. Replace this.$broadcast('expandCrud') to use a global event bus or vuex (see link below for implementation details)
+  Line 40: old/main.js
+  Reason: $dispatch and $broadcast have been removed because the pattern doesn't scale well
+  More info: http://vuejs.org/guide/migration.html#dispatch-and-broadcast
+
+103. Replace this.$broadcast('displayCrud', true) to use a global event bus or vuex (see link below for implementation details)
+  Line 43: old/main.js
+  Reason: $dispatch and $broadcast have been removed because the pattern doesn't scale well
+  More info: http://vuejs.org/guide/migration.html#dispatch-and-broadcast
+
+104. Replace this.$broadcast('displayRow', row) to use a global event bus or vuex (see link below for implementation details)
+  Line 44: old/main.js
+  Reason: $dispatch and $broadcast have been removed because the pattern doesn't scale well
+  More info: http://vuejs.org/guide/migration.html#dispatch-and-broadcast
+
+105. Replace this.$broadcast('displayBoxMessage', type, message) to use a global event bus or vuex (see link below for implementation details)
+  Line 48: old/main.js
+  Reason: $dispatch and $broadcast have been removed because the pattern doesn't scale well
+  More info: http://vuejs.org/guide/migration.html#dispatch-and-broadcast
+
+106. Replace this.$broadcast('displayCrud', val) to use a global event bus or vuex (see link below for implementation details)
+  Line 32: views/parent.js
+  Reason: $dispatch and $broadcast have been removed because the pattern doesn't scale well
+  More info: http://vuejs.org/guide/migration.html#dispatch-and-broadcast
+
+107. Replace this.$broadcast('displayCrud', true) to use a global event bus or vuex (see link below for implementation details)
+  Line 35: views/parent.js
+  Reason: $dispatch and $broadcast have been removed because the pattern doesn't scale well
+  More info: http://vuejs.org/guide/migration.html#dispatch-and-broadcast
+
+108. Replace this.$broadcast(action) to use a global event bus or vuex (see link below for implementation details)
+  Line 36: views/parent.js
+  Reason: $dispatch and $broadcast have been removed because the pattern doesn't scale well
+  More info: http://vuejs.org/guide/migration.html#dispatch-and-broadcast
+
+109. Replace this.$broadcast('expandCrud') to use a global event bus or vuex (see link below for implementation details)
+  Line 39: views/parent.js
+  Reason: $dispatch and $broadcast have been removed because the pattern doesn't scale well
+  More info: http://vuejs.org/guide/migration.html#dispatch-and-broadcast
+
+110. Replace this.$broadcast('displayCrud', true) to use a global event bus or vuex (see link below for implementation details)
+  Line 42: views/parent.js
+  Reason: $dispatch and $broadcast have been removed because the pattern doesn't scale well
+  More info: http://vuejs.org/guide/migration.html#dispatch-and-broadcast
+
+111. Replace this.$broadcast('displayRow', row) to use a global event bus or vuex (see link below for implementation details)
+  Line 43: views/parent.js
+  Reason: $dispatch and $broadcast have been removed because the pattern doesn't scale well
+  More info: http://vuejs.org/guide/migration.html#dispatch-and-broadcast
+
+112. Replace this.$broadcast('displayBoxMessage', type, message) to use a global event bus or vuex (see link below for implementation details)
+  Line 46: views/parent.js
+  Reason: $dispatch and $broadcast have been removed because the pattern doesn't scale well
+  More info: http://vuejs.org/guide/migration.html#dispatch-and-broadcast
+
+113. Replace this.$broadcast('reloadData') to use a global event bus or vuex (see link below for implementation details)
+  Line 49: views/parent.js
+  Reason: $dispatch and $broadcast have been removed because the pattern doesn't scale well
+  More info: http://vuejs.org/guide/migration.html#dispatch-and-broadcast
+
+114. Replace this.$broadcast('selectImportFile') to use a global event bus or vuex (see link below for implementation details)
+  Line 52: views/parent.js
+  Reason: $dispatch and $broadcast have been removed because the pattern doesn't scale well
+  More info: http://vuejs.org/guide/migration.html#dispatch-and-broadcast
+
+115. Delete references to Vue.config.debug
+  Line 28: vueroute.js
+  Reason: Warnings come with stack traces by default now, making this option redundant
+  More info: http://vuejs.org/guide/migration.html#Vue-config-debug
+
+116. Replace router.map with an array on the new routes option (see link below for details)
+  Line 34: vueroute.js
+  Reason: Routes are now defined as an array on a routes option at router instantiation
+  More info: http://vuejs.org/guide/migration-vue-router.html#router-map
+
+117. Replace router.start with router: router on your root Vue instance (see link below for details)
+  Line 67: vueroute.js
+  Reason: Starting an app with routing no longer requires a special method - the router can simply be passed to the root Vue instance as option
+  More info: http://vuejs.org/guide/migration-vue-router.html#router-start

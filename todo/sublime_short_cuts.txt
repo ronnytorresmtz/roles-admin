@@ -1,0 +1,12 @@
+Sublime Short Cuts
+====================
+
+Alignment  	=>  Ctrl + Alt + A
+Console		=>  Ctrl + Shift + C
+Find File   =>  Ctrl + P o Ctrl + G
+Tag to /Tag =>  Ctrl + E
+Find/Replace => Ctrl + H
+Packages Install => Ctrl + Shift + P
+Multiple Cursos => Ctrl+ D twice
+
+

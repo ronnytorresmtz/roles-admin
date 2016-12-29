@@ -1,0 +1,272 @@
+	
+MEGACAMPUS TODO LIST
+=====================
+
+1) Integrate in the Session Objet the Loading Start Time and Display in the Page
+Right now, the TimeStart Variable in on the Controller in the Index Method but it 
+should me move to a Route filter.
+
+	=> We set the Session Object but it appear the the Loading Time is not accurancy.
+	
+2) Add the Functionality to Fix the Table Header
+
+4) How to block the users acccess to urls like /login/logOut should deny 
+
+5) The security is implement with Auth but we need to review again to be sure it was implemented correctly.
+
+9) Integrate the Whoops Error Message
+
+10) Internet Explorer does not work correctly when you click the view botton it delete the record 
+in the /academic/program.
+
+11) Apply namespaces to the project, a little risk because it get more complex.
+
+15) The Security Menu Option in the Navigation Top Bar is not working when we use apache the name Security has conflicts.
+	
+19) Change in the View::Make URL with slash (login/logIn) to dot  (login.logIn), verify if it is possible
+
+24) Move thee Laraverl Fascade Functions to a Classes to encapsulate for the future changes.
+
+37) Export/import should be on chucks because the timeout is 30 seconds
+
+38) When delete an item from the page 2 and it is the last one in that page, the page should return to the page 1
+
+39) Column Sort in the tables
+
+40) Mark on Gray the Option Selected in the Left Panel
+
+53) Elimante the email from the tablae users or persons, right now it is duplicated.e
+
+55) Create Person tables
+
+60) Will be nice to get the status of the all mail from Madrill 
+
+61) Pending implement the Queue for the emails.
+
+65) When I test the send token when the user change its password and the login view appears an error message was displayed telling the token does not exist and he needs to request another one but the username and password works well.
+
+67) Put all table in a tbody to make the gray strips like the table in the Security Statistics Table - User Logged
+
+69) Add tables indexes
+
+75) Add comments and Standarize the comments like laravel at the top of each function
+
+77) The back button fail when a the combo id is not store in the session, the user can not return to the index page
+
+78) Review how to simplify the Views HTML´s base on Blade Template like the Top User Message on blue in all CRUD Pages
+
+79) falta para cerrar el CRUD - Agregar en la importación el campus a donde se está importando - Import.blade y a su template respectivo.
+
+
+81) CRITICAL: We are producing a lot of queries for each page load it is because the View Composer SubMenuOptionsComposer
+
+80) Simplify the php file display_left_submenu and display_menu because these condition ==dashboard amd == access_right and == campus must be refactor to avoid business logic in the view. Should be more simple.
+
+<!-- Display the submenu option link  -->
+    @if ($subMenuOption->transaction_name=='dashboard')
+        <a href="{!!URL::route('security.dashboard.users.statistics')!!}"
+           class="list-group-item" style="color:blue;">
+    @else
+        @if ($subMenuOption->transaction_name=="access_rights")
+            <a href="{!!URL::route('security.roles_transactions.index')!!}" class="list-group-item" style="color:blue;">
+        @else
+            @if ($subMenuOption->transaction_name=='campus')
+                <a href="{!!URL::route('facilities.campuss.index')!!}"
+                   class="list-group-item" style="color:blue;">
+            @else
+                <a href="{!!URL::route($mainMenu . '.' . strtolower($subMenuOption->transaction_name) . '.index')!!}"
+                   class="list-group-item" style="color:blue;">
+            @endif
+        @endif
+    @endif
+
+
+
+
+
+
+migration
+
+$table->integer('institute_id');
+            $table->string('campus_short_name', 100);
+			$table->string('campus_long_name', 255);
+			$table->string('campus_address1', 255);
+			$table->string('campus_address2', 255);
+			$table->integer('campus_city');
+			$table->integer('campus_state');
+			$table->integer('campus_contry');
+			$table->string('campus_zip_code', 10);
+			$table->string('campus_phone_number', 50);
+            $table->string('campus_email', 100);
+			$table->integer('campus_VAT');
+
+
+seed
+            Campus::create(array(
+                'institute_id'         => 1,
+                'campus_short_name'    => 'REBSAMEN KINDER',
+                'campus_long_name'     => 'INSTITUTO BILINGUE REBSAMEN, A.C.',
+                'campus_address1'      => 'CAMINO DE LOS ALAMOS 4300',
+                'campus_address2'      => 'CORTIJO DEL RIO',
+                'campus_city'          => 1,
+                'campus_state'         => 1,
+                'campus_contry'        => 1,
+                'campus_zip_code'      => '64890',
+                'campus_phone_number'  => '52 81 0000-0000',
+                'campus_email'         => 'email_name@gmail.com',
+                'campus_VAT'           => 16,
+                
+            ));
+
+
+            Campus::create(array(
+                'institute_id'         => 1,
+                'campus_short_name'    => 'REBSAMEN PRIMARIA Y SECUNDARIA',
+                'campus_long_name'     => 'INSTITUTO BILINGUE REBSAMEN, A.C.',
+                'campus_address1'      => 'CAMINO DE LOS ALAMOS 4300',
+                'campus_address2'      => 'CORTIJO DEL RIO',
+                'campus_city'          => 1,
+                'campus_state'         => 1,
+                'campus_contry'        => 1,
+                'campus_zip_code'      => '64890',
+                'campus_phone_number'  => '52 81 0000-0000',
+                'campus_email'         => 'email_name@gmail.com',
+                'campus_VAT'           => 16,
+                
+            ));
+
+
+
+======================================== TASK DONE  ====================================================
+
+70) Change the static submenus for dynamics menus base on the modules and transaction tables
+
+71) Appears the labels submenus based on th user roles for access control
+
+72) Disable or Hide the action (view, add, edit, delete, import, export) bottons base on the user role for access control
+
+74) Replace the html with the foreach (is on security view) for the submenuoptions for all modules, it need to set all the routes, we can make them dummy route because they are not developed yet.
+
+78) The main graph in the security-dashboard is not drawing correctly in past months
+
+68) Adjust the size field in the add and edit pages
+
+73) For each dependecy injection should the variable be protected in the class
+
+76) The blue header frame is not expanded when the user click the expand button which is at the top right of the screen.
+
+70) Change the static labels menus  for dynamics menus base on the modules and transaction tables
+
+71) Appears the labels menus  based on th user roles for access control
+
+66) In the user dashboard in the webpart User Logged the Average by Day should be change depending if the division is on a full month(30,31) or a parcial month (the current month)
+
+64) Make the User Dashboard
+
+63) The users import and export need to be adjusted because they are not working.
+
+64) Review all Repositories to eliminate the function which control the save, update, delete
+
+58) If the function sendTokenToUserViaMail($request) the user token is reset so we need DB:Transaction to avoid this problem. 
+
+65) Document how to handle the select html from the view and controller to persist the user input
+
+63) The Search button in the User Management does not filter correctrly the delete_at (Soft Delete)
+
+59) Implement the botton Reset and Send and the botton Send in the User Management, see the function resetUserPasswordAndSendMail
+
+56)  Display a User Message when an Expection is thrown like the username is duplicated in the User Management.
+
+57) Display the  user input when an Exception is throw because the data return to the original data when editing.
+
+54) Replace the User Views with the Transaction Views because we crete the user view with and old views
+
+49) For the Add View (Access Rights) avoid to store duplicate roles_transactions, right now does not exist validation.
+
+52) Develop the RoleTransaction Import because it is more complicated because it use pivot tables (roles, modules and transactions)
+
+51) Update the MyAbstractEloquentRepository with the join, select, orderby etc to mantein the independency.
+
+50) Change RoleTransacctionRepository, eliminate the DB:Table by $this->$model
+
+44) Include the Module in the Access Right View and add a ComboList for the Roles 
+
+45) The expoort button in the Access Right View does not work (ERROR: Object of class stdClass could not be converted to string)
+
+48) In the Add View (Access Rights) the first time is not loading the transaction name correctly base on the Module Name
+
+46) Access Rights View needs to be adjusted because after adding needs to keep the field values.
+
+47) Change the HTML Select->Option to HTML::Select in the RoleTransaction Files.
+
+43) AppServiceProvider in the Bind´s I am missing some instances in the argument/parameter for each Repository Constructor.
+
+42) In the Route localhost:8000/pruebas/1 we are testing the query for the Role_Transaction page (Permissions)
+
+41) Implement the softdelete functionality 
+
+33) The seed of the Transaction is not working (TransactionTableSeeder)
+
+38) The import is not working
+
+34) Verify if we can eliminate the "if ($programs->total()!=$this->program->all()->count()){" in the getSearch in the ProgramController
+
+36) Move the Session Messages/Errors from UserRepository to the LoginController
+
+38) Change the Redirect:: to redirect()
+
+31) Change the comments to Laravel Style
+
+32) Change the Models from Namespace App to Namespace Megacampus
+
+35) The pop message in the programa for add and edit is not displaying.
+
+34) Mail is not sending anything
+
+35) I can not access with rtorres user name the application
+
+23) Eliminate the code for Reset Password validacion (New Password=Confirm Pasword) with a rule.
+
+21) The programs import process is not working correctly.
+
+18) This validation message should be corrected in the Password Reset Form (The remember security number field is required)
+
+22) Change the Security Code Number label to Security Code
+
+27) When you send a email via the forgot password and then you input a email that does not exit the application fail because the url-route is incorrect.
+
+28) How to return the validator error to the controller right now we set a seesion to return the error for the login controller/user repository.
+
+
+26) Change the Interface Name "UtilsInterface" for the "UrlInterface"
+
+29) Change the name for the interfaces they should said UserRepositoryInterface instead of UserInterface
+
+30) Eliminate the dependency injection in the login controller for the validationinterface because we move to the user repository.
+
+23) Move the Bussines Logic of the ProgramController to the ProgramRepository
+
+25) Move the Validator Facade from the Controller to a Class. ----(DONE)
+
+20) How to make this two line in one line: ----(DONE)
+
+			Session::flash('message', Lang::get('messages.error_password_confirmation'));
+			Session::flash('error',1);
+
+17) Move the $rules from the Controllers - ----(DONE)
+
+16) Add the APP_COMPANY variable in the .env file ----(DONE)
+
+14) Change the Routes to use the "as" and "use" syntax. ----(DONE)
+
+18	Missing the Route::resources and the Redirect::to in the ProgramController -----(DONE)
+
+6) Pending to implement csfr in the application, migrate to Laravel 5 integrate csft by default---(DONE)
+
+7) For the LoginController change this statement to get the values from the the User Models,--- ---(DONE)
+
+8) The email send for the "forgot passwodr" should in spanish and english, right now is located:--(-DONE)
+
+3) We have some error message in the Lang labels.php (login section) and should be in the messages.php -- (DONE)
+
+12) Define the '_DIR_' constant in the route.php. ---(DONE)

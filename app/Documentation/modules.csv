@@ -1,0 +1,10 @@
+id,module_name,module_description,deleted_at,created_at,updated_at
+1,Dashboard,"Performance Indicadors Management",NULL,"2015-05-21 23:37:07","2015-05-21 23:37:07"
+2,Facilities,"Campus, Buildings and Classrooms Management",NULL,"2015-05-21 23:37:07","2015-05-21 23:37:07"
+3,Academic,"Academic Cycles, Plans and Courses Management",NULL,"2015-05-21 23:37:07","2015-05-21 23:37:07"
+4,Resources,"Employees and Supplier Management",NULL,"2015-05-21 23:37:07","2015-05-21 23:37:07"
+5,Inventory,"Warehouses Management",NULL,"2015-05-21 23:37:07","2015-05-21 23:37:07"
+6,Assets,"Assets Registration and Asssigment",NULL,"2015-05-21 23:37:07","2015-05-21 23:37:07"
+7,Services,"Service Requests Management",NULL,"2015-05-21 23:37:07","2015-05-21 23:37:07"
+8,Security,"Users and Roles Management",NULL,"2015-05-21 23:37:07","2015-05-21 23:37:07"
+9,Settings,"Applicationn Settings Management",NULL,"2015-05-21 23:37:07","2015-05-21 23:37:07"

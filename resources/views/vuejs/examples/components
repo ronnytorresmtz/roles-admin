@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lesson</title>
+</head>
+<body>
+
+  <div id="app">
+    <!--counter is a global vue component -->
+    <counter subject="Likes"></counter>
+    <counter subject="Dislikes"></counter>
+  </div>
+  
+  <!--template allow you define and HTML reusesable, set an id to reference in the vue compenent -->
+  <template id="counter-template">
+    <h1>{{ subject }}</h1>
+  
+    <button @click="count += 1">
+      {{ count }}
+    </button>
+  </template>
+
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/vue/1.0.1/vue.min.js"></script>
+
+  <script>
+    //create global vue component
+    Vue.component('counter', {
+
+      //declare the properties/attributes of the component so the component can receive from the html
+      props: ['subject'],
+
+      //all variable must be return as function because the components are resuable
+      data: function() {
+        return { count: 0 };
+      },
+
+      //define the name of the template
+      template: '#counter-template'
+    });
+
+    //must create an instance of Vue, if you don´t do this the page won´t display anything
+    new Vue({
+      el: '#app'
+    });
+
+
+    
+    //*******************************************************
+    // https://laracasts.com/series/learning-vue-step-by-step
+    //*******************************************************
+  </script>
+
+</body>
+
+</html>

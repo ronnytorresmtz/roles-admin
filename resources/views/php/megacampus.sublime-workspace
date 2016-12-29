@@ -1,0 +1,347 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"getr",
+				"getRememberToken"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "/C/xampp/htdocs/megacampus5.0/.env",
+			"settings":
+			{
+				"buffer_size": 328,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"selected_items":
+		[
+			[
+				"Package Control: ",
+				"Package Control: Install Package"
+			],
+			[
+				"x",
+				"Xdebug: Start Debugging"
+			],
+			[
+				"Package Control: in",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: i",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: l",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: E",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 512.0
+	},
+	"console":
+	{
+		"height": 126.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = 'eb2297e1a458f27d836c04bb0cbaf282' + 'd0e7a3098092775ccb37ca9d6b2e4b7d'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/C/xampp/htdocs/megacampus5.0",
+		"/C/xampp/htdocs/megacampus5.0/app",
+		"/C/xampp/htdocs/megacampus5.0/app/Exceptions",
+		"/C/xampp/htdocs/megacampus5.0/app/Http",
+		"/C/xampp/htdocs/megacampus5.0/app/Http/Controllers",
+		"/C/xampp/htdocs/megacampus5.0/app/Http/Middleware",
+		"/C/xampp/htdocs/megacampus5.0/app/Models",
+		"/C/xampp/htdocs/megacampus5.0/app/Providers",
+		"/C/xampp/htdocs/megacampus5.0/todo"
+	],
+	"file_history":
+	[
+		"/C/xampp/htdocs/megacampus5.0/app/Http/routes.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Http/Middleware/Authenticate.php",
+		"/C/xampp/htdocs/megacampus5.0/vendor/laravel/framework/src/Illuminate/Auth/Guard.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Models/User.php",
+		"/C/xampp/htdocs/megacampus5.0/database/seeds/UsersTableSeeder.php",
+		"/C/xampp/htdocs/megacampus5.0/todo/todolist.txt",
+		"/C/xampp/htdocs/megacampus5.0/resources/views/php/information_bottombar.blade.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Http/Controllers/LoginController.php",
+		"/C/xampp/htdocs/megacampus5.0/megacampus.sublime-project",
+		"/C/xampp/htdocs/megacampus5.0/resources/views/php/megacampus.sublime-project",
+		"/C/xampp/htdocs/megacampus5.0/app/Exceptions/Handler.php",
+		"/C/xampp/htdocs/megacampus5.0/resources/views/emails/password_send.blade.php",
+		"/C/xampp/htdocs/megacampus5.0/storage/logs/laravel-2015-03-14.log",
+		"/C/xampp/htdocs/megacampus5.0/storage/framework/views/b477e7c2fb693b59b4228dc8999e55ce",
+		"/C/xampp/htdocs/megacampus5.0/resources/views/login/reset_your_password.blade.php",
+		"/C/xampp/htdocs/megacampus5.0/resources/lang/sp/labels.php",
+		"/C/xampp/htdocs/megacampus5.0/resources/lang/sp/fields.php",
+		"/C/xampp/htdocs/megacampus5.0/resources/lang/en/labels.php",
+		"/C/xampp/htdocs/megacampus5.0/resources/lang/en/fields.php",
+		"/C/xampp/htdocs/megacampus5.0/database/migrations/2015_02_19_233105_create_users_table.php",
+		"/C/xampp/htdocs/megacampus5.0/database/migrations/2014_10_04_171139_create_programs.php",
+		"/C/xampp/htdocs/megacampus5.0/database/migrations/2015_02_19_233105_create_users_table.php~RFa2565d8.TMP",
+		"/C/xampp/htdocs/megacampus5.0/app/Http/Controllers/ProgramController.php",
+		"/C/xampp/htdocs/megacampus4.2/app/views/login/login.blade.php",
+		"/C/xampp/htdocs/megacampus4.2/project.sublime-project",
+		"/C/Users/roltorres/AppData/Roaming/Sublime Text 3/Packages/SublimePHPIntel/SublimePHPIntel.sublime-settings"
+	],
+	"find":
+	{
+		"height": 34.0
+	},
+	"find_in_files":
+	{
+		"height": 90.0,
+		"where_history":
+		[
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"user",
+			"attempt",
+			"user()",
+			"check(",
+			"remember__security_number",
+			"code_number"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"remember_security_number",
+			"remember__security_number",
+			"code"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "/C/xampp/htdocs/megacampus5.0/.env",
+					"semi_transient": true,
+					"settings":
+					{
+						"buffer_size": 328,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 23.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.xdebug":
+	{
+		"height": 0.0
+	},
+	"project": "megacampus.sublime-project",
+	"replace":
+	{
+		"height": 62.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+		"xdebug":
+		{
+			"hide_conflict": false,
+			"restore_index":
+			{
+				"15":
+				{
+					"group": 0,
+					"index": 0
+				},
+				"16":
+				{
+					"group": 0,
+					"index": 1
+				},
+				"17":
+				{
+					"group": 0,
+					"index": 2
+				},
+				"18":
+				{
+					"group": 0,
+					"index": 3
+				},
+				"19":
+				{
+					"group": 0,
+					"index": 4
+				},
+				"20":
+				{
+					"group": 0,
+					"index": 5
+				},
+				"21":
+				{
+					"group": 0,
+					"index": 6
+				},
+				"22":
+				{
+					"group": 0,
+					"index": 7
+				},
+				"23":
+				{
+					"group": 0,
+					"index": 8
+				}
+			},
+			"restore_layout":
+			{
+				"cells":
+				[
+					[
+						0,
+						0,
+						1,
+						1
+					]
+				],
+				"cols":
+				[
+					0.0,
+					1.0
+				],
+				"rows":
+				[
+					0.0,
+					1.0
+				]
+			}
+		}
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 376.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

@@ -1,0 +1,86 @@
+<style>
+
+body {
+	background-color: #FFFFF0;
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 18px;
+	color: #00008B;
+}
+
+h1 { 
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 32px; 
+	color: #A52A2A 
+}
+
+h2 { 
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 24px; 
+	color: #A52A2A 
+}
+
+
+td {
+		font-family: Verdana, Geneva, sans-serif;
+	  font-size: 10px;
+	  width:50px; 
+	  height:100px;
+	  cursor: pointer;
+}
+
+
+table {
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 18px;
+	color: #00008B;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+	margin-left: 0px;
+	padding-top: 0px;
+	padding-right: 0px;
+	padding-bottom: 0px;
+	padding-left: 0px;
+}
+
+.createdby {
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 16px;
+
+}
+
+.day-border{
+	height:auto; 
+	max-width: 150px;
+	border-style: solid; 
+	border-width: 1px; 
+	border-color: #e0e0d1; 
+	           
+}
+
+.dayofMonth{
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 24px;
+	color: red;
+}
+
+.events{
+
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 10px;
+	color: white;
+	background: gray;
+	padding:5px;
+	margin:5px;
+}
+
+.glyphicon{
+	cursor:pointer;
+}
+
+.appointment-fields{
+	padding-left:30px;
+	padding-top:10px:
+}
+
+</style>

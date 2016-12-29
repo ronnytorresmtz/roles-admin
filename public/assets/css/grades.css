@@ -1,0 +1,27 @@
+<style>
+
+body {
+	
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 18px;
+}
+
+td, th {
+	  font-family: Verdana, Geneva, sans-serif;
+	  text-align:center;
+}
+
+
+table {
+	font-family: Verdana, Geneva, sans-serif;
+}
+
+input{
+	  font-family: Verdana, Geneva, sans-serif;
+	  width:50px; 
+	  text-align:right;
+}
+
+
+
+</style>

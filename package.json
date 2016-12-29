@@ -1,0 +1,24 @@
+{
+  "private": true,
+  "devDependencies": {
+    "babel-runtime": "^5.8.29",
+    "gulp": "^3.8.8",
+    "vue": "^1.0.1",
+    "vue-hot-reload-api": "^1.2.1",
+    "vueify": "^8.3.2",
+    "vueify-insert-css": "^1.0.0"
+  },
+  "dependencies": {
+    "babel-preset-react": "^6.3.13",
+    "babelify": "^7.2.0",
+    "chartjs": "^0.3.24",
+    "laravel-elixir": "^4.0.0",
+    "laravel-elixir-vueify": "^1.0.2",
+    "lodash": "^4.16.4",
+    "react": "^0.14.6",
+    "react-dom": "^0.14.6",
+    "vue": "^1.0.17",
+    "vue-resource": "^0.7.0",
+    "vue-router": "^0.7.11"
+  }
+}

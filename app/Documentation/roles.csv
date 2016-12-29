@@ -1,0 +1,11 @@
+id,role_name,role_description,deleted_at,created_at,updated_at
+1,"System Admin","Role for the System Administror",NULL,"2015-05-21 23:37:07","2015-05-21 23:37:07"
+2,Administrators,"Role for User Administror",NULL,"2015-05-21 23:37:07","2015-05-21 23:37:07"
+3,Principal,"Role for Principal",NULL,"2015-05-21 23:37:07","2015-05-21 23:37:07"
+4,Coordinators,"Role for User Supervisors",NULL,"2015-05-21 23:37:07","2015-05-21 23:37:07"
+5,Teachers,"Role for Teachers",NULL,"2015-05-21 23:37:07","2015-05-21 23:37:07"
+6,Employees,"Role for Employees",NULL,"2015-05-21 23:37:07","2015-05-21 23:37:07"
+7,Students,"Role for Students",NULL,"2015-05-21 23:37:07","2015-05-21 23:37:07"
+8,Parents,"Role for Parents",NULL,"2015-05-21 23:37:07","2015-05-21 23:37:07"
+9,"Sport Coaches","Role for Sport Coaches",NULL,"2015-05-21 23:37:07","2015-05-21 23:37:07"
+10,Secretaries,"Role for Secretaries",NULL,"2015-05-21 23:37:07","2015-05-21 23:37:07"

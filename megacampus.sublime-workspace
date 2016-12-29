@@ -1,0 +1,1206 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"Login",
+				"LoginServiceInterface"
+			],
+			[
+				"MailService",
+				"MailServiceInterface"
+			],
+			[
+				"get",
+				"getInputRules"
+			],
+			[
+				"Validation",
+				"ValidationInterface	ValidationInterface"
+			],
+			[
+				"Vali",
+				"ValidationFormInterface"
+			],
+			[
+				"Re",
+				"Request-all	Request-all"
+			],
+			[
+				"rule",
+				"rulesForSendPassword"
+			],
+			[
+				"gets",
+				"getSecurity"
+			],
+			[
+				"Ro",
+				"Route-uses	Route-uses"
+			],
+			[
+				"require",
+				"require_once"
+			],
+			[
+				"all",
+				"allFiles"
+			],
+			[
+				"getr",
+				"getRememberToken"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "database/seeds/TransactionsTableSeeder.php",
+			"settings":
+			{
+				"buffer_size": 390,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "storage/logs/laravel-2015-04-20.log",
+			"settings":
+			{
+				"buffer_size": 8922,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "database/migrations/2015_04_20_094641_create_transactions_table.php",
+			"settings":
+			{
+				"buffer_size": 669,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "database/migrations/2015_04_20_161653_create_roles_transactions_table.php",
+			"settings":
+			{
+				"buffer_size": 829,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "database/seeds/DatabaseSeeder.php",
+			"settings":
+			{
+				"buffer_size": 495,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "database/seeds/UsersTableSeeder.php",
+			"settings":
+			{
+				"buffer_size": 725,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "database/seeds/RolesTableSeeder.php",
+			"settings":
+			{
+				"buffer_size": 521,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "database/seeds/ProgramsTableSeeder.php",
+			"settings":
+			{
+				"buffer_size": 401,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "database/seeds/RolesTransactionsTableSeeder.php",
+			"settings":
+			{
+				"buffer_size": 776,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "database/seeds/ModulesTableSeeder.php",
+			"settings":
+			{
+				"buffer_size": 324,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "app/Megacampus/Models/Module.php",
+			"settings":
+			{
+				"buffer_size": 144,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "todo/.todolist.txt",
+			"settings":
+			{
+				"buffer_size": 3415,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "app/Megacampus/Models/Program.php",
+			"settings":
+			{
+				"buffer_size": 135,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "app/Megacampus/Models/Role.php",
+			"settings":
+			{
+				"buffer_size": 143,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "app/Megacampus/Models/RoleTransaction.php",
+			"settings":
+			{
+				"buffer_size": 162,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "app/Megacampus/Models/Transaction.php",
+			"settings":
+			{
+				"buffer_size": 152,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "app/Megacampus/Models/User.php",
+			"settings":
+			{
+				"buffer_size": 1824,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"Package Control: ",
+				"Package Control: Install Package"
+			],
+			[
+				"x",
+				"Xdebug: Start Debugging"
+			],
+			[
+				"Package Control: in",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: i",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: l",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: E",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 528.0
+	},
+	"console":
+	{
+		"height": 126.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = 'eb2297e1a458f27d836c04bb0cbaf282' + 'd0e7a3098092775ccb37ca9d6b2e4b7d'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)",
+			"composer dump-autoload",
+			"import urllib.request,os,hashlib; h = 'eb2297e1a458f27d836c04bb0cbaf282' + 'd0e7a3098092775ccb37ca9d6b2e4b7d'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/C/xampp/htdocs/megacampus5.0",
+		"/C/xampp/htdocs/megacampus5.0/app",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/Models",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/Repositories",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/Repositories/Eloquent",
+		"/C/xampp/htdocs/megacampus5.0/database",
+		"/C/xampp/htdocs/megacampus5.0/database/migrations",
+		"/C/xampp/htdocs/megacampus5.0/database/seeds",
+		"/C/xampp/htdocs/megacampus5.0/resources/views",
+		"/C/xampp/htdocs/megacampus5.0/resources/views/login",
+		"/C/xampp/htdocs/megacampus5.0/storage",
+		"/C/xampp/htdocs/megacampus5.0/storage/logs",
+		"/C/xampp/htdocs/megacampus5.0/todo",
+		"/C/xampp/htdocs/megacampus5.0/vendor",
+		"/C/xampp/htdocs/megacampus5.0/vendor/laravel",
+		"/C/xampp/htdocs/megacampus5.0/vendor/laravel/framework",
+		"/C/xampp/htdocs/megacampus5.0/vendor/laravel/framework/src",
+		"/C/xampp/htdocs/megacampus5.0/vendor/laravel/framework/src/Illuminate",
+		"/C/xampp/htdocs/megacampus5.0/vendor/laravel/framework/src/Illuminate/Auth",
+		"/C/xampp/htdocs/megacampus5.0/vendor/laravel/framework/src/Illuminate/Database",
+		"/C/xampp/htdocs/megacampus5.0/vendor/swiftmailer"
+	],
+	"file_history":
+	[
+		"/C/xampp/htdocs/megacampus5.0/database/migrations/2015_04_20_093149_create_roles_table.php",
+		"/C/xampp/htdocs/megacampus5.0/database/seeds/ProgramsTableSeeder.php",
+		"/C/xampp/htdocs/megacampus5.0/database/seeds/ModulesTableSeeder.php",
+		"/C/xampp/htdocs/megacampus5.0/database/seeds/DatabaseSeeder.php",
+		"/C/xampp/htdocs/megacampus5.0/database/seeds/RolesTableSeeder.php",
+		"/C/xampp/htdocs/megacampus5.0/database/migrations/2015_04_20_093732_create_modules_table.php",
+		"/C/xampp/htdocs/megacampus5.0/database/migrations/2015_04_20_094641_create_transactions_table.php",
+		"/C/xampp/htdocs/megacampus5.0/database/seeds/RolesTransactionsTableSeeder.php",
+		"/C/xampp/htdocs/megacampus5.0/database/seeds/TransactionsTableSeeder.php",
+		"/C/xampp/htdocs/megacampus5.0/database/migrations/2015_04_20_161653_create_roles_transactions_table.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/Models/RolesTransactions.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/Models/Role.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/Models/Transaction.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/Models/Module.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/Models/Program.php",
+		"/C/xampp/htdocs/megacampus5.0/database/migrations/2015_04_20_095133_create_role_transaction_pivot_table.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Transaction.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Role.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Module.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/Models/User.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Providers/AppServiceProvider.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/Repositories/User/UserRepository.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/Services/Validation/ValidationService.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Http/Controllers/LoginController.php",
+		"/C/xampp/htdocs/megacampus5.0/database/migrations/2015_02_19_233105_create_users_table.php",
+		"/C/xampp/htdocs/megacampus5.0/todo/artisan_command_help.php",
+		"/C/xampp/htdocs/megacampus5.0/resources/views/login/forgot_your_password.blade.php",
+		"/C/xampp/htdocs/megacampus5.0/resources/views/login/reset_your_password.blade.php",
+		"/C/xampp/htdocs/megacampus5.0/database/seeds/UsersTableSeeder.php",
+		"/C/xampp/htdocs/megacampus5.0/database/seeds/ProgramTableSeeder.php",
+		"/C/xampp/htdocs/megacampus5.0/vendor/laravel/framework/src/Illuminate/Database/Seeder.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/Services/Login/LoginService.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/Services/Login/LoginServiceInterface.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/Services/Mail/MailServiceInterface.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/Services/Validation/ValidationServiceInterface.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/Services/Url/UrlServiceInterface.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/Repositories/User/UserRepositoryInterface.php",
+		"/C/xampp/htdocs/megacampus5.0/composer.json",
+		"/C/xampp/htdocs/megacampus5.0/app/Http/Routes/login.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/Services/Mail/MailService.php",
+		"/C/xampp/htdocs/megacampus5.0/todo/.todolist.txt",
+		"/C/xampp/htdocs/megacampus5.0/todo/sublime_short_cuts.txt",
+		"/C/xampp/htdocs/megacampus5.0/.env",
+		"/C/xampp/htdocs/megacampus5.0/config/mail.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/Services/Url/UrlService.php",
+		"/C/Users/roltorres/AppData/Roaming/Sublime Text 3/Packages/User/classSnippet.sublime-snippet",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/Services/Mail/MailServiceInterface",
+		"/C/xampp/htdocs/megacampus5.0/resources/lang/en/fields.php",
+		"/C/xampp/htdocs/megacampus5.0/resources/lang/en/messages.php",
+		"/C/xampp/htdocs/megacampus5.0/resources/lang/en/validation.php",
+		"/C/xampp/htdocs/megacampus5.0/resources/lang/sp/validation.php",
+		"/C/xampp/htdocs/megacampus5.0/resources/lang/sp/messages.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Http/Middleware/VerifyTokenForResetPassword.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Models/User.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Http/Kernel.php",
+		"/C/xampp/htdocs/megacampus5.0/resources/lang/sp/fields.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Http/Routes/navigation_topbar.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Http/Controllers/NavigationTopBarController.php",
+		"/C/xampp/htdocs/megacampus5.0/resources/views/security/security_menu_options.blade.php",
+		"/C/xampp/htdocs/megacampus5.0/resources/views/services/services_menu_options.blade.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Http/Routes/programs.php",
+		"/C/xampp/htdocs/megacampus5.0/storage/logs/laravel-2015-04-13.log",
+		"/C/xampp/htdocs/megacampus5.0/resources/lang/en/labels.php",
+		"/C/xampp/htdocs/megacampus5.0/resources/lang/sp/buttons.php",
+		"/C/xampp/htdocs/megacampus5.0/resources/lang/sp/labels.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Http/Requests/PasswordResetRequest.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Http/Requests/ForgotPasswordRequest.php",
+		"/C/xampp/htdocs/megacampus5.0/config/app.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Http/Controllers/ProgramController.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/Repositories/Program/ProgramRepository.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/Repositories/Program/ProgramRepositoyInterface.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/Repositories/Eloquent/MyEloquentRepositoryInterface.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/Repositories/Eloquent/MyAbstractEloquentRepository.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/Utils/Validation/ValidationService.php",
+		"/C/xampp/htdocs/megacampus5.0/todo/todolist.txt",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/Storage/User/UserRepositoryInterface.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/Storage/User/UserRepository.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/Utils/Url/UrlService.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/Utils/Url/UrlServiceInterface.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/Utils/Validation/ValidationServiceInterface.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/Utils/Validation/ValidationInterface.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/Utils/Validation/ValidationRepository.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/Utils/Url/UtilsRepository.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Http/routes.php",
+		"/C/xampp/htdocs/megacampus5.0/resources/views/login/login.blade.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/Storage/User/UserInterface.php",
+		"/C/xampp/htdocs/megacampus5.0/resources/views/php/popup_message.blade.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/Storage/Program/ProgramInterface.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/Storage/Program/ProgramRepository.php",
+		"/C/xampp/htdocs/megacampus5.0/resources/views/academic/academic_menu_options.blade.php",
+		"/C/xampp/htdocs/megacampus5.0/resources/views/home/home.blade.php",
+		"/C/xampp/htdocs/megacampus5.0/resources/views/php/navigation_login_topbar.blade.php",
+		"/C/xampp/htdocs/megacampus5.0/resources/views/academic/programs/create.blade.php",
+		"/C/xampp/htdocs/megacampus5.0/resources/views/academic/programs/import.blade.php",
+		"/C/xampp/htdocs/megacampus5.0/resources/views/academic/programs/list.blade.php",
+		"/C/xampp/htdocs/megacampus5.0/resources/views/php/navigation_topbar.blade.php",
+		"/C/Users/roltorres/AppData/Roaming/Sublime Text 3/Packages/Alignment/Base File.sublime-settings",
+		"/C/xampp/htdocs/megacampus5.0/app/Providers/RouteServiceProvider.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Http/routes/programs.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Http/routes/navigation_topbar.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/utils/Url/UtilsInterface.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/storage/Eloquent/MyAbstractEloquentRepository.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/storage/Eloquent/MyEloquentInterface.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Models/Program.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/storage/Program/ProgramRepository.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/utils/Url/UtilsRepository.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/Storage/Program/ProgramServiceProvider.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/Storage/User/UserServiceProvider.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/utils/UtilsServiceProvider.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/storage/StorageServiceProvider.php",
+		"/C/xampp/htdocs/megacampus5.0/app/Megacampus/storage/Program/UserRepository.php",
+		"/C/xampp/htdocs/megacampus5.0/resources/views/php/messagebox.blade.php",
+		"/C/xampp/htdocs/megacampus5.0/resources/views/php/validation_message.blade.php",
+		"/C/xampp/htdocs/megacampus5.0/resources/views/dashboard/dashboard_menu_options.blade.php",
+		"/C/xampp/htdocs/megacampus5.0/resources/views/facilities/facilities_menu_options.blade.php",
+		"/C/xampp/htdocs/megacampus5.0/resources/views/fixassets/assets_menu_options.blade.php",
+		"/C/xampp/htdocs/megacampus5.0/resources/views/inventory/inventory_menu_options.blade.php",
+		"/C/xampp/htdocs/megacampus5.0/resources/views/layouts/academic_left_menu_options.blade.php",
+		"/C/xampp/htdocs/megacampus5.0/resources/views/layouts/login_layout.blade.php",
+		"/C/xampp/htdocs/megacampus5.0/resources/views/resources/resources_menu_options.blade.php",
+		"/C/xampp/htdocs/megacampus5.0/resources/views/settings/settings_menu_options.blade.php",
+		"/C/xampp/htdocs/megacampus5.0/resources/views/treasury/treasury_menu_options.blade.php",
+		"/C/xampp/htdocs/megacampus5.0/resources/views/emails/password_send.blade.php",
+		"/C/xampp/htdocs/megacampus5.0/resources/lang/en/menus.php",
+		"/C/xampp/htdocs/megacampus5.0/resources/lang/en/reminders.php",
+		"/C/xampp/htdocs/megacampus5.0/resources/lang/sp/menus.php",
+		"/C/xampp/htdocs/megacampus5.0/resources/lang/sp/reminders.php",
+		"/C/xampp/htdocs/megacampus5.0/resources/views/resources/employees/create.blade.php"
+	],
+	"find":
+	{
+		"height": 34.0
+	},
+	"find_in_files":
+	{
+		"height": 90.0,
+		"where_history":
+		[
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": true,
+		"find_history":
+		[
+			"$this->loginService",
+			"$this->user",
+			"$this->loginService",
+			"$this->app->bind(",
+			"$this->user",
+			"/Models",
+			"validation",
+			"/logOut",
+			"LoginService",
+			"$input",
+			");\n",
+			"confirmation_password",
+			"open",
+			"make",
+			"sendtoken\n",
+			"}\n",
+			"sendTokenToUserViaMail",
+			"remember security number",
+			"security code number",
+			"email you send",
+			"Email you send",
+			"Security Code",
+			"getUrlPrevious",
+			"MyEloquentInterface",
+			"ProgramInterface",
+			"\\Utils\\",
+			"util",
+			"$util",
+			"\\Utils\\",
+			"Services",
+			"\\Utils\\",
+			"\\Storage\\",
+			"UtilsRepository",
+			"UtilsInterface",
+			"ValidationRepository",
+			"ValidationInterface",
+			"ValidationService",
+			"UserInterface",
+			"$this->user",
+			"validate",
+			"login/logIn",
+			"valid",
+			"Session::flash('error', 2",
+			"Session::flash('error',2",
+			"Session::flash('error',0",
+			"Session::flash('error',1",
+			"Session::flash('error'",
+			"rules",
+			"The remember",
+			"The remember security number field is required",
+			"rules",
+			"APP_NAME",
+			"ENV(APP_NAME",
+			"app_NAME",
+			":to",
+			"url",
+			"academic/program",
+			"begin",
+			"()",
+			"/home",
+			"login/passwordReset/",
+			"login/logOut",
+			"include",
+			"routes.php",
+			"_DIR_ ",
+			"rules",
+			"rul",
+			"user->",
+			"::",
+			"}}",
+			"{{",
+			"}}",
+			"{{",
+			"MegaCampus",
+			"software_name",
+			"MegaCampus",
+			"labels.home_subtitle",
+			"subtitle",
+			"default",
+			"Code",
+			"security",
+			"user",
+			"attempt",
+			"user()",
+			"check(",
+			"remember__security_number",
+			"code_number"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"Module()",
+			"!!}",
+			"{!!",
+			"!!}",
+			"{!!",
+			"remember_security_number",
+			"remember__security_number",
+			"code"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 11,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "database/seeds/TransactionsTableSeeder.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 390,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								379,
+								379
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 47.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "storage/logs/laravel-2015-04-20.log",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 8922,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								528,
+								528
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "database/migrations/2015_04_20_094641_create_transactions_table.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 669,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								540,
+								540
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "database/migrations/2015_04_20_161653_create_roles_transactions_table.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 829,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								592,
+								592
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 10,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "database/seeds/DatabaseSeeder.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 495,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								385,
+								385
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 173.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 9,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "database/seeds/UsersTableSeeder.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 725,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								466,
+								466
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "database/seeds/RolesTableSeeder.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 521,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								443,
+								443
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 179.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 12,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "database/seeds/ProgramsTableSeeder.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 401,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								261,
+								342
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 15,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "database/seeds/RolesTransactionsTableSeeder.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 776,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								70,
+								70
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 54.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 11,
+					"type": "text"
+				},
+				{
+					"buffer": 9,
+					"file": "database/seeds/ModulesTableSeeder.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 324,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								233,
+								239
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 8,
+					"type": "text"
+				},
+				{
+					"buffer": 10,
+					"file": "app/Megacampus/Models/Module.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 144,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								75,
+								75
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 11,
+					"file": "todo/.todolist.txt",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3415,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1124,
+								1124
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 237.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 12,
+					"file": "app/Megacampus/Models/Program.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 135,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								134,
+								134
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 14,
+					"type": "text"
+				},
+				{
+					"buffer": 13,
+					"file": "app/Megacampus/Models/Role.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 143,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								61,
+								61
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 13,
+					"type": "text"
+				},
+				{
+					"buffer": 14,
+					"file": "app/Megacampus/Models/RoleTransaction.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 162,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								70,
+								70
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 15,
+					"file": "app/Megacampus/Models/Transaction.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 152,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								55,
+								66
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 16,
+					"file": "app/Megacampus/Models/User.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1824,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								6,
+								6
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 16,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 34.0
+	},
+	"input":
+	{
+		"height": 31.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 349.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.xdebug":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "megacampus.sublime-project",
+	"replace":
+	{
+		"height": 62.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+		"xdebug":
+		{
+			"hide_conflict": false,
+			"restore_index":
+			{
+				"38":
+				{
+					"group": 0,
+					"index": 11
+				},
+				"39":
+				{
+					"group": 0,
+					"index": 8
+				},
+				"40":
+				{
+					"group": 0,
+					"index": 10
+				},
+				"41":
+				{
+					"group": 0,
+					"index": 9
+				},
+				"50":
+				{
+					"group": 0,
+					"index": 0
+				},
+				"51":
+				{
+					"group": 0,
+					"index": 6
+				},
+				"53":
+				{
+					"group": 0,
+					"index": 7
+				},
+				"58":
+				{
+					"group": 0,
+					"index": 3
+				},
+				"59":
+				{
+					"group": 0,
+					"index": 1
+				},
+				"61":
+				{
+					"group": 0,
+					"index": 4
+				},
+				"62":
+				{
+					"group": 0,
+					"index": 5
+				},
+				"63":
+				{
+					"group": 0,
+					"index": 2
+				}
+			},
+			"restore_layout":
+			{
+				"cells":
+				[
+					[
+						0,
+						0,
+						1,
+						1
+					]
+				],
+				"cols":
+				[
+					0.0,
+					1.0
+				],
+				"rows":
+				[
+					0.0,
+					1.0
+				]
+			}
+		}
+	},
+	"show_minimap": false,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 339.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

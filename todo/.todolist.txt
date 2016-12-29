@@ -1,0 +1,39 @@
+	
+MEGACAMPUS TODO LIST
+=====================
+
+MEGACAMPUS VUE-LARAVEL
+=======================
+
+
+Issues Open
+============
+
+Add a Button in the User Form to Reset the Password and Send an Email to User.
+Add a Search Box to the Crud Compoenet with ComboBox.
+Add a Sort buttons by column in the Crud Compoent.
+Add a ComboBox to Select Items by Page.
+Reviwew if the AccessRightService Class will be used or has to be delete form the IoC. 
+Search is not working in the Module List
+
+Issue in Process
+=================
+
+
+
+
+Issue Closed
+============
+Change de Session Messages for Array Messages on the Repositories
+Change in the Controller the Validation Call and the Return Messages base on the Array Messages
+Develop the Export Process
+Add Vertical Scroll to the Component Table
+Multiple ComboBox linked one to another like contries->states->cities.
+Reviewing the Code of the Command CreateCrudVueSimple and Replace the templates to work for Vue js.
+We need to make and adjustment in the Command CreateCrudVueSimple to support the Traslations.js File and the VueRoute,js File Changes
+The Repository tamplate needs to be updated with json response.
+We made th Customers Files with the CrudVue:make but it does not work for updates and it does not list the deleted items, whem added works but throw an error.
+The CrudVue:make needs to add in validation.php file somre lines for the language en and sp.
+
+
+
