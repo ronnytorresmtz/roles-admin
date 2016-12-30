@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-## Role Admin Module
-
-.... In Developing Process
-=======
-
 *In Developing Process*
 
 
