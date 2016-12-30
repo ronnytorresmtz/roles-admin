@@ -15,7 +15,7 @@
 
     <nav class="navbar navbar-default">
       <div class="container-fluid" >
-        <a class="navbar-brand" href="#">MegaCampus</a>
+        <a class="navbar-brand" href="#">Roles Admin</a>
         <ul class="nav navbar-nav"   v-for="menu in menus"> 
           <li>
             <a v-link="menu.initialURL">{{menu.title}}</a>
@@ -36,18 +36,14 @@
 
     ready: function(){
       this.menus=[
-        {'title':'Dashboard', 'initialURL': '/'},
-        {'title':'Facilities', 'initialURL': '/institutes'},
-        {'title':'Academic', 'initialURL': '/plans'},
-        {'title':'Resources', 'initialURL': '/'},
-        {'title':'Inventory', 'initialURL': '/'},
-        {'title':'Assets', 'initialURL': '/'},
-        {'title':'Services', 'initialURL': '/'},
-       
-        {'title':'Treasury', 'initialURL': '/'},
-        {'title':'Security', 'initialURL': '/dashboard'},
-        {'title':'Settings', 'initialURL': '/'},
-        {'title':'Data', 'initialURL': '/'},
+        {'title':'Dashboard', 'initialURL': '/dashboard'},
+        {'title':'Modules', 'initialURL': '/modules'},
+        {'title':'Transactions', 'initialURL': '/transactions'},
+        {'title':'Roles', 'initialURL': '/roles'},
+        {'title':'Users', 'initialURL': '/users'},
+        {'title':'Access Rights', 'initialURL': '/accessrights'},    
+        {'title':'Help', 'initialURL': '/help'}, 
+        {'title':'Security', 'initialURL': '/dashboard'}
       ]
     },
 
