@@ -4,8 +4,6 @@
 
 # Roles Admin Application
 
-[![License](https://poser.pugx.org/laravel/framework/license.svg)](https://packagist.org/packages/laravel/framework)
-
 The idea behind this Roles Admin Application is to have an isolate application from the Main Business Application your are developing.
 
 This Roles Admin Application will allows you to store (in a database) the modules names, transactions name and the security access level for the users. The modules names normally will be the Main Menu Options and the transactions will be the Sub Menu Options.
