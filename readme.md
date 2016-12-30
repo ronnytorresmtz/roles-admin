@@ -4,8 +4,6 @@
 
 # Roles Admin Application
 
-[![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)]
-
 
 The idea behind this Roles Admin Application is to have an isolate application from the Main Business Application your are developing.
 
