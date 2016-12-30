@@ -3,7 +3,7 @@
 
 
 # Roles Admin Application
-
+[![Build Status](https://travis-ci.org/laravel/framework.svg)](https://travis-ci.org/ronnytorresmtz/roles-admin)
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://badges.mit-license.org)
 
 The idea behind this Roles Admin Application is to have an isolate application from the Main Business Application your are developing.
