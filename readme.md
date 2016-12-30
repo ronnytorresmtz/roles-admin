@@ -1,3 +1,4 @@
+
 *In Developing Process*
 
 
@@ -66,5 +67,3 @@ Used to Remove Row Tables in only one Vue Custom Component
 - Migrate vue to vue 2.0 and decide to used Vuex or Events to handle the compoments communicatione instead Bradcast method.
 - Migrate to Laravel 5.3
 - New functionalities to Support Multiple Business Applications for One Roles Admin Database.
-
->>>>>>> develop
