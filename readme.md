@@ -4,7 +4,7 @@
 
 # Roles Admin Application
 
-[![License](https://poser.pugx.org/laravel/framework/license.svg)]()
+[![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://badges.mit-license.org)
 
 The idea behind this Roles Admin Application is to have an isolate application from the Main Business Application your are developing.
 
