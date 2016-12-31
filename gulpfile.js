@@ -19,3 +19,12 @@ elixir(function(mix) {
     mix.browserify('vueroute.js');
     
 });
+
+
+/****Execute Shell Commands */
+/*var gulp = require("gulp");
+var shell = require("gulp-shell");
+gulp.task('local server', shell.task([
+    "php artisan serve",
+    "echo Hello"
+]));*/
