@@ -10,7 +10,6 @@
 
   <div class="panel panel-default"> 
     <div class="panel-heading">
-
       <h3 class="panel-title">
       {{title}}
       <span style="color:blue;" align="left" v-if='loading'>
@@ -33,21 +32,10 @@
           </select>
         </div>
       </div>
-      
       <div class="row" style="padding-left:10px;padding-right:20px">
-        
         <br>
-
         <div :id="id" style="height:250px" ></div>
-        
       </div>
-
-      <!-- <div class="row">
-          <span style="color:blue; padding:20px" align="left" v-if='loading'>
-           <img src="/assets/icons/loading_image.gif"/>  Loading 
-          </span>
-          
-        </div> -->
     </div>
   </div>
 
@@ -80,19 +68,14 @@ module.exports = {
     ],
 
     ready: function(){
-      
       this.initYearandMonth();
-
       this.displayGraph(this.yearSelected, this.monthSelected);
-
       this.showYear = (this.showYear == 'false') ? false : true;
       this.showMonth = (this.showMonth == 'false') ? false : true;
     },
 
     data: function(){
       return {
-       // id: this.id,
-      //  title: this.title,
         years:'',
         months:'',
         labels:'',
@@ -110,7 +93,6 @@ module.exports = {
     methods:{
 
       initYearandMonth: function(){
-
         var date = new Date();
         var currentYear = date.getFullYear();
 
@@ -119,35 +101,24 @@ module.exports = {
         }
 
         this.months = this.ts['short_months'];
-        
         this.yearSelected = currentYear;
         this.monthSelected = date.getMonth() + 1;
 
       },
 
-
       changeYearMonth: function(){
-
         this.displayGraph(this.yearSelected, this.monthSelected);
-
       },
 
       displayGraph: function(year, month){
-
         this.loading = true;
-
         this.$http.post(this.url, {"year": year, "month": month}).then((responde) => {
-
           this.labels = responde.data.labels;
           this.label = responde.data.legend;
           this.series = responde.data.series;
-
         }).then(function (responde) {
-
           $('#' + this.id).highcharts(this.setOptions(this.series));
-         
           this.loading = false;
-
         }).catch(function (responde) {
           this.loading = false;
           alert('alerta: ' + responde.status);
@@ -156,15 +127,12 @@ module.exports = {
 
 
       setOptions: function(series){
-
         var maxValue = Math.max(...series);
-
         return {
 
           chart: {
-
-              height:this.height,
-              type: this.type
+            height:this.height,
+            type: this.type
           },
           credits:false,
           title:{
@@ -187,7 +155,6 @@ module.exports = {
           legend:{
             enabled: (this.legendDisplay == 'false') ? false : true,
             verticalAlign: this.legendPosition
-
           },
           exporting:{
             enabled: false
@@ -196,10 +163,7 @@ module.exports = {
               name: this.yTitle,
               data: this.series,
           }],
-
         }
-
-
       },
     }
   }

@@ -84,7 +84,6 @@
     },
 
     methods: {
-
       hideBoxMessage: function(){
         this.showAlert = false;      
       },
@@ -108,6 +107,7 @@
         this.hideBoxMessageByTime();
       },
     }
-    
+
   }
+  
 </script>

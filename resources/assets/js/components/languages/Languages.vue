@@ -1,6 +1,6 @@
 <style scoped></style>
-<template></template>
 
+<template></template>
 
 <script>
 
@@ -33,7 +33,5 @@ module.exports = {
     }
     
   }
-
-
 
 </script>

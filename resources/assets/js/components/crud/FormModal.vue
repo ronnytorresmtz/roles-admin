@@ -47,130 +47,116 @@
           <h4 class="modal-title" id="myModalLabel">{{actionType}} {{formTitle}}</h4>
         </div>
         <div class="modal-body">
-
-
-
-
-
-  <div>
-      
-   
-      <div class="panel-body body-height"> 
-
-        <div v-for="field in fields"> 
-          <div class="row">
-
-            <div class="col-sm-12 text-left" v-if="(field.type=='text')">
-              <div class="control-group">
-                <b>{{field.label}}:</b> <span class="lg-red" v-text="field.required && !field.value ? ' *' : ''"></span>
-                <span >
-                  <input 
-                    type="text"
-                    v-model="field.value"
-                    name="field.name"
-                    maxlength={{field.maxlength}} 
-                    placeholder={{field.placeholder}} 
-                    :readonly="field.readonly"
-                    required={{field.required}}
-                    class="form-control"
-                    @keyup="validFieldsRequired"> 
-                  </input>
-                </span>
-              </div>
-            </div>
-            
-              <div class="col-sm-12 text-left" v-if="(field.type=='textarea')">
-                <div class="control-group">
-                  <b>{{field.label}}:</b> <span class="lg-red" v-text="field.required && !field.value ? ' *' : ''"></span>
-                  <span >
-                    <textarea 
+          <div>
+            <div class="panel-body body-height"> 
+              <div v-for="field in fields"> 
+                <div class="row">
+                  <div class="col-sm-12 text-left" v-if="(field.type=='text')">
+                    <div class="control-group">
+                      <b>{{field.label}}:</b> <span class="lg-red" v-text="field.required && !field.value ? ' *' : ''"></span>
+                      <span >
+                        <input 
+                          type="text"
+                          v-model="field.value"
+                          name="field.name"
+                          maxlength={{field.maxlength}} 
+                          placeholder={{field.placeholder}} 
+                          :readonly="field.readonly"
+                          required={{field.required}}
+                          class="form-control"
+                          @keyup="validFieldsRequired"> 
+                        </input>
+                      </span>
+                    </div>
+                  </div>
+                
+                  <div class="col-sm-12 text-left" v-if="(field.type=='textarea')">
+                    <div class="control-group">
+                      <b>{{field.label}}:</b> <span class="lg-red" v-text="field.required && !field.value ? ' *' : ''"></span>
+                      <span >
+                        <textarea 
+                            v-model="field.value"
+                            name="field.name"
+                            maxlength={{field.maxlength}} 
+                            placeholder={{field.placeholder}} 
+                            :readonly="field.readonly"
+                            required={{field.required}}
+                            class="form-control"
+                            @keyup="validFieldsRequired"> 
+                        </textarea>
+                      </span>
+                    </div>
+                  </div>
+                
+                  <div class="col-sm-12 text-left" v-if="(field.type=='checkbox')">
+                    <div class="control-group"> 
+                      <b>{{field.label}}:</b>  
+                      <input 
+                        type="checkbox" 
                         v-model="field.value"
                         name="field.name"
                         maxlength={{field.maxlength}} 
                         placeholder={{field.placeholder}} 
+                        checked={{field.checked}} 
                         :readonly="field.readonly"
                         required={{field.required}}
+                        @change="validFieldsRequired"> 
+                      </input>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-12 text-left" v-if="(field.type=='select')">
+                    <div class="control-group"> 
+                      <b>{{field.label}}:</b> 
+                      <select 
+                        id="{{field.name}}"
                         class="form-control"
-                        @keyup="validFieldsRequired"> 
-                    </textarea>
-                  </span>
-                </div>
+                        name="field.name" 
+                        required={{field.required}}  
+                        :disabled="field.readonly" 
+                        @change="validSelect($event, field)">
+                        <option 
+                          v-for="op in getFieldName(field.table)"
+                          :selected="op.selected" 
+                          value={{op.id}} 
+                          label={{op.value}}
+                          >
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-12 text-left" v-if="(field.type=='status' && actionType!='Add')" >
+                    <div class="control-group"> 
+                      <b>{{field.label}}:</b>  
+                      <span >
+                        <i class="glyphicon glyphicon-{{itemStatus}}" name="deleted_at"></i>
+                      </span>
+                    </div>
+                  </div>
+
+                </div> 
               </div>
+            </div>
+            <div class="row text-left align-button">
+              <button class="btn btn-sm btn-success button-size" v-show="displayBtnSave" :disabled="isDisableBtnSave" @click.prevent="btnSave" > Save </button> 
+              <button class="btn btn-sm btn-success button-size" v-show="displayBtnUpdate" :disabled="isDisableBtnUpdate" @click.prevent="btnUpdate" > Update </a> 
+              <button class="btn btn-sm btn-danger button-size" v-show="displayBtnDelete" @click.prevent="btnDelete" > Delete </button>
+              <button class="btn btn-sm btn-success button-size" v-show="displayBtnReset" @click.prevent="btnReset" > Reset </button>
+              <button class="btn btn-sm btn-success button-size" v-show="displayBtnExport" @click.prevent="btnExport" > Export </button>
+              <button class="btn btn-sm btn-success button-size" v-show="displayBtnImport" @click.prevent="btnImport" > Import </button>
+              <button class="btn btn-sm btn-default button-size" @click.prevent="btnClose" > Close </button>
+            </div>
+
             
-              <div class="col-sm-12 text-left" v-if="(field.type=='checkbox')">
-                <div class="control-group"> 
-                  <b>{{field.label}}:</b>  
-                  <input 
-                    type="checkbox" 
-                    v-model="field.value"
-                    name="field.name"
-                    maxlength={{field.maxlength}} 
-                    placeholder={{field.placeholder}} 
-                    checked={{field.checked}} 
-                    :readonly="field.readonly"
-                    required={{field.required}}
-                    @change="validFieldsRequired"> 
-                  </input>
-                </div>
-              </div>
-
-             <div class="col-sm-12 text-left" v-if="(field.type=='select')">
-              <div class="control-group"> 
-                <b>{{field.label}}:</b> 
-                <select 
-                  id="{{field.name}}"
-                  class="form-control"
-                  name="field.name" 
-                  required={{field.required}}  
-                  :disabled="field.readonly" 
-                  @change="validSelect($event, field)">
-                  <option 
-                    v-for="op in getFieldName(field.table)"
-                    :selected="op.selected" 
-                    value={{op.id}} 
-                    label={{op.value}}
-                    >
-                  </option>
-                </select>
-              </div>
+            <div class="processing" align="left" v-if="processing">
+              <img src="/assets/icons/loading_image.gif"/> Processing
             </div>
-
-            <div class="col-sm-12 text-left" v-if="(field.type=='status' && actionType!='Add')" >
-              <div class="control-group"> 
-                <b>{{field.label}}:</b>  
-                <span >
-                  <i class="glyphicon glyphicon-{{itemStatus}}" name="deleted_at"></i>
-                </span>
-              </div>
+            <div v-else>
+              <br><br>
             </div>
-
+            <!--<br><pre>{{ $data | json }}</pre> -->
           </div>
-        </div>
-      </div>
-      <div class="row text-left align-button">
-        <button class="btn btn-sm btn-success button-size" v-show="displayBtnSave" :disabled="isDisableBtnSave" @click.prevent="btnSave" > Save </button> 
-        <button class="btn btn-sm btn-success button-size" v-show="displayBtnUpdate" :disabled="isDisableBtnUpdate" @click.prevent="btnUpdate" > Update </a> 
-        <button class="btn btn-sm btn-danger button-size" v-show="displayBtnDelete" @click.prevent="btnDelete" > Delete </button>
-        <button class="btn btn-sm btn-success button-size" v-show="displayBtnReset" @click.prevent="btnReset" > Reset </button>
-        <button class="btn btn-sm btn-success button-size" v-show="displayBtnExport" @click.prevent="btnExport" > Export </button>
-        <button class="btn btn-sm btn-success button-size" v-show="displayBtnImport" @click.prevent="btnImport" > Import </button>
-        <button class="btn btn-sm btn-default button-size" @click.prevent="btnClose" > Close </button>
-      </div>
-
-      
-        <div class="processing" align="left" v-if="processing">
-          <img src="/assets/icons/loading_image.gif"/> Processing
-        </div>
-        <div v-else>
-          <br><br>
-        </div>
-<!--         <br><pre>{{ $data | json }}</pre> -->
-
-  </div>
-
-
-
-
         </div>
       </div>
     </div>
@@ -190,7 +176,6 @@
 
     ready: function(){
       this.fields=this.jsonToArray(this.inputFields);
-      //this.fields=arr;
       this.countFieldsRequired();
       this.fillSelectFields(); 
     },
@@ -378,16 +363,6 @@
 
       displayPopUpMessage: function(response){
         this.$dispatch('displayAlert', (response.status==200) ? 'success' : 'danger', response.data.message + ' (' + response.status + ')');
-      },
-
-      expand: function(){
-        // this.IsCrudExpanded = !this.IsCrudExpanded;
-        // if (this.IsCrudExpanded){
-        //   this.expandOrCollapse='Collapse'
-        // }else{
-        //    this.expandOrCollapse='Expand'
-        // }
-        // this.$dispatch('expandCrud');
       },
 
       jsonToArray: function(data){

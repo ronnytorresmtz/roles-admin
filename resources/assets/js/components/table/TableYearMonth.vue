@@ -57,11 +57,8 @@
                 </select>
               </div>
             </div>
-
-            
           </div>
           <br>
-          
           <div  class="table-responsive table-hscroll table-height">
             <table id="{{id}}" class= "table table-striped table-bordered table-condensed table-hover" >
               <col v-for="col in cols" :width="col.width">
@@ -108,9 +105,7 @@
                       <a href="{{action.url}}" title="{{action.title}}" @click.prevent="clickIcon(row, action)"> <i class="{{action.icon}}"></i> {{action.text}} </a>
                     </span>
                   </td>
-
                 </tr> 
-
                </tbody> 
             </table> 
           </div>
@@ -141,9 +136,7 @@
           </div>
         </div>
       </div>
-
       <!-- <pre>{{ $data | json }}</pre>  -->
-
     </div>
 </div>
 
@@ -167,12 +160,10 @@
       this.arrIconActions=this.jsonToArray(this.iconActions);
       this.showYear = (this.showYear=="false") ? false : true;
       this.showMonth =(this.showMonth=="false") ? false : true;
-
       this.initialUrl = this.url;
       this.lastUrl =this.initialUrl;
       this.initYearandMonth();
       this.readPageData(this.lastUrl, this.yearSelected, this.monthSelected, false);
-      
     },
 
     data: function() {
@@ -198,25 +189,17 @@
         arrIconInfo:[],
         arrIconActions:[],
         filterApplied: '',
-       // showYear: '',
-       // showMonth: '',
         years:[],
         months: [],
         yearSelected:'', 
         monthSelected:'',
-
       }
     },
 
     methods: {
 
       clickIcon: function(row, link){
-         // alert(link.name + ': ' + row.id + ' Url: ' + link.url);
         this.$route.router.go(link.url);
-      },
-
-      itemSelected: function(row){
-      //  this.$dispatch('rowSelected', row);
       },
 
       goToFisrtPage: function(){
@@ -289,20 +272,15 @@
         else{
           var page_url=responde.prev_page_url; 
         }
-        
         //set the route for first, prev, next, last page action
         if (page_url){
 
           this.first_page_url=page_url.slice(0, page_url.search('page')) + 'page=' + this.first_page + this.setSearchParam();
-
-         
           this.next_page_url=responde.next_page_url + this.setSearchParam();
           this.prev_page_url=responde.prev_page_url + this.setSearchParam();
-          
           this.last_page_url=page_url.slice(0, page_url.search('page')) +  'page=' + this.last_page + this.setSearchParam();
          }
       },
-
 
       setSearchParam: function(){
         var searchParam='';
@@ -316,8 +294,6 @@
 
         return searchParam;
       },
-
-     
       
       initYearandMonth: function(){
         var date = new Date();
@@ -333,14 +309,9 @@
         this.monthSelected = date.getMonth() + 1;
       },
 
-
       changeYearMonth: function(){
-
         this.readPageData(this.lastUrl, this.yearSelected, this.monthSelected, false);
-
-
       },
-
 
       jsonToArray: function(data){
         var parsed = JSON.parse(data);
@@ -352,8 +323,6 @@
         return arr;
       }
     },
-
-    
     
   }
 </script>

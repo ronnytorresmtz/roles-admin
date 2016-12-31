@@ -55,33 +55,9 @@
       this.subOptions=arraySubMenus[this.submenu];
     },
 
-  /*	methods:{
+  	methods:{
 
-  		plans: function(){
-  			window.location="http://localhost:8000/test";
-  		},
-
-  		programs: function(){
-  			window.location="http://localhost:8000/";
-  		},
-
-  		courses: function(){
-  			alert('courses');
-  		},
-
-  		subject: function(){
-  			alert('subject');
-  		},
-
-  		teachers: function(){
-  			alert('teachers');
-  		},
-
-  		help: function(){
-  			alert('help');
-  		},
-
-  	}*/
+  	}
     
   }
 </script>
