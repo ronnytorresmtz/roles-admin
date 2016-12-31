@@ -6,7 +6,7 @@
             "type": "chrome",
             "request": "launch",
             "url": "http://localhost:8000/vue",
-sk        },
+        },
         {
             "name": "Attach to Chrome, with sourcemaps",
             "type": "chrome",
