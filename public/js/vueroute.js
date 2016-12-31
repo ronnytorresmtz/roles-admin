@@ -16206,44 +16206,23 @@ var __vueify_style__ = require("vueify-insert-css").insert("\n\n")
 'use strict';
 
 module.exports = {
-    data: function data() {
-        return {
-            menus: []
-        };
-    },
+  data: function data() {
+    return {
+      menus: []
+    };
+  },
 
-    ready: function ready() {
-        this.menus = [{ 'title': 'Dashboard', 'initialURL': '/dashboard' }, { 'title': 'Modules', 'initialURL': '/modules' }, { 'title': 'Transactions', 'initialURL': '/transactions' }, { 'title': 'Roles', 'initialURL': '/roles' }, { 'title': 'Users', 'initialURL': '/users' }, { 'title': 'Access Rights', 'initialURL': '/accessrights' }, { 'title': 'Help', 'initialURL': '/help' }];
+  ready: function ready() {
+    this.menus = [{ 'title': 'Dashboard', 'initialURL': '/dashboard' }, { 'title': 'Modules', 'initialURL': '/modules' }, { 'title': 'Transactions', 'initialURL': '/transactions' }, { 'title': 'Roles', 'initialURL': '/roles' }, { 'title': 'Users', 'initialURL': '/users' }, { 'title': 'Access Rights', 'initialURL': '/accessrights' }, { 'title': 'Help', 'initialURL': '/help' }];
 
-        this.$route.router.go('/dashboard');
-    },
+    this.$route.router.go('/dashboard');
+  },
 
-    methods: {
-
-        facilities: function facilities() {
-            alert('facilities');
-        },
-
-        academic: function academic() {
-            alert('academic');
-        },
-
-        treasury: function treasury() {
-            alert('treasury');
-        },
-
-        security: function security() {
-            alert('security');
-        },
-
-        configuration: function configuration() {
-            alert('configuration');
-        }
-    }
+  methods: {}
 
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n\n   <link rel=\"icon\" type=\"image/png\" href=\"/assets/icons/loading_image.gif\" _v-141a6d4c=\"\">\n   \n <div _v-141a6d4c=\"\">\n   \n\n\n   <nav class=\"navbar navbar-default\" _v-141a6d4c=\"\">\n     <div class=\"container-fluid\" _v-141a6d4c=\"\">\n       <a class=\"navbar-brand\" href=\"#\" _v-141a6d4c=\"\">Roleis</a>\n       <ul class=\"nav navbar-nav\" v-for=\"menu in menus\" _v-141a6d4c=\"\"> \n         <li _v-141a6d4c=\"\">\n           <a v-link=\"menu.initialURL\" _v-141a6d4c=\"\">{{menu.title}}</a>\n         </li>\n       </ul>\n     </div>\n   </nav>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n\n   <link rel=\"icon\" type=\"image/png\" href=\"/assets/icons/loading_image.gif\" _v-141a6d4c=\"\">\n   \n <div _v-141a6d4c=\"\">\n   <nav class=\"navbar navbar-default\" _v-141a6d4c=\"\">\n     <div class=\"container-fluid\" _v-141a6d4c=\"\">\n       <a class=\"navbar-brand\" href=\"#\" _v-141a6d4c=\"\">Roleis</a>\n       <ul class=\"nav navbar-nav\" v-for=\"menu in menus\" _v-141a6d4c=\"\"> \n         <li _v-141a6d4c=\"\">\n           <a v-link=\"menu.initialURL\" _v-141a6d4c=\"\">{{menu.title}}</a>\n         </li>\n       </ul>\n     </div>\n   </nav>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)

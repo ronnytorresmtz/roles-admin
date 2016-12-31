@@ -10,9 +10,6 @@
       href="/assets/icons/loading_image.gif" />
     </head>
   <div>
-    
-
-
     <nav class="navbar navbar-default">
       <div class="container-fluid" >
         <a class="navbar-brand" href="#">Roleis</a>
@@ -49,26 +46,7 @@
     },
 
     methods: {
-
-      facilities: function(){
-          alert('facilities');
-      },
-
-      academic: function(){
-          alert('academic');
-      },
-
-      treasury: function(){
-          alert('treasury');
-      },
-
-      security: function(){
-          alert('security');
-      },
-
-      configuration: function(){
-          alert('configuration');
-      },
+      
     }
    
   }
