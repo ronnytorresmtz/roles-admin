@@ -15,7 +15,7 @@
 
     <nav class="navbar navbar-default">
       <div class="container-fluid" >
-        <a class="navbar-brand" href="#">Roles Admin</a>
+        <a class="navbar-brand" href="#">Roleis</a>
         <ul class="nav navbar-nav"   v-for="menu in menus"> 
           <li>
             <a v-link="menu.initialURL">{{menu.title}}</a>
@@ -42,9 +42,10 @@
         {'title':'Roles', 'initialURL': '/roles'},
         {'title':'Users', 'initialURL': '/users'},
         {'title':'Access Rights', 'initialURL': '/accessrights'},    
-        {'title':'Help', 'initialURL': '/help'}, 
-        {'title':'Security', 'initialURL': '/dashboard'}
+        {'title':'Help', 'initialURL': '/help'}
       ]
+      
+      this.$route.router.go('/dashboard');
     },
 
     methods: {
