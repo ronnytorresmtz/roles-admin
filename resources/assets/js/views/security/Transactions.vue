@@ -23,7 +23,7 @@
 
 						table-title="Transaction List" 
 
-						select-fields='{ }'
+						select-fields='{ 	}'
 									
 						columns-names='{
 								"0": { "name": "id", "width":"10%"},
@@ -39,10 +39,8 @@
 						url="security/transactions"
 
 
-						icon-info='{ }'
-
-
-						icon-actions='{ }'
+						icon-info='{	}'
+						icon-actions='{ 	}'
 
 						>
 						

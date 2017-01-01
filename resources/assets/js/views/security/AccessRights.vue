@@ -41,8 +41,7 @@
 								"4": { "name": "transactionDescription" , "width":"30%"},
 								"5": { "name": "transactionActionName" , "width":"10%"},
 								"6": { "name": "createdBy", "width":"10%"},
-								"7": { "name": "updatedBy", "width":"10%"},		
-								"8": { "name": "info", "width":"10%"}
+								"7": { "name": "updatedBy", "width":"10%"}
 						}' 
 						
 						url="security/roles_transactions"

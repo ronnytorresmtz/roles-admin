@@ -31,10 +31,7 @@
 								"2": { "name": "rolDescription" , "width":"50%"},
 								"3": { "name": "status", "width":"10%"},
 								"4": { "name": "createdBy", "width":"15%"},
-								"5": { "name": "updatedBy", "width":"25%"},
-								"6": { "name": "info", "width":"25%"},
-								"7": { "name": "actions", "width":"25%"}
-								
+								"5": { "name": "updatedBy", "width":"25%"}
 						}' 
 						
 						url="security/roles"
