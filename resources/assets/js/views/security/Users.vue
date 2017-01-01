@@ -21,7 +21,7 @@
 
 						table-id="table1"
 
-						select-fields='{}'
+						select-fields='{	}'
 									
 						columns-names='{
 								"0": { "name": "id", "width":"10%"},
@@ -36,13 +36,8 @@
 						
 						url="security/users"
 
-						icon-info='{
-							
-						}'
-
-						icon-actions='{
-							
-						}'
+						icon-info='{	}'
+						icon-actions='{		}'
 
 						>
 				
