@@ -58,8 +58,8 @@ Repositories pattern applied.
 ```
 * jQuery v1.11.1 Used for few specific actions
 ```
-Used to Remove Row Tables in only one Vue Custom Component
-Used to Open and Close Modal Windows
+Used to Remove Row Tables in only one Vue Custom Componen.
+Used to Open and Close Modal Windows.
 ```
 ##What are the next development tasks?
 
