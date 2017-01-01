@@ -85,4 +85,4 @@ var App = Vue.extend({
 
 });
 
-router.start(App, '#app')
+router.start(App, '#app');

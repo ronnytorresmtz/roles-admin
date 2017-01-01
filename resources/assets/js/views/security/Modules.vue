@@ -23,7 +23,7 @@
 
 						table-title="Module List" 
 
-						select-fields='{ }'
+						select-fields='{	}'
 									
 						columns-names='{
 								"0": { "name": "id", "width":"10%"},
@@ -38,10 +38,8 @@
 						url="security/modules"
 
 
-						icon-info='{ }'
-
-
-						icon-actions='{ }'
+						icon-info='{	}'
+						icon-actions='{		}'
 
 						>
 						

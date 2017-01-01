@@ -47,15 +47,8 @@
 						
 						url="security/roles_transactions"
 
-						icon-info='{
-								"0": { "url": "#", "name":"truck", "title":"List Of....", "icon": "fa fa-truck", "text":""},
-								"1": { "url": "#", "name":"user", "title":"List Of....", "icon": "fa fa-user", "text":""}
-						}'
-
-
-						icon-actions='{
-
-						}'
+						icon-info='{	}'
+						icon-actions='{		}'
 
 						>
 				
