@@ -14849,7 +14849,7 @@ module.exports = {
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div _v-ca716984=\"\">\n    <slot name=\"message\" _v-ca716984=\"\"></slot>\n    <slot name=\"modal-import\" _v-ca716984=\"\"></slot>\n    <span v-for=\"action in actions\" _v-ca716984=\"\">\n        <a href=\"{{urlExport}}\" class=\"btn btn-sm btn-primary button-size\" v-if=\"(action.title=='Export') ? true : false\" _v-ca716984=\"\">   \n          Export\n        </a>\n\n       <button v-else=\"\" id=\"buttonsId\" class=\"btn btn-sm btn-primary button-size\" :disabled=\"action.disabled\" @click.prevent=\"getActionMethod(action.method)\" _v-ca716984=\"\"> \n        {{ action.title }} \n       </button>\n    </span>\n </div>\n <br _v-ca716984=\"\">\n\n<!--pre>{{ $data | json }}</pre-->\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div _v-ca716984=\"\">\n    <slot name=\"message\" _v-ca716984=\"\"></slot>\n    <slot name=\"modal-import\" _v-ca716984=\"\"></slot>\n    <span v-for=\"action in actions\" _v-ca716984=\"\">\n        <a href=\"{{urlExport}}\" class=\"btn btn-sm btn-primary button-size\" v-if=\"(action.title=='Export') ? true : false\" _v-ca716984=\"\">   \n          Export\n        </a>\n\n       <button v-else=\"\" id=\"buttonsId\" class=\"btn btn-sm btn-primary button-size\" :disabled=\"action.disabled\" @click.prevent=\"getActionMethod(action.method)\" _v-ca716984=\"\"> \n        {{ action.title }} \n       </button>\n    </span>\n </div>\n <br _v-ca716984=\"\">\n<!--pre>{{ $data | json }}</pre-->\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -14877,7 +14877,6 @@ module.exports = {
 
   ready: function ready() {
     this.fields = this.jsonToArray(this.inputFields);
-    //this.fields=arr;
     this.countFieldsRequired();
     this.fillSelectFields();
   },
@@ -14957,16 +14956,6 @@ module.exports = {
         this.displayPopUpMessage(response);
       });
       this.$set(field.table, option);
-
-      // var obj = {};
-      // obj[field.table] = option;
-      // this.fields2.push(obj);
-
-      // for (var i = 0; i < this.fields2.length; i++) {
-      //     this.fields2[i].eoles(function(obj){
-      //         console.log(obj);
-      //     });
-      // }
     },
 
     countFieldsRequired: function countFieldsRequired() {
@@ -15222,7 +15211,7 @@ module.exports = {
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div _v-196024d0=\"\">\n  <div class=\"panel panel-default\" _v-196024d0=\"\"> \n    <div class=\"pull-right expand-botton\" _v-196024d0=\"\">\n      <button class=\"btn btn-xs btn-default expand-botton\" @click.prevent=\"expand\" v-text=\"expandOrCollapse\" _v-196024d0=\"\">\n     <!--i class=\"glyphicon glyphicon-align-justify\" ></i-->\n      </button>\n    </div>\n    <div class=\"panel-heading\" _v-196024d0=\"\">\n      <h3 class=\"panel-title\" _v-196024d0=\"\">{{actionType}} {{formTitle}}</h3>\n    </div>  \n \n    <div class=\"panel-body body-height\" _v-196024d0=\"\"> \n\n      <div v-for=\"field in fields\" _v-196024d0=\"\"> \n        <div class=\"row\" _v-196024d0=\"\">\n\n          <div class=\"col-sm-12 text-left\" v-if=\"(field.type=='text')\" _v-196024d0=\"\">\n            <div class=\"control-group\" _v-196024d0=\"\">\n              <b _v-196024d0=\"\">{{field.label}}:</b> <span class=\"lg-red\" v-text=\"field.required &amp;&amp; !field.value ? ' *' : ''\" _v-196024d0=\"\"></span>\n              <span _v-196024d0=\"\">\n                <input type=\"text\" v-model=\"field.value\" name=\"field.name\" maxlength=\"{{field.maxlength}}\" placeholder=\"{{field.placeholder}}\" :readonly=\"field.readonly\" required=\"{{field.required}}\" class=\"form-control\" @keyup=\"validFieldsRequired\" _v-196024d0=\"\"> \n                \n              </span>\n            </div>\n          </div>\n          \n            <div class=\"col-sm-12 text-left\" v-if=\"(field.type=='textarea')\" _v-196024d0=\"\">\n              <div class=\"control-group\" _v-196024d0=\"\">\n                <b _v-196024d0=\"\">{{field.label}}:</b> <span class=\"lg-red\" v-text=\"field.required &amp;&amp; !field.value ? ' *' : ''\" _v-196024d0=\"\"></span>\n                <span _v-196024d0=\"\">\n                  <textarea v-model=\"field.value\" name=\"field.name\" maxlength=\"{{field.maxlength}}\" placeholder=\"{{field.placeholder}}\" :readonly=\"field.readonly\" required=\"{{field.required}}\" class=\"form-control\" @keyup=\"validFieldsRequired\" _v-196024d0=\"\"> \n                  </textarea>\n                </span>\n              </div>\n            </div>\n          \n            <div class=\"col-sm-12 text-left\" v-if=\"(field.type=='checkbox')\" _v-196024d0=\"\">\n              <div class=\"control-group\" _v-196024d0=\"\"> \n                <b _v-196024d0=\"\">{{field.label}}:</b>  \n                <input type=\"checkbox\" v-model=\"field.value\" name=\"field.name\" maxlength=\"{{field.maxlength}}\" placeholder=\"{{field.placeholder}}\" checked=\"{{field.checked}}\" :readonly=\"field.readonly\" required=\"{{field.required}}\" @change=\"validFieldsRequired\" _v-196024d0=\"\"> \n                \n              </div>\n            </div>\n\n           <div class=\"col-sm-12 text-left\" v-if=\"(field.type=='select')\" _v-196024d0=\"\">\n            <div class=\"control-group\" _v-196024d0=\"\"> \n              <b _v-196024d0=\"\">{{field.label}}:</b> \n              <select id=\"{{field.name}}\" class=\"form-control\" name=\"field.name\" required=\"{{field.required}}\" :disabled=\"field.readonly\" @change=\"validSelect($event, field)\" _v-196024d0=\"\">\n                <option v-for=\"op in getFieldName(field.table)\" :selected=\"op.selected\" value=\"{{op.id}}\" label=\"{{op.value}}\" _v-196024d0=\"\">\n                </option>\n              </select>\n            </div>\n          </div>\n\n          <div class=\"col-sm-12 text-left\" v-if=\"(field.type=='status' &amp;&amp; actionType!='Add')\" _v-196024d0=\"\">\n            <div class=\"control-group\" _v-196024d0=\"\"> \n              <b _v-196024d0=\"\">{{field.label}}:</b>  \n              <span _v-196024d0=\"\">\n                <i class=\"glyphicon glyphicon-{{itemStatus}}\" name=\"deleted_at\" _v-196024d0=\"\"></i>\n              </span>\n            </div>\n          </div>\n\n        </div>\n      </div>\n    </div>\n    <div class=\"row text-left align-button\" _v-196024d0=\"\">\n      <button class=\"btn btn-sm btn-success button-size\" v-show=\"displayBtnSave\" :disabled=\"isDisableBtnSave\" @click.prevent=\"btnSave\" _v-196024d0=\"\"> Save </button> \n      <button class=\"btn btn-sm btn-success button-size\" v-show=\"displayBtnUpdate\" :disabled=\"isDisableBtnUpdate\" @click.prevent=\"btnUpdate\" _v-196024d0=\"\"> Update  \n      </button><button class=\"btn btn-sm btn-danger button-size\" v-show=\"displayBtnDelete\" @click.prevent=\"btnDelete\" _v-196024d0=\"\"> Delete </button>\n      <!-- <button class=\"btn btn-sm btn-success button-size\" v-show=\"displayBtnReset\" @click.prevent=\"btnReset\" > Reset </button> -->\n      <button class=\"btn btn-sm btn-success button-size\" v-show=\"displayBtnExport\" @click.prevent=\"btnExport\" _v-196024d0=\"\"> Export </button>\n      <button class=\"btn btn-sm btn-success button-size\" v-show=\"displayBtnImport\" @click.prevent=\"btnImport\" _v-196024d0=\"\"> Import </button>\n      <button class=\"btn btn-sm btn-default button-size\" @click.prevent=\"btnClose\" _v-196024d0=\"\"> Close </button>\n    </div>\n\n    \n      <div class=\"processing\" align=\"left\" v-if=\"processing\" _v-196024d0=\"\">\n        <img src=\"/assets/icons/loading_image.gif\" _v-196024d0=\"\"> Processing\n      </div>\n      <div v-else=\"\" _v-196024d0=\"\">\n        <br _v-196024d0=\"\"><br _v-196024d0=\"\">\n      </div>\n      <br _v-196024d0=\"\">\n\n     <!--  <pre>{{ $data | json }}</pre> -->\n\n  </div> \n</div>\n\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div _v-196024d0=\"\">\n  <div class=\"panel panel-default\" _v-196024d0=\"\"> \n    <div class=\"pull-right expand-botton\" _v-196024d0=\"\">\n      <button class=\"btn btn-xs btn-default expand-botton\" @click.prevent=\"expand\" v-text=\"expandOrCollapse\" _v-196024d0=\"\">\n      </button>\n    </div>\n    <div class=\"panel-heading\" _v-196024d0=\"\">\n      <h3 class=\"panel-title\" _v-196024d0=\"\">{{actionType}} {{formTitle}}</h3>\n    </div>  \n \n    <div class=\"panel-body body-height\" _v-196024d0=\"\"> \n\n      <div v-for=\"field in fields\" _v-196024d0=\"\"> \n        <div class=\"row\" _v-196024d0=\"\">\n\n          <div class=\"col-sm-12 text-left\" v-if=\"(field.type=='text')\" _v-196024d0=\"\">\n            <div class=\"control-group\" _v-196024d0=\"\">\n              <b _v-196024d0=\"\">{{field.label}}:</b> <span class=\"lg-red\" v-text=\"field.required &amp;&amp; !field.value ? ' *' : ''\" _v-196024d0=\"\"></span>\n              <span _v-196024d0=\"\">\n                <input type=\"text\" v-model=\"field.value\" name=\"field.name\" maxlength=\"{{field.maxlength}}\" placeholder=\"{{field.placeholder}}\" :readonly=\"field.readonly\" required=\"{{field.required}}\" class=\"form-control\" @keyup=\"validFieldsRequired\" _v-196024d0=\"\"> \n                \n              </span>\n            </div>\n          </div>\n          \n            <div class=\"col-sm-12 text-left\" v-if=\"(field.type=='textarea')\" _v-196024d0=\"\">\n              <div class=\"control-group\" _v-196024d0=\"\">\n                <b _v-196024d0=\"\">{{field.label}}:</b> <span class=\"lg-red\" v-text=\"field.required &amp;&amp; !field.value ? ' *' : ''\" _v-196024d0=\"\"></span>\n                <span _v-196024d0=\"\">\n                  <textarea v-model=\"field.value\" name=\"field.name\" maxlength=\"{{field.maxlength}}\" placeholder=\"{{field.placeholder}}\" :readonly=\"field.readonly\" required=\"{{field.required}}\" class=\"form-control\" @keyup=\"validFieldsRequired\" _v-196024d0=\"\"> \n                  </textarea>\n                </span>\n              </div>\n            </div>\n          \n            <div class=\"col-sm-12 text-left\" v-if=\"(field.type=='checkbox')\" _v-196024d0=\"\">\n              <div class=\"control-group\" _v-196024d0=\"\"> \n                <b _v-196024d0=\"\">{{field.label}}:</b>  \n                <input type=\"checkbox\" v-model=\"field.value\" name=\"field.name\" maxlength=\"{{field.maxlength}}\" placeholder=\"{{field.placeholder}}\" checked=\"{{field.checked}}\" :readonly=\"field.readonly\" required=\"{{field.required}}\" @change=\"validFieldsRequired\" _v-196024d0=\"\"> \n                \n              </div>\n            </div>\n\n           <div class=\"col-sm-12 text-left\" v-if=\"(field.type=='select')\" _v-196024d0=\"\">\n            <div class=\"control-group\" _v-196024d0=\"\"> \n              <b _v-196024d0=\"\">{{field.label}}:</b> \n              <select id=\"{{field.name}}\" class=\"form-control\" name=\"field.name\" required=\"{{field.required}}\" :disabled=\"field.readonly\" @change=\"validSelect($event, field)\" _v-196024d0=\"\">\n                <option v-for=\"op in getFieldName(field.table)\" :selected=\"op.selected\" value=\"{{op.id}}\" label=\"{{op.value}}\" _v-196024d0=\"\">\n                </option>\n              </select>\n            </div>\n          </div>\n\n          <div class=\"col-sm-12 text-left\" v-if=\"(field.type=='status' &amp;&amp; actionType!='Add')\" _v-196024d0=\"\">\n            <div class=\"control-group\" _v-196024d0=\"\"> \n              <b _v-196024d0=\"\">{{field.label}}:</b>  \n              <span _v-196024d0=\"\">\n                <i class=\"glyphicon glyphicon-{{itemStatus}}\" name=\"deleted_at\" _v-196024d0=\"\"></i>\n              </span>\n            </div>\n          </div>\n\n        </div>\n      </div>\n    </div>\n    <div class=\"row text-left align-button\" _v-196024d0=\"\">\n      <button class=\"btn btn-sm btn-success button-size\" v-show=\"displayBtnSave\" :disabled=\"isDisableBtnSave\" @click.prevent=\"btnSave\" _v-196024d0=\"\"> Save </button> \n      <button class=\"btn btn-sm btn-success button-size\" v-show=\"displayBtnUpdate\" :disabled=\"isDisableBtnUpdate\" @click.prevent=\"btnUpdate\" _v-196024d0=\"\"> Update  \n      </button><button class=\"btn btn-sm btn-danger button-size\" v-show=\"displayBtnDelete\" @click.prevent=\"btnDelete\" _v-196024d0=\"\"> Delete </button>\n      <button class=\"btn btn-sm btn-success button-size\" v-show=\"displayBtnExport\" @click.prevent=\"btnExport\" _v-196024d0=\"\"> Export </button>\n      <button class=\"btn btn-sm btn-success button-size\" v-show=\"displayBtnImport\" @click.prevent=\"btnImport\" _v-196024d0=\"\"> Import </button>\n      <button class=\"btn btn-sm btn-default button-size\" @click.prevent=\"btnClose\" _v-196024d0=\"\"> Close </button>\n    </div>\n    \n      <div class=\"processing\" align=\"left\" v-if=\"processing\" _v-196024d0=\"\">\n        <img src=\"/assets/icons/loading_image.gif\" _v-196024d0=\"\"> Processing\n      </div>\n      <div v-else=\"\" _v-196024d0=\"\">\n        <br _v-196024d0=\"\"><br _v-196024d0=\"\">\n      </div>\n      <br _v-196024d0=\"\">\n     <!--  <pre>{{ $data | json }}</pre> -->\n  </div> \n</div>\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -15451,7 +15440,6 @@ module.exports = {
     this.arrIconInfo = this.jsonToArray(this.iconInfo);
     this.arrIconActions = this.jsonToArray(this.iconActions);
     this.showTableOnly = this.showTableOnly == 'false' ? false : true;
-
     this.fillSelectFields();
     this.initialUrl = this.url;
     this.lastUrl = this.initialUrl;
@@ -15494,7 +15482,6 @@ module.exports = {
   methods: {
 
     clickIcon: function clickIcon(row, link) {
-      // alert(link.name + ': ' + row.id + ' Url: ' + link.url);
       this.$route.router.go(link.url);
     },
 
@@ -15567,7 +15554,6 @@ module.exports = {
       } else {
         var page_url = responde.prev_page_url;
       }
-
       //set the route for first, prev, next, last page action
       if (page_url) {
         this.first_page_url = page_url.slice(0, page_url.search('page')) + 'page=' + this.first_page + this.setSearchParam();
@@ -15601,16 +15587,6 @@ module.exports = {
 
       return arr;
     },
-
-    // fillSelectFields: function(){
-
-    //   for (var i = 0; i < this.selects.length; i++) {
-
-    //     console.log (this.selects[i].url);
-    //     console.log (this.selects[i].table);""
-    //   }
-
-    // },
 
     getFieldName: function getFieldName(name) {
       return this.$get(name);
@@ -15661,7 +15637,6 @@ module.exports = {
   events: {
 
     displayCrud: function displayCrud(val) {
-      //this.IsCrudDisplayed = !this.IsCrudDisplayed;
       this.IsCrudDisplayed = val;
     },
 
@@ -15705,7 +15680,7 @@ module.exports = {
 
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<p class=\"bg-info\" align=\"center\" v-show=\"showTableOnly\" _v-32dfde72=\"\">\n  <br _v-32dfde72=\"\">\n    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nostrum quos, doloremque voluptatem optio fugit autem reiciendis temporibus. \n  <br _v-32dfde72=\"\"><br _v-32dfde72=\"\">\n</p><p _v-32dfde72=\"\">\n\n<slot name=\"horizontal-links\" _v-32dfde72=\"\"></slot>\n\n</p><div class=\"container-fluid\" _v-32dfde72=\"\">\n  <div class=\"row\" _v-32dfde72=\"\">\n    <div class=\"row\" _v-32dfde72=\"\">\n\n     \n\n      <div :class=\"colWidthTable\" v-show=\"IsCrudExpanded\" _v-32dfde72=\"\">\n        <div class=\"panel panel-default\" _v-32dfde72=\"\"> \n          <div class=\"panel-heading\" _v-32dfde72=\"\">\n            <h3 class=\"panel-title\" _v-32dfde72=\"\">\n              {{tableTitle}}\n              <span style=\"color:blue; padding-top:10px; padding-right:20px\" align=\"left\" v-if=\"loading\" _v-32dfde72=\"\">\n                <img src=\"/assets/icons/loading_image.gif\" _v-32dfde72=\"\">   \n              </span>\n            </h3>\n          </div> \n          <div class=\"panel-body\" _v-32dfde72=\"\">\n            <div class=\"row\" _v-32dfde72=\"\">\n              <div class=\"col-sm-4\" _v-32dfde72=\"\">\n                <div v-show=\"(selects.length>0) ? true : false\" _v-32dfde72=\"\">\n                  <div class=\"select-margin\" v-for=\"select in selects\" _v-32dfde72=\"\">\n                      <b _v-32dfde72=\"\">{{select.label}}:</b> \n                      <select class=\"form-control\" name=\"select.name\" required=\"{{select.required}}\" :disabled=\"select.readonly\" @change=\"accessRightForRoleSelected($event)\" _v-32dfde72=\"\">\n                        \n                        <option v-for=\"op in getFieldName(select.table)\" :selected=\"op.selected\" value=\"{{op.id}}\" label=\"{{op.value}}\" _v-32dfde72=\"\">\n                        </option>\n                      </select>\n                  </div>\n                </div>\n                <div v-else=\"\" _v-32dfde72=\"\"> \n                  <div class=\"input-group\" v-show=\"showTableOnly\" _v-32dfde72=\"\">\n                    <input type=\"text\" v-model=\"searchText\" class=\"form-control\" @keyup.enter=\"search\" placeholder=\"Search for...\" _v-32dfde72=\"\">\n                    <span class=\"input-group-btn\" _v-32dfde72=\"\">\n                      <button class=\"btn btn-primary\" type=\"button\" @click=\"search\" _v-32dfde72=\"\">\n                        <i class=\"glyphicon glyphicon-search\" _v-32dfde72=\"\"> </i>\n                      </button>\n                    </span>\n                  </div>\n                </div>\n              </div>\n\n              <div class=\"col-sm-3\" align=\"left\" @click=\"searchText=''\" _v-32dfde72=\"\">\n                <div class=\"btn btn-xs btn-warning\" v-show=\"filterApplied\" style=\"margin:5px\" _v-32dfde72=\"\">\n                   Clear Filter <span _v-32dfde72=\"\"> × </span>\n                </div>\n              </div>\n\n              <div class=\"col-sm-5\" align=\"right\" _v-32dfde72=\"\">\n                  <slot name=\"crud\" _v-32dfde72=\"\"></slot>\n              </div>\n            </div>\n            \n            <div class=\"table-responsive table-hscroll table-height\" _v-32dfde72=\"\">\n              <table id=\"{{id}}\" class=\"table table-striped table-bordered table-condensed table-hover\" _v-32dfde72=\"\">\n                <colgroup _v-32dfde72=\"\"><col v-for=\"col in cols\" :width=\"col.width\" _v-32dfde72=\"\">\n                <!--/div-->\n                </colgroup><thead _v-32dfde72=\"\">\n                  <tr _v-32dfde72=\"\">\n                    <th class=\"header\" v-for=\"col in cols\" _v-32dfde72=\"\"> \n                         {{ ts[col.name] }}\n                    </th>\n                  </tr>\n                </thead>\n                <tbody _v-32dfde72=\"\">\n                  <tr v-for=\"1 in 10\" _v-32dfde72=\"\">\n                    <td v-for=\"1 in cols.length\" _v-32dfde72=\"\"> &nbsp; </td>\n                  </tr> \n                    \n                  <tr v-for=\"row in rows\" _v-32dfde72=\"\"> \n                    <td v-for=\"(key, value) in row\" @click=\"itemSelected(row)\" _v-32dfde72=\"\">\n                      <span v-if=\"key=='deleted_at'\" _v-32dfde72=\"\">\n                          <span v-if=\"value==undefined\" _v-32dfde72=\"\">\n                              <span class=\"btn btn-xs btn-success\" _v-32dfde72=\"\"> Active </span>\n                             <!--  <i class=\"glyphicon glyphicon-ok\"></i> -->\n                          </span>\n                          <span v-else=\"\" _v-32dfde72=\"\">\n                              <span class=\"btn btn-xs btn-danger\" _v-32dfde72=\"\"> Inactive </span>\n                              <!-- <i class=\"glyphicon glyphicon-remove\" ></i> -->\n                          </span>\n                      </span>\n\n                      <span v-else=\"\" _v-32dfde72=\"\">\n                          {{value}} \n                      </span>\n\n                    </td>\n                \n                    <td v-if=\"(arrIconInfo.length > 0)\" _v-32dfde72=\"\">\n                      <span v-for=\"info in arrIconInfo\" _v-32dfde72=\"\">\n                        <a href=\"{{info.url}}\" title=\"{{info.title}}\" @click.prevent=\"clickIcon(row, info)\" _v-32dfde72=\"\"> <i class=\"{{info.icon}}\" _v-32dfde72=\"\"></i> {{info.text}} </a>\n                      </span>\n                    </td>\n\n                    <td v-if=\"(arrIconActions.length > 0)\" _v-32dfde72=\"\">\n                      <span v-for=\"action in arrIconActions\" _v-32dfde72=\"\">\n                        <a href=\"{{action.url}}\" title=\"{{action.title}}\" @click.prevent=\"clickIcon(row, action)\" _v-32dfde72=\"\"> <i class=\"{{action.icon}}\" _v-32dfde72=\"\"></i> {{action.text}} </a>\n                      </span>\n                    </td>\n\n                  </tr> \n                 </tbody> \n              </table> \n            </div>\n            <div _v-32dfde72=\"\"> \n\n            </div>\n              <div class=\"row\" _v-32dfde72=\"\">\n                 <div class=\"col-sm-6\" _v-32dfde72=\"\">\n                  <div align=\"left\" style=\"padding-top:10px\" _v-32dfde72=\"\">\n                  <p style=\"font-size:13px;\" _v-32dfde72=\"\"> \n                     Showing: {{from}} to {{to}} of {{total}} items\n                  </p>\n                  <!-- <span style=\"color:blue; padding-top:10px; padding-right:20px\" align=\"left\" v-if='loading'>\n                   <img src=\"/assets/icons/loading_image.gif\"/>  Loading \n                  </span> -->\n                  </div>\n                </div>\n                <div v-if=\"NoMorePages\" style=\"color:gray\" align=\"right\" _v-32dfde72=\"\"> \n                  <strong _v-32dfde72=\"\"> <em _v-32dfde72=\"\">No more Pages</em></strong> \n                </div>  \n                <div class=\"col-sm-6\" _v-32dfde72=\"\">\n                  <div align=\"right\" style=\"padding-top:10px\" _v-32dfde72=\"\">\n                    <a class=\"btn btn-sm btn-primary button-size\" @click.prevent=\"goToFisrtPage\" _v-32dfde72=\"\"> Start </a> \n                    <a class=\"btn btn-sm btn-primary button-size\" @click.prevent=\"goToPrevPage\" _v-32dfde72=\"\"> Prev </a> \n                    <a class=\"btn btn-sm btn-primary button-size\" @click.prevent=\"goToNextPage\" _v-32dfde72=\"\"> Next </a> \n                    <a class=\"btn btn-sm btn-primary button-size\" @click.prevent=\"goToLastPage\" _v-32dfde72=\"\"> End </a> \n                    <br _v-32dfde72=\"\"> <br _v-32dfde72=\"\">\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>\n        </div>\n        <!-- form  component-->\n        <div :class=\"colWidthCrud\" v-show=\"IsCrudDisplayed\" _v-32dfde72=\"\">\n            <slot name=\"forma\" _v-32dfde72=\"\"></slot>\n        </div>\n      \n      </div>\n<!-- \n     <div v-show='loading'>\n        <div class=\"loading-spin\">\n          <p style=\"position: absolute; color: White; top: 50%; left: 50%;\">\n            <img src=\"http://pulse.sindlab.com.pk//images/ajax-loading.gif\">\n          </p>\n        </div>\n      <div>  -->\n\n      <!-- <pre>{{ $data | json }}</pre>  -->\n    </div>\n  </div>\n;\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<p class=\"bg-info\" align=\"center\" v-show=\"showTableOnly\" _v-32dfde72=\"\">\n  <br _v-32dfde72=\"\">\n    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nostrum quos, doloremque voluptatem optio fugit autem reiciendis temporibus. \n  <br _v-32dfde72=\"\"><br _v-32dfde72=\"\">\n</p><p _v-32dfde72=\"\">\n\n<slot name=\"horizontal-links\" _v-32dfde72=\"\"></slot>\n\n</p><div class=\"container-fluid\" _v-32dfde72=\"\">\n  <div class=\"row\" _v-32dfde72=\"\">\n    <div class=\"row\" _v-32dfde72=\"\">\n      <div :class=\"colWidthTable\" v-show=\"IsCrudExpanded\" _v-32dfde72=\"\">\n        <div class=\"panel panel-default\" _v-32dfde72=\"\"> \n          <div class=\"panel-heading\" _v-32dfde72=\"\">\n            <h3 class=\"panel-title\" _v-32dfde72=\"\">\n              {{tableTitle}}\n              <span style=\"color:blue; padding-top:10px; padding-right:20px\" align=\"left\" v-if=\"loading\" _v-32dfde72=\"\">\n                <img src=\"/assets/icons/loading_image.gif\" _v-32dfde72=\"\">   \n              </span>\n            </h3>\n          </div> \n          <div class=\"panel-body\" _v-32dfde72=\"\">\n            <div class=\"row\" _v-32dfde72=\"\">\n              <div class=\"col-sm-4\" _v-32dfde72=\"\">\n                <div v-show=\"(selects.length>0) ? true : false\" _v-32dfde72=\"\">\n                  <div class=\"select-margin\" v-for=\"select in selects\" _v-32dfde72=\"\">\n                      <b _v-32dfde72=\"\">{{select.label}}:</b> \n                      <select class=\"form-control\" name=\"select.name\" required=\"{{select.required}}\" :disabled=\"select.readonly\" @change=\"accessRightForRoleSelected($event)\" _v-32dfde72=\"\">\n                        <option v-for=\"op in getFieldName(select.table)\" :selected=\"op.selected\" value=\"{{op.id}}\" label=\"{{op.value}}\" _v-32dfde72=\"\">\n                        </option>\n                      </select>\n                  </div>\n                </div>\n                <div v-else=\"\" _v-32dfde72=\"\"> \n                  <div class=\"input-group\" v-show=\"showTableOnly\" _v-32dfde72=\"\">\n                    <input type=\"text\" v-model=\"searchText\" class=\"form-control\" @keyup.enter=\"search\" placeholder=\"Search for...\" _v-32dfde72=\"\">\n                    <span class=\"input-group-btn\" _v-32dfde72=\"\">\n                      <button class=\"btn btn-primary\" type=\"button\" @click=\"search\" _v-32dfde72=\"\">\n                        <i class=\"glyphicon glyphicon-search\" _v-32dfde72=\"\"> </i>\n                      </button>\n                    </span>\n                  </div>\n                </div>\n              </div>\n\n              <div class=\"col-sm-3\" align=\"left\" @click=\"searchText=''\" _v-32dfde72=\"\">\n                <div class=\"btn btn-xs btn-warning\" v-show=\"filterApplied\" style=\"margin:5px\" _v-32dfde72=\"\">\n                   Clear Filter <span _v-32dfde72=\"\"> × </span>\n                </div>\n              </div>\n\n              <div class=\"col-sm-5\" align=\"right\" _v-32dfde72=\"\">\n                  <slot name=\"crud\" _v-32dfde72=\"\"></slot>\n              </div>\n            </div>\n            \n            <div class=\"table-responsive table-hscroll table-height\" _v-32dfde72=\"\">\n              <table id=\"{{id}}\" class=\"table table-striped table-bordered table-condensed table-hover\" _v-32dfde72=\"\">\n                <colgroup _v-32dfde72=\"\"><col v-for=\"col in cols\" :width=\"col.width\" _v-32dfde72=\"\">\n                <!--/div-->\n                </colgroup><thead _v-32dfde72=\"\">\n                  <tr _v-32dfde72=\"\">\n                    <th class=\"header\" v-for=\"col in cols\" _v-32dfde72=\"\"> \n                         {{ ts[col.name] }}\n                    </th>\n                  </tr>\n                </thead>\n                <tbody _v-32dfde72=\"\">\n                  <tr v-for=\"1 in 10\" _v-32dfde72=\"\">\n                    <td v-for=\"1 in cols.length\" _v-32dfde72=\"\"> &nbsp; </td>\n                  </tr> \n                    \n                  <tr v-for=\"row in rows\" _v-32dfde72=\"\"> \n                    <td v-for=\"(key, value) in row\" @click=\"itemSelected(row)\" _v-32dfde72=\"\">\n                      <span v-if=\"key=='deleted_at'\" _v-32dfde72=\"\">\n                          <span v-if=\"value==undefined\" _v-32dfde72=\"\">\n                              <span class=\"btn btn-xs btn-success\" _v-32dfde72=\"\"> Active </span>\n                          </span>\n                          <span v-else=\"\" _v-32dfde72=\"\">\n                              <span class=\"btn btn-xs btn-danger\" _v-32dfde72=\"\"> Inactive </span>\n                          </span>\n                      </span>\n\n                      <span v-else=\"\" _v-32dfde72=\"\">\n                          {{value}} \n                      </span>\n\n                    </td>\n                \n                    <td v-if=\"(arrIconInfo.length > 0)\" _v-32dfde72=\"\">\n                      <span v-for=\"info in arrIconInfo\" _v-32dfde72=\"\">\n                        <a href=\"{{info.url}}\" title=\"{{info.title}}\" @click.prevent=\"clickIcon(row, info)\" _v-32dfde72=\"\"> <i class=\"{{info.icon}}\" _v-32dfde72=\"\"></i> {{info.text}} </a>\n                      </span>\n                    </td>\n\n                    <td v-if=\"(arrIconActions.length > 0)\" _v-32dfde72=\"\">\n                      <span v-for=\"action in arrIconActions\" _v-32dfde72=\"\">\n                        <a href=\"{{action.url}}\" title=\"{{action.title}}\" @click.prevent=\"clickIcon(row, action)\" _v-32dfde72=\"\"> <i class=\"{{action.icon}}\" _v-32dfde72=\"\"></i> {{action.text}} </a>\n                      </span>\n                    </td>\n\n                  </tr> \n                 </tbody> \n              </table> \n            </div>\n            <div _v-32dfde72=\"\"> \n\n            </div>\n              <div class=\"row\" _v-32dfde72=\"\">\n                 <div class=\"col-sm-6\" _v-32dfde72=\"\">\n                  <div align=\"left\" style=\"padding-top:10px\" _v-32dfde72=\"\">\n                  <p style=\"font-size:13px;\" _v-32dfde72=\"\"> \n                     Showing: {{from}} to {{to}} of {{total}} items\n                  </p>\n                  </div>\n                </div>\n                <div v-if=\"NoMorePages\" style=\"color:gray\" align=\"right\" _v-32dfde72=\"\"> \n                  <strong _v-32dfde72=\"\"> <em _v-32dfde72=\"\">No more Pages</em></strong> \n                </div>  \n                <div class=\"col-sm-6\" _v-32dfde72=\"\">\n                  <div align=\"right\" style=\"padding-top:10px\" _v-32dfde72=\"\">\n                    <a class=\"btn btn-sm btn-primary button-size\" @click.prevent=\"goToFisrtPage\" _v-32dfde72=\"\"> Start </a> \n                    <a class=\"btn btn-sm btn-primary button-size\" @click.prevent=\"goToPrevPage\" _v-32dfde72=\"\"> Prev </a> \n                    <a class=\"btn btn-sm btn-primary button-size\" @click.prevent=\"goToNextPage\" _v-32dfde72=\"\"> Next </a> \n                    <a class=\"btn btn-sm btn-primary button-size\" @click.prevent=\"goToLastPage\" _v-32dfde72=\"\"> End </a> \n                    <br _v-32dfde72=\"\"> <br _v-32dfde72=\"\">\n                  </div>\n                </div>\n              </div>\n            </div>\n          </div>\n        </div>\n        <!-- end form  component-->\n        <div :class=\"colWidthCrud\" v-show=\"IsCrudDisplayed\" _v-32dfde72=\"\">\n            <slot name=\"forma\" _v-32dfde72=\"\"></slot>\n        </div>\n      </div>\n      <!-- <pre>{{ $data | json }}</pre>  -->\n    </div>\n  </div>\n;\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -15746,11 +15721,8 @@ module.exports = {
   props: ['id', 'width', 'height', 'type', 'url', 'title', 'legendPosition', 'legendDisplay', 'xTitle', 'yTitle', 'showYear', 'showMonth'],
 
   ready: function ready() {
-
     this.initYearandMonth();
-
     this.displayGraph(this.yearSelected, this.monthSelected);
-
     this.showYear = this.showYear == 'false' ? false : true;
     this.showMonth = this.showMonth == 'false' ? false : true;
   },
@@ -15759,8 +15731,6 @@ module.exports = {
     var _ref;
 
     return _ref = {
-      // id: this.id,
-      //  title: this.title,
       years: '',
       months: '',
       labels: '',
@@ -15772,7 +15742,6 @@ module.exports = {
   methods: {
 
     initYearandMonth: function initYearandMonth() {
-
       var date = new Date();
       var currentYear = date.getFullYear();
 
@@ -15781,13 +15750,11 @@ module.exports = {
       }
 
       this.months = this.ts['short_months'];
-
       this.yearSelected = currentYear;
       this.monthSelected = date.getMonth() + 1;
     },
 
     changeYearMonth: function changeYearMonth() {
-
       this.displayGraph(this.yearSelected, this.monthSelected);
     },
 
@@ -15795,16 +15762,12 @@ module.exports = {
       var _this = this;
 
       this.loading = true;
-
       this.$http.post(this.url, { "year": year, "month": month }).then(function (responde) {
-
         _this.labels = responde.data.labels;
         _this.label = responde.data.legend;
         _this.series = responde.data.series;
       }).then(function (responde) {
-
         $('#' + this.id).highcharts(this.setOptions(this.series));
-
         this.loading = false;
       }).catch(function (responde) {
         this.loading = false;
@@ -15813,13 +15776,10 @@ module.exports = {
     },
 
     setOptions: function setOptions(series) {
-
       var maxValue = Math.max.apply(Math, (0, _toConsumableArray3.default)(series));
-
       return {
 
         chart: {
-
           height: this.height,
           type: this.type
         },
@@ -15844,7 +15804,6 @@ module.exports = {
         legend: {
           enabled: this.legendDisplay == 'false' ? false : true,
           verticalAlign: this.legendPosition
-
         },
         exporting: {
           enabled: false
@@ -15853,13 +15812,12 @@ module.exports = {
           name: this.yTitle,
           data: this.series
         }]
-
       };
     }
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n  <div class=\"panel panel-default\" _v-9712de2e=\"\"> \n    <div class=\"panel-heading\" _v-9712de2e=\"\">\n\n      <h3 class=\"panel-title\" _v-9712de2e=\"\">\n      {{title}}\n      <span style=\"color:blue;\" align=\"left\" v-if=\"loading\" _v-9712de2e=\"\">\n        <img src=\"/assets/icons/loading_image.gif\" _v-9712de2e=\"\">\n      </span>\n      </h3>\n    </div> \n    <div class=\"panel-body\" _v-9712de2e=\"\">\n      <div class=\"row\" _v-9712de2e=\"\">\n        <div class=\"col-xs-1\" v-if=\"showYear\" _v-9712de2e=\"\">\n          Year: \n          <select name=\"year\" class=\"form-control selectwidth\" v-model=\"yearSelected\" @change=\"changeYearMonth()\" _v-9712de2e=\"\">\n            <option v-for=\"(key, value) in years\" value=\"{{value}}\" _v-9712de2e=\"\"> {{value}} </option>\n          </select>\n        </div>\n        <div class=\"col-xs-1\" v-if=\"showMonth\" _v-9712de2e=\"\">\n          Month: \n          <select name=\"month\" class=\"form-control selectwidth\" v-model=\"monthSelected\" @change=\"changeYearMonth()\" _v-9712de2e=\"\">\n            <option v-for=\"(key, value) in months\" value=\"{{key + 1}}\" _v-9712de2e=\"\"> {{value}} </option>\n          </select>\n        </div>\n      </div>\n      \n      <div class=\"row\" style=\"padding-left:10px;padding-right:20px\" _v-9712de2e=\"\">\n        \n        <br _v-9712de2e=\"\">\n\n        <div :id=\"id\" style=\"height:250px\" _v-9712de2e=\"\"></div>\n        \n      </div>\n\n      <!-- <div class=\"row\">\n          <span style=\"color:blue; padding:20px\" align=\"left\" v-if='loading'>\n           <img src=\"/assets/icons/loading_image.gif\"/>  Loading \n          </span>\n          \n        </div> -->\n    </div>\n  </div>\n\n<!-- <pre> {{$data | json}} </pre> -->\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n  <div class=\"panel panel-default\" _v-9712de2e=\"\"> \n    <div class=\"panel-heading\" _v-9712de2e=\"\">\n      <h3 class=\"panel-title\" _v-9712de2e=\"\">\n      {{title}}\n      <span style=\"color:blue;\" align=\"left\" v-if=\"loading\" _v-9712de2e=\"\">\n        <img src=\"/assets/icons/loading_image.gif\" _v-9712de2e=\"\">\n      </span>\n      </h3>\n    </div> \n    <div class=\"panel-body\" _v-9712de2e=\"\">\n      <div class=\"row\" _v-9712de2e=\"\">\n        <div class=\"col-xs-1\" v-if=\"showYear\" _v-9712de2e=\"\">\n          Year: \n          <select name=\"year\" class=\"form-control selectwidth\" v-model=\"yearSelected\" @change=\"changeYearMonth()\" _v-9712de2e=\"\">\n            <option v-for=\"(key, value) in years\" value=\"{{value}}\" _v-9712de2e=\"\"> {{value}} </option>\n          </select>\n        </div>\n        <div class=\"col-xs-1\" v-if=\"showMonth\" _v-9712de2e=\"\">\n          Month: \n          <select name=\"month\" class=\"form-control selectwidth\" v-model=\"monthSelected\" @change=\"changeYearMonth()\" _v-9712de2e=\"\">\n            <option v-for=\"(key, value) in months\" value=\"{{key + 1}}\" _v-9712de2e=\"\"> {{value}} </option>\n          </select>\n        </div>\n      </div>\n      <div class=\"row\" style=\"padding-left:10px;padding-right:20px\" _v-9712de2e=\"\">\n        <br _v-9712de2e=\"\">\n        <div :id=\"id\" style=\"height:250px\" _v-9712de2e=\"\"></div>\n      </div>\n    </div>\n  </div>\n\n<!-- <pre> {{$data | json}} </pre> -->\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -15936,151 +15894,84 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 module.exports = {
 
-  en: (_en = {
+   en: (_en = {
 
-    //Dates     
-    short_months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dic'],
-    long_months: ['January', 'Febrary', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'Dicember'],
-    long_week_day: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-    shor_week_day: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      //Dates     
+      short_months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dic'],
+      long_months: ['January', 'Febrary', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'Dicember'],
+      long_week_day: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+      shor_week_day: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
 
-    //General
-    id: 'Id',
-    status: 'Status',
-    createdBy: 'Created By',
-    updatedBy: 'Updated By',
-    actions: 'Actions',
-    links: 'Links',
-    info: 'Info',
+      //General
+      id: 'Id',
+      status: 'Status',
+      createdBy: 'Created By',
+      updatedBy: 'Updated By',
+      actions: 'Actions',
+      links: 'Links',
+      info: 'Info',
 
-    // *** FACILITIES ***
+      // *** FACILITIES ***
 
-    //Institutes
-    instituteId: 'Institute Id',
-    instituteName: 'Institute Name',
-    instituteDescription: 'Institute Description',
+      //*** SECUTIRY ***
 
-    //Plans
-    campusId: 'Campus Id',
-    campusName: 'Campus Name',
-    campusDescription: 'Campus Description',
+      //Users
+      username: 'User Name',
+      userFullname: 'User Fullname',
+      emailAccount: 'Email Account',
+      roleName: 'Role Name',
 
-    // *** ACADEMIC ***
+      //Roles
+      rolName: 'Role Name',
+      rolDescription: 'Role Description',
 
-    //Plans
-    planId: 'Plan Id',
-    planName: 'Plan Name',
-    planDescription: 'Plan Description',
+      //Access Rights
+      moduleName: 'Module Name',
+      transactionName: 'Transaction Name',
+      transactionDescription: 'Transaction Description',
+      transactionActionName: 'Transaction Action'
 
-    //Programs
-    programId: 'Program Id',
-    programName: 'Program Name',
-    programDescription: 'Program Description',
+   }, (0, _defineProperty3.default)(_en, 'moduleName', 'Module Name'), (0, _defineProperty3.default)(_en, 'moduleDescription', 'Module Description'), (0, _defineProperty3.default)(_en, 'moduleOrder', 'Module Order'), (0, _defineProperty3.default)(_en, 'transactionName', 'Transaction Name'), (0, _defineProperty3.default)(_en, 'transactionDescription', 'Transaction Description'), (0, _defineProperty3.default)(_en, 'transactionOrder', 'Transaction Order'), (0, _defineProperty3.default)(_en, 'timesLogged', 'Times Logged'), (0, _defineProperty3.default)(_en, 'clicks', 'Clicks'), _en),
 
-    //*** SECUTIRY ***
+   //Traslations_Template Don´t Delete This Line
 
-    //Users
-    username: 'User Name',
-    userFullname: 'User Fullname',
-    emailAccount: 'Email Account',
-    roleName: 'Role Name',
+   sp: (_sp = {
 
-    //Roles
-    rolName: 'Role Name',
-    rolDescription: 'Role Description',
+      //Dates
+      short_months: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+      long_months: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+      long_week_day: ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'],
+      shor_week_day: ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'],
 
-    //Access RUghts
-    moduleName: 'Module Name',
-    transactionName: 'Transaction Name',
-    transactionDescription: 'Transaction Description',
-    transactionActionName: 'Transaction Action'
-
-  }, (0, _defineProperty3.default)(_en, 'moduleName', 'Module Name'), (0, _defineProperty3.default)(_en, 'moduleDescription', 'Module Description'), (0, _defineProperty3.default)(_en, 'moduleOrder', 'Module Order'), (0, _defineProperty3.default)(_en, 'transactionName', 'Transaction Name'), (0, _defineProperty3.default)(_en, 'transactionDescription', 'Transaction Description'), (0, _defineProperty3.default)(_en, 'transactionOrder', 'Transaction Order'), (0, _defineProperty3.default)(_en, 'timesLogged', 'Times Logged'), (0, _defineProperty3.default)(_en, 'clicks', 'Clicks'), _en),
-
-  //Traslations_Template Don´t Delete This Line
-
-  sp: (_sp = {
-
-    //Dates
-    short_months: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-    long_months: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
-    long_week_day: ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'],
-    shor_week_day: ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'],
-
-    //General
-    id: 'Id',
-    status: 'Estatus',
-    createdBy: 'Fecha de Creación',
-    updatedBy: 'Fecha de Modificación',
-    actions: 'Accions',
-    links: 'Ligas',
-    info: 'Info',
-
-    // *** FACILITIES ***
-
-    //Institutes
-    instituteId: 'Instituto Id',
-    instituteName: 'Nombre de Instituto',
-    instituteDescription: 'Descripción de Instituto',
-
-    //Plans
-    campusId: 'Campus Id',
-    campusName: 'Nombre de Campus',
-    campusDescription: 'Descripción del Campus',
-
-    // *** ACADEMIC ***
-
-    //Plans
-    planId: 'Plan Id',
-    planName: 'Nombre de Plan',
-    planDescription: 'Descripción del Plan',
-
-    //Programs
-    programId: 'Programa Id',
-    programName: 'Nombre de Programa',
-    programDescription: 'Descripción del Programa',
-
-    //*** SECUTIRY ***
-
-    //Users
-    username: 'Cuenta de Usuario',
-    userFullname: 'Nombre de Usuario',
-    emailAccount: 'Cuenta de Correo',
-    roleName: 'Perfil de Usuario',
-
-    //Roles
-    rolName: 'Nombre de Role',
-    rolDescription: 'Descripción del Role',
-
-    //Access RUghts
-    moduleName: 'Nombre de Módulo',
-    transactionName: 'Nombre de Transacción',
-    transactionDescription: 'Descripción de Transaction',
-    transactionActionName: 'Acción'
-
-  }, (0, _defineProperty3.default)(_sp, 'moduleName', 'Nombre de Módulo'), (0, _defineProperty3.default)(_sp, 'moduleDescription', 'Descripci del Módulo'), (0, _defineProperty3.default)(_sp, 'moduleOrder', 'Order del Módulo'), (0, _defineProperty3.default)(_sp, 'transactionName', 'Transaction Name'), (0, _defineProperty3.default)(_sp, 'transactionDescription', 'Transaction Description'), (0, _defineProperty3.default)(_sp, 'transactionOrder', 'Transaction Order'), (0, _defineProperty3.default)(_sp, 'timesLogged', 'Accesos'), (0, _defineProperty3.default)(_sp, 'clicks', 'Clicks'), _sp),
-
-  //Traslations_Template Don´t Delete This Line
-
-  test: {
-
-    users: {
+      //General
       id: 'Id',
       status: 'Estatus',
       createdBy: 'Fecha de Creación',
       updatedBy: 'Fecha de Modificación',
+      actions: 'Accions',
+      links: 'Ligas',
+      info: 'Info',
+
+      //*** SECUTIRY ***
+
+      //Users
       username: 'Cuenta de Usuario',
       userFullname: 'Nombre de Usuario',
       emailAccount: 'Cuenta de Correo',
-      roleName: 'Perfil de Usuario'
-    },
+      roleName: 'Perfil de Usuario',
 
-    roles: {
+      //Roles
       rolName: 'Nombre de Role',
-      rolDescription: 'Descripción del Role'
-    }
+      rolDescription: 'Descripción del Role',
 
-  }
+      //Access RUghts
+      moduleName: 'Nombre de Módulo',
+      transactionName: 'Nombre de Transacción',
+      transactionDescription: 'Descripción de Transaction',
+      transactionActionName: 'Acción'
+
+   }, (0, _defineProperty3.default)(_sp, 'moduleName', 'Nombre de Módulo'), (0, _defineProperty3.default)(_sp, 'moduleDescription', 'Descripci del Módulo'), (0, _defineProperty3.default)(_sp, 'moduleOrder', 'Order del Módulo'), (0, _defineProperty3.default)(_sp, 'transactionName', 'Transaction Name'), (0, _defineProperty3.default)(_sp, 'transactionDescription', 'Transaction Description'), (0, _defineProperty3.default)(_sp, 'transactionOrder', 'Transaction Order'), (0, _defineProperty3.default)(_sp, 'timesLogged', 'Accesos'), (0, _defineProperty3.default)(_sp, 'clicks', 'Clicks'), _sp)
+
 };
 if (module.exports.__esModule) module.exports = module.exports.default
 if (module.hot) {(function () {  module.hot.accept()
@@ -16109,24 +16000,7 @@ module.exports = {
     this.menus = [{ 'title': 'User Logged', 'initialURL': '/userslogged' }, { 'title': 'Modules Used', 'initialURL': '/modulesused' }, { 'title': 'Transactions Used', 'initialURL': '/transactionsused' }, { 'title': 'Actions Used', 'initialURL': '/actionsused' }];
   },
 
-  methods: {
-
-    userlogged: function userlogged() {
-      alert('facilities');
-    },
-
-    modulesused: function modulesused() {
-      alert('academic');
-    },
-
-    transactionsused: function transactionsused() {
-      alert('treasury');
-    },
-
-    actionsused: function actionsused() {
-      alert('security');
-    }
-  }
+  methods: {}
 
 };
 if (module.exports.__esModule) module.exports = module.exports.default
@@ -16164,38 +16038,14 @@ module.exports = {
     return {
       subOptions: [],
       subMenus: {
-        "facilities": {
-          "0": { "title": "Institutes", "method": "/institutes" },
-          "1": { "title": "Campus", "method": "/campus" },
-          "2": { "title": "Buildings", "method": "/bulgings" },
-          "3": { "title": "Deparments", "method": "/deparments" },
-          "4": { "title": "Offices", "method": "/offices" },
-          "5": { "title": "Classrooms", "method": "/classrooms" },
-          "6": { "title": "Courts", "method": "/Courts" },
-          "7": { "title": "Warehouses", "method": "/warehouses" },
-          "8": { "title": "Help", "method": "/help" }
-        },
-        "academic": {
-          "0": { "title": "Cycles", "method": "/cycles" },
-          "1": { "title": "Level", "method": "/levels" },
-          "2": { "title": "Plans", "method": "/plans" },
-          "3": { "title": "Programs", "method": "/program" },
-          "4": { "title": "Courses", "method": "/courses" },
-          "5": { "title": "Subject", "method": "/subject" },
-          "6": { "title": "Schedule", "method": "/schedule" },
-          "7": { "title": "Evaluations", "method": "/evaluations" },
-          "8": { "title": "Assigments", "method": "/assigments" },
-          "9": { "title": "Grades", "method": "/grades" },
-          "10": { "title": "Help", "method": "/help" }
-        },
         "security": {
-          "0": { "title": "Dashboard", "method": "/dashboard" },
-          "1": { "title": "Users", "method": "/users" },
-          "2": { "title": "Roles", "method": "/roles" },
-          "3": { "title": "Access Rights", "method": "/accessrights" },
-          "4": { "title": "Modules", "method": "/modules" },
-          "5": { "title": "Transactions", "method": "/transactions" },
-          "6": { "title": "Help", "method": "/help" }
+          "1": { "title": "Dashboard", "method": "/dashboard" },
+          "2": { "title": "Modules", "method": "/modules" },
+          "3": { "title": "Transactions", "method": "/transactions" },
+          "4": { "title": "Roles", "method": "/roles" },
+          "5": { "title": "Users", "method": "/users" },
+          "6": { "title": "Access Rights", "method": "/accessrights" },
+          "7": { "title": "Help", "method": "/help" }
         }
       }
     };
@@ -16205,7 +16055,9 @@ module.exports = {
     var strSubMenus = (0, _stringify2.default)(this.subMenus);
     var arraySubMenus = JSON.parse(strSubMenus);
     this.subOptions = arraySubMenus[this.submenu];
-  }
+  },
+
+  methods: {}
 
 };
 if (module.exports.__esModule) module.exports = module.exports.default
@@ -16230,42 +16082,23 @@ var __vueify_style__ = require("vueify-insert-css").insert("\n\n")
 'use strict';
 
 module.exports = {
-    data: function data() {
-        return {
-            menus: []
-        };
-    },
+  data: function data() {
+    return {
+      menus: []
+    };
+  },
 
-    ready: function ready() {
-        this.menus = [{ 'title': 'Dashboard', 'initialURL': '/' }, { 'title': 'Facilities', 'initialURL': '/institutes' }, { 'title': 'Academic', 'initialURL': '/plans' }, { 'title': 'Resources', 'initialURL': '/' }, { 'title': 'Inventory', 'initialURL': '/' }, { 'title': 'Assets', 'initialURL': '/' }, { 'title': 'Services', 'initialURL': '/' }, { 'title': 'Treasury', 'initialURL': '/' }, { 'title': 'Security', 'initialURL': '/dashboard' }, { 'title': 'Settings', 'initialURL': '/' }, { 'title': 'Data', 'initialURL': '/' }];
-    },
+  ready: function ready() {
+    this.menus = [{ 'title': 'Dashboard', 'initialURL': '/dashboard' }, { 'title': 'Modules', 'initialURL': '/modules' }, { 'title': 'Transactions', 'initialURL': '/transactions' }, { 'title': 'Roles', 'initialURL': '/roles' }, { 'title': 'Users', 'initialURL': '/users' }, { 'title': 'Access Rights', 'initialURL': '/accessrights' }, { 'title': 'Help', 'initialURL': '/help' }];
 
-    methods: {
+    this.$route.router.go('/dashboard');
+  },
 
-        facilities: function facilities() {
-            alert('facilities');
-        },
-
-        academic: function academic() {
-            alert('academic');
-        },
-
-        treasury: function treasury() {
-            alert('treasury');
-        },
-
-        security: function security() {
-            alert('security');
-        },
-
-        configuration: function configuration() {
-            alert('configuration');
-        }
-    }
+  methods: {}
 
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n\n   <link rel=\"icon\" type=\"image/png\" href=\"/assets/icons/loading_image.gif\" _v-141a6d4c=\"\">\n   \n <div _v-141a6d4c=\"\">\n   \n\n\n   <nav class=\"navbar navbar-default\" _v-141a6d4c=\"\">\n     <div class=\"container-fluid\" _v-141a6d4c=\"\">\n       <a class=\"navbar-brand\" href=\"#\" _v-141a6d4c=\"\">MegaCampus</a>\n       <ul class=\"nav navbar-nav\" v-for=\"menu in menus\" _v-141a6d4c=\"\"> \n         <li _v-141a6d4c=\"\">\n           <a v-link=\"menu.initialURL\" _v-141a6d4c=\"\">{{menu.title}}</a>\n         </li>\n       </ul>\n     </div>\n   </nav>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n\n   <link rel=\"icon\" type=\"image/png\" href=\"/assets/icons/loading_image.gif\" _v-141a6d4c=\"\">\n   \n <div _v-141a6d4c=\"\">\n   <nav class=\"navbar navbar-default\" _v-141a6d4c=\"\">\n     <div class=\"container-fluid\" _v-141a6d4c=\"\">\n       <a class=\"navbar-brand\" href=\"#\" _v-141a6d4c=\"\">Roleis</a>\n       <ul class=\"nav navbar-nav\" v-for=\"menu in menus\" _v-141a6d4c=\"\"> \n         <li _v-141a6d4c=\"\">\n           <a v-link=\"menu.initialURL\" _v-141a6d4c=\"\">{{menu.title}}</a>\n         </li>\n       </ul>\n     </div>\n   </nav>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -16300,7 +16133,6 @@ module.exports = {
   },
 
   methods: {
-
     hideBoxMessage: function hideBoxMessage() {
       this.showAlert = false;
     },
@@ -16365,7 +16197,6 @@ module.exports = {
     this.arrIconInfo = this.jsonToArray(this.iconInfo);
     this.arrIconActions = this.jsonToArray(this.iconActions);
     this.showTableOnly = this.showTableOnly == 'false' ? false : true;
-
     this.initialUrl = this.url;
     this.lastUrl = this.initialUrl;
     this.readPageData(this.lastUrl, false);
@@ -16401,12 +16232,7 @@ module.exports = {
   methods: {
 
     clickIcon: function clickIcon(row, link) {
-      // alert(link.name + ': ' + row.id + ' Url: ' + link.url);
       this.$route.router.go(link.url);
-    },
-
-    itemSelected: function itemSelected(row) {
-      //  this.$dispatch('rowSelected', row);
     },
 
     goToFisrtPage: function goToFisrtPage() {
@@ -16474,15 +16300,11 @@ module.exports = {
       } else {
         var page_url = responde.prev_page_url;
       }
-
       //set the route for first, prev, next, last page action
       if (page_url) {
-
         this.first_page_url = page_url.slice(0, page_url.search('page')) + 'page=' + this.first_page + this.setSearchParam();
-
         this.next_page_url = responde.next_page_url + this.setSearchParam();
         this.prev_page_url = responde.prev_page_url + this.setSearchParam();
-
         this.last_page_url = page_url.slice(0, page_url.search('page')) + 'page=' + this.last_page + this.setSearchParam();
       }
     },
@@ -16511,16 +16333,7 @@ module.exports = {
     }
   },
 
-  events: {
-
-    // reloadData: function(){
-    //   this.readPageData(this.lastUrl + '?page=' + this.current_page, false);
-    // },
-
-  },
-
   watch: {
-
     'searchText': function searchText() {
       if (!this.searchText) {
         this.searchText = '';
@@ -16532,7 +16345,7 @@ module.exports = {
 
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div class=\"container-fluid\" _v-72ce7614=\"\">\n  <div class=\"row\" _v-72ce7614=\"\">\n   \n      <div class=\"panel panel-default\" _v-72ce7614=\"\"> \n        <div class=\"panel-heading\" _v-72ce7614=\"\">\n          <h3 class=\"panel-title\" _v-72ce7614=\"\">\n            {{tableTitle}}\n            <span style=\"color:blue; padding-top:10px; padding-right:20px\" align=\"left\" v-if=\"loading\" _v-72ce7614=\"\">\n              <img src=\"/assets/icons/loading_image.gif\" _v-72ce7614=\"\">   \n            </span>\n          </h3>\n        </div> \n        <div class=\"panel-body\" _v-72ce7614=\"\">\n          <div class=\"row\" _v-72ce7614=\"\">\n            <div v-if=\"!showTableOnly\" _v-72ce7614=\"\">\n              <div class=\"col-sm-4\" _v-72ce7614=\"\">\n                <div class=\"input-group\" v-if=\"!showTableOnly\" _v-72ce7614=\"\">\n                  <input type=\"text\" v-model=\"searchText\" class=\"form-control\" @keyup.enter=\"search\" placeholder=\"Search for...\" _v-72ce7614=\"\">\n                  <span class=\"input-group-btn\" _v-72ce7614=\"\">\n                    <button class=\"btn btn-primary\" type=\"button\" @click=\"search\" _v-72ce7614=\"\">\n                      <i class=\"glyphicon glyphicon-search\" _v-72ce7614=\"\"> </i>\n                    </button>\n                  </span>\n                </div>\n              </div>\n\n              <div class=\"col-sm-6\" align=\"left\" @click=\"searchText=''\" _v-72ce7614=\"\">\n                <div class=\"btn btn-xs btn-warning\" v-show=\"filterApplied\" style=\"margin:5px\" _v-72ce7614=\"\">\n                   Clear Filter <span _v-72ce7614=\"\"> × </span>\n                </div>\n              </div>\n\n            </div>\n          </div>\n          <br _v-72ce7614=\"\">\n          \n          <div class=\"table-responsive table-hscroll table-height\" _v-72ce7614=\"\">\n            <table id=\"{{id}}\" class=\"table table-striped table-bordered table-condensed table-hover\" _v-72ce7614=\"\">\n              <colgroup _v-72ce7614=\"\"><col v-for=\"col in cols\" :width=\"col.width\" _v-72ce7614=\"\">\n              <!--/div-->\n              </colgroup><thead _v-72ce7614=\"\">\n                <tr _v-72ce7614=\"\">\n                  <th class=\"header\" v-for=\"col in cols\" _v-72ce7614=\"\"> \n                       {{ ts[col.name] }}\n                  </th>\n                </tr>\n              </thead>\n              <tbody _v-72ce7614=\"\">\n                <tr v-for=\"1 in 10\" _v-72ce7614=\"\">\n                  <td v-for=\"1 in cols.length\" _v-72ce7614=\"\"> &nbsp; </td>\n                </tr> \n                  \n                <tr v-for=\"row in rows\" _v-72ce7614=\"\"> \n                  <td v-for=\"(key, value) in row\" @click=\"itemSelected(row)\" _v-72ce7614=\"\">\n                    <span v-if=\"key=='deleted_at'\" _v-72ce7614=\"\">\n                        <span v-if=\"value==undefined\" _v-72ce7614=\"\">\n                            <span class=\"btn btn-xs btn-success\" _v-72ce7614=\"\"> Active </span>\n                           <!--  <i class=\"glyphicon glyphicon-ok\"></i> -->\n                        </span>\n                        <span v-else=\"\" _v-72ce7614=\"\">\n                            <span class=\"btn btn-xs btn-danger\" _v-72ce7614=\"\"> Inactive </span>\n                            <!-- <i class=\"glyphicon glyphicon-remove\" ></i> -->\n                        </span>\n                    </span>\n\n                    <span v-else=\"\" _v-72ce7614=\"\">\n                        {{value}} \n                    </span>\n\n                  </td>\n              \n                  <td v-if=\"(arrIconInfo.length > 0)\" _v-72ce7614=\"\">\n                    <span v-for=\"info in arrIconInfo\" _v-72ce7614=\"\">\n                      <a href=\"{{info.url}}\" title=\"{{info.title}}\" @click.prevent=\"clickIcon(row, info)\" _v-72ce7614=\"\"> <i class=\"{{info.icon}}\" _v-72ce7614=\"\"></i> {{info.text}} </a>\n                    </span>\n                  </td>\n\n                  <td v-if=\"(arrIconActions.length > 0)\" _v-72ce7614=\"\">\n                    <span v-for=\"action in arrIconActions\" _v-72ce7614=\"\">\n                      <a href=\"{{action.url}}\" title=\"{{action.title}}\" @click.prevent=\"clickIcon(row, action)\" _v-72ce7614=\"\"> <i class=\"{{action.icon}}\" _v-72ce7614=\"\"></i> {{action.text}} </a>\n                    </span>\n                  </td>\n\n                </tr> \n\n               </tbody> \n            </table> \n          </div>\n          <div _v-72ce7614=\"\"> \n\n          </div>\n            <div class=\"row\" v-show=\"!showTableOnly\" _v-72ce7614=\"\">\n               <div class=\"col-sm-6\" _v-72ce7614=\"\">\n                <div align=\"left\" style=\"padding-top:10px\" _v-72ce7614=\"\">\n                  <p style=\"font-size:13px;\" _v-72ce7614=\"\"> \n                     Showing: {{from}} to {{to}} of {{total}} items\n                  </p>\n                </div>\n              </div>\n              <div v-if=\"NoMorePages\" style=\"color:gray\" align=\"right\" _v-72ce7614=\"\"> \n                <strong _v-72ce7614=\"\"> <em _v-72ce7614=\"\">No more Pages</em></strong> \n              </div>  \n              <div class=\"col-sm-6\" _v-72ce7614=\"\">\n                <div align=\"right\" style=\"padding-top:10px\" _v-72ce7614=\"\">\n                  <a class=\"btn btn-sm btn-primary button-size\" @click.prevent=\"goToFisrtPage\" _v-72ce7614=\"\"> Start </a> \n                  <a class=\"btn btn-sm btn-primary button-size\" @click.prevent=\"goToPrevPage\" _v-72ce7614=\"\"> Prev </a> \n                  <a class=\"btn btn-sm btn-primary button-size\" @click.prevent=\"goToNextPage\" _v-72ce7614=\"\"> Next </a> \n                  <a class=\"btn btn-sm btn-primary button-size\" @click.prevent=\"goToLastPage\" _v-72ce7614=\"\"> End </a> \n                  <br _v-72ce7614=\"\"> <br _v-72ce7614=\"\">\n                </div>\n              </div>\n            </div>\n          </div>\n        </div>\n      </div>\n\n      <!-- <pre>{{ $data | json }}</pre>  -->\n\n    </div>\n\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div class=\"container-fluid\" _v-72ce7614=\"\">\n  <div class=\"row\" _v-72ce7614=\"\">\n      <div class=\"panel panel-default\" _v-72ce7614=\"\"> \n        <div class=\"panel-heading\" _v-72ce7614=\"\">\n          <h3 class=\"panel-title\" _v-72ce7614=\"\">\n            {{tableTitle}}\n            <span style=\"color:blue; padding-top:10px; padding-right:20px\" align=\"left\" v-if=\"loading\" _v-72ce7614=\"\">\n              <img src=\"/assets/icons/loading_image.gif\" _v-72ce7614=\"\">   \n            </span>\n          </h3>\n        </div> \n        <div class=\"panel-body\" _v-72ce7614=\"\">\n          <div class=\"row\" _v-72ce7614=\"\">\n            <div v-if=\"!showTableOnly\" _v-72ce7614=\"\">\n              <div class=\"col-sm-4\" _v-72ce7614=\"\">\n                <div class=\"input-group\" v-if=\"!showTableOnly\" _v-72ce7614=\"\">\n                  <input type=\"text\" v-model=\"searchText\" class=\"form-control\" @keyup.enter=\"search\" placeholder=\"Search for...\" _v-72ce7614=\"\">\n                  <span class=\"input-group-btn\" _v-72ce7614=\"\">\n                    <button class=\"btn btn-primary\" type=\"button\" @click=\"search\" _v-72ce7614=\"\">\n                      <i class=\"glyphicon glyphicon-search\" _v-72ce7614=\"\"> </i>\n                    </button>\n                  </span>\n                </div>\n              </div>\n\n              <div class=\"col-sm-6\" align=\"left\" @click=\"searchText=''\" _v-72ce7614=\"\">\n                <div class=\"btn btn-xs btn-warning\" v-show=\"filterApplied\" style=\"margin:5px\" _v-72ce7614=\"\">\n                   Clear Filter <span _v-72ce7614=\"\"> × </span>\n                </div>\n              </div>\n\n            </div>\n          </div>\n          <br _v-72ce7614=\"\">\n          \n          <div class=\"table-responsive table-hscroll table-height\" _v-72ce7614=\"\">\n            <table id=\"{{id}}\" class=\"table table-striped table-bordered table-condensed table-hover\" _v-72ce7614=\"\">\n              <colgroup _v-72ce7614=\"\"><col v-for=\"col in cols\" :width=\"col.width\" _v-72ce7614=\"\">\n              <!--/div-->\n              </colgroup><thead _v-72ce7614=\"\">\n                <tr _v-72ce7614=\"\">\n                  <th class=\"header\" v-for=\"col in cols\" _v-72ce7614=\"\"> \n                       {{ ts[col.name] }}\n                  </th>\n                </tr>\n              </thead>\n              <tbody _v-72ce7614=\"\">\n                <tr v-for=\"1 in 10\" _v-72ce7614=\"\">\n                  <td v-for=\"1 in cols.length\" _v-72ce7614=\"\"> &nbsp; </td>\n                </tr> \n                  \n                <tr v-for=\"row in rows\" _v-72ce7614=\"\"> \n                  <td v-for=\"(key, value) in row\" @click=\"itemSelected(row)\" _v-72ce7614=\"\">\n                    <span v-if=\"key=='deleted_at'\" _v-72ce7614=\"\">\n                        <span v-if=\"value==undefined\" _v-72ce7614=\"\">\n                            <span class=\"btn btn-xs btn-success\" _v-72ce7614=\"\"> Active </span>\n                           <!--  <i class=\"glyphicon glyphicon-ok\"></i> -->\n                        </span>\n                        <span v-else=\"\" _v-72ce7614=\"\">\n                            <span class=\"btn btn-xs btn-danger\" _v-72ce7614=\"\"> Inactive </span>\n                            <!-- <i class=\"glyphicon glyphicon-remove\" ></i> -->\n                        </span>\n                    </span>\n\n                    <span v-else=\"\" _v-72ce7614=\"\">\n                        {{value}} \n                    </span>\n\n                  </td>\n              \n                  <td v-if=\"(arrIconInfo.length > 0)\" _v-72ce7614=\"\">\n                    <span v-for=\"info in arrIconInfo\" _v-72ce7614=\"\">\n                      <a href=\"{{info.url}}\" title=\"{{info.title}}\" @click.prevent=\"clickIcon(row, info)\" _v-72ce7614=\"\"> <i class=\"{{info.icon}}\" _v-72ce7614=\"\"></i> {{info.text}} </a>\n                    </span>\n                  </td>\n\n                  <td v-if=\"(arrIconActions.length > 0)\" _v-72ce7614=\"\">\n                    <span v-for=\"action in arrIconActions\" _v-72ce7614=\"\">\n                      <a href=\"{{action.url}}\" title=\"{{action.title}}\" @click.prevent=\"clickIcon(row, action)\" _v-72ce7614=\"\"> <i class=\"{{action.icon}}\" _v-72ce7614=\"\"></i> {{action.text}} </a>\n                    </span>\n                  </td>\n\n                </tr> \n\n               </tbody> \n            </table> \n          </div>\n          <div _v-72ce7614=\"\"> \n\n          </div>\n            <div class=\"row\" v-show=\"!showTableOnly\" _v-72ce7614=\"\">\n               <div class=\"col-sm-6\" _v-72ce7614=\"\">\n                <div align=\"left\" style=\"padding-top:10px\" _v-72ce7614=\"\">\n                  <p style=\"font-size:13px;\" _v-72ce7614=\"\"> \n                     Showing: {{from}} to {{to}} of {{total}} items\n                  </p>\n                </div>\n              </div>\n              <div v-if=\"NoMorePages\" style=\"color:gray\" align=\"right\" _v-72ce7614=\"\"> \n                <strong _v-72ce7614=\"\"> <em _v-72ce7614=\"\">No more Pages</em></strong> \n              </div>  \n              <div class=\"col-sm-6\" _v-72ce7614=\"\">\n                <div align=\"right\" style=\"padding-top:10px\" _v-72ce7614=\"\">\n                  <a class=\"btn btn-sm btn-primary button-size\" @click.prevent=\"goToFisrtPage\" _v-72ce7614=\"\"> Start </a> \n                  <a class=\"btn btn-sm btn-primary button-size\" @click.prevent=\"goToPrevPage\" _v-72ce7614=\"\"> Prev </a> \n                  <a class=\"btn btn-sm btn-primary button-size\" @click.prevent=\"goToNextPage\" _v-72ce7614=\"\"> Next </a> \n                  <a class=\"btn btn-sm btn-primary button-size\" @click.prevent=\"goToLastPage\" _v-72ce7614=\"\"> End </a> \n                  <br _v-72ce7614=\"\"> <br _v-72ce7614=\"\">\n                </div>\n              </div>\n            </div>\n          </div>\n        </div>\n      </div>\n\n      <!-- <pre>{{ $data | json }}</pre>  -->\n\n    </div>\n\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -16571,7 +16384,6 @@ module.exports = {
     this.arrIconActions = this.jsonToArray(this.iconActions);
     this.showYear = this.showYear == "false" ? false : true;
     this.showMonth = this.showMonth == "false" ? false : true;
-
     this.initialUrl = this.url;
     this.lastUrl = this.initialUrl;
     this.initYearandMonth();
@@ -16601,25 +16413,17 @@ module.exports = {
       arrIconInfo: [],
       arrIconActions: [],
       filterApplied: '',
-      // showYear: '',
-      // showMonth: '',
       years: [],
       months: [],
       yearSelected: '',
       monthSelected: ''
-
     };
   },
 
   methods: {
 
     clickIcon: function clickIcon(row, link) {
-      // alert(link.name + ': ' + row.id + ' Url: ' + link.url);
       this.$route.router.go(link.url);
-    },
-
-    itemSelected: function itemSelected(row) {
-      //  this.$dispatch('rowSelected', row);
     },
 
     goToFisrtPage: function goToFisrtPage() {
@@ -16687,15 +16491,12 @@ module.exports = {
       } else {
         var page_url = responde.prev_page_url;
       }
-
       //set the route for first, prev, next, last page action
       if (page_url) {
 
         this.first_page_url = page_url.slice(0, page_url.search('page')) + 'page=' + this.first_page + this.setSearchParam();
-
         this.next_page_url = responde.next_page_url + this.setSearchParam();
         this.prev_page_url = responde.prev_page_url + this.setSearchParam();
-
         this.last_page_url = page_url.slice(0, page_url.search('page')) + 'page=' + this.last_page + this.setSearchParam();
       }
     },
@@ -16726,7 +16527,6 @@ module.exports = {
     },
 
     changeYearMonth: function changeYearMonth() {
-
       this.readPageData(this.lastUrl, this.yearSelected, this.monthSelected, false);
     },
 
@@ -16743,7 +16543,7 @@ module.exports = {
 
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div class=\"container-fluid\" _v-5cbfc636=\"\">\n  <div class=\"row\" _v-5cbfc636=\"\">\n   \n      <div class=\"panel panel-default\" _v-5cbfc636=\"\"> \n        <div class=\"panel-heading\" _v-5cbfc636=\"\">\n          <h3 class=\"panel-title\" _v-5cbfc636=\"\">\n            {{tableTitle}}\n            <span style=\"color:blue; padding-top:10px; padding-right:20px\" align=\"left\" v-if=\"loading\" _v-5cbfc636=\"\">\n              <img src=\"/assets/icons/loading_image.gif\" _v-5cbfc636=\"\">   \n            </span>\n          </h3>\n        </div> \n        <div class=\"panel-body\" _v-5cbfc636=\"\">\n          <div class=\"row\" _v-5cbfc636=\"\">\n            <div v-if=\"showYear\" _v-5cbfc636=\"\">\n              <div class=\"col-xs-1 selectwidth \" v-if=\"showYear\" _v-5cbfc636=\"\">\n                Year: \n                <select name=\"year\" class=\"form-control selectwidth\" v-model=\"yearSelected\" @change=\"changeYearMonth()\" _v-5cbfc636=\"\">\n                  <option v-for=\"(key, value) in years\" value=\"{{value}}\" _v-5cbfc636=\"\"> {{value}} </option>\n                </select>\n              </div>\n              <div class=\"col-xs-1\" v-if=\"showMonth\" _v-5cbfc636=\"\">\n                Month: \n                <select name=\"month\" class=\"form-control selectwidth\" v-model=\"monthSelected\" @change=\"changeYearMonth()\" _v-5cbfc636=\"\">\n                  <option v-for=\"(key, value) in months\" value=\"{{key + 1}}\" _v-5cbfc636=\"\"> {{value}} </option>\n                </select>\n              </div>\n            </div>\n\n            \n          </div>\n          <br _v-5cbfc636=\"\">\n          \n          <div class=\"table-responsive table-hscroll table-height\" _v-5cbfc636=\"\">\n            <table id=\"{{id}}\" class=\"table table-striped table-bordered table-condensed table-hover\" _v-5cbfc636=\"\">\n              <colgroup _v-5cbfc636=\"\"><col v-for=\"col in cols\" :width=\"col.width\" _v-5cbfc636=\"\">\n              <!--/div-->\n              </colgroup><thead _v-5cbfc636=\"\">\n                <tr _v-5cbfc636=\"\">\n                  <th class=\"header\" v-for=\"col in cols\" _v-5cbfc636=\"\"> \n                       {{ ts[col.name] }}\n                  </th>\n                </tr>\n              </thead>\n              <tbody _v-5cbfc636=\"\">\n                <tr v-for=\"1 in 10\" _v-5cbfc636=\"\">\n                  <td v-for=\"1 in cols.length\" _v-5cbfc636=\"\"> &nbsp; </td>\n                </tr> \n                  \n                <tr v-for=\"row in rows\" _v-5cbfc636=\"\"> \n                  <td v-for=\"(key, value) in row\" @click=\"itemSelected(row)\" _v-5cbfc636=\"\">\n                    <span v-if=\"key=='deleted_at'\" _v-5cbfc636=\"\">\n                        <span v-if=\"value==undefined\" _v-5cbfc636=\"\">\n                            <span class=\"btn btn-xs btn-success\" _v-5cbfc636=\"\"> Active </span>\n                           <!--  <i class=\"glyphicon glyphicon-ok\"></i> -->\n                        </span>\n                        <span v-else=\"\" _v-5cbfc636=\"\">\n                            <span class=\"btn btn-xs btn-danger\" _v-5cbfc636=\"\"> Inactive </span>\n                            <!-- <i class=\"glyphicon glyphicon-remove\" ></i> -->\n                        </span>\n                    </span>\n\n                    <span v-else=\"\" _v-5cbfc636=\"\">\n                        {{value}} \n                    </span>\n\n                  </td>\n              \n                  <td v-if=\"(arrIconInfo.length > 0)\" _v-5cbfc636=\"\">\n                    <span v-for=\"info in arrIconInfo\" _v-5cbfc636=\"\">\n                      <a href=\"{{info.url}}\" title=\"{{info.title}}\" @click.prevent=\"clickIcon(row, info)\" _v-5cbfc636=\"\"> <i class=\"{{info.icon}}\" _v-5cbfc636=\"\"></i> {{info.text}} </a>\n                    </span>\n                  </td>\n\n                  <td v-if=\"(arrIconActions.length > 0)\" _v-5cbfc636=\"\">\n                    <span v-for=\"action in arrIconActions\" _v-5cbfc636=\"\">\n                      <a href=\"{{action.url}}\" title=\"{{action.title}}\" @click.prevent=\"clickIcon(row, action)\" _v-5cbfc636=\"\"> <i class=\"{{action.icon}}\" _v-5cbfc636=\"\"></i> {{action.text}} </a>\n                    </span>\n                  </td>\n\n                </tr> \n\n               </tbody> \n            </table> \n          </div>\n          <div _v-5cbfc636=\"\"> \n\n          </div>\n            <div class=\"row\" _v-5cbfc636=\"\">\n               <div class=\"col-sm-6\" _v-5cbfc636=\"\">\n                <div align=\"left\" style=\"padding-top:10px\" _v-5cbfc636=\"\">\n                  <p style=\"font-size:13px;\" _v-5cbfc636=\"\"> \n                     Showing: {{from}} to {{to}} of {{total}} items\n                  </p>\n                </div>\n              </div>\n              <div v-if=\"NoMorePages\" style=\"color:gray\" align=\"right\" _v-5cbfc636=\"\"> \n                  <strong _v-5cbfc636=\"\"> <em _v-5cbfc636=\"\">No more Pages</em></strong> \n              </div>  \n              <div class=\"col-sm-6\" _v-5cbfc636=\"\">\n                <div align=\"right\" style=\"padding-top:10px\" _v-5cbfc636=\"\">\n                  <a class=\"btn btn-sm btn-primary button-size\" @click.prevent=\"goToFisrtPage\" _v-5cbfc636=\"\"> Start </a> \n                  <a class=\"btn btn-sm btn-primary button-size\" @click.prevent=\"goToPrevPage\" _v-5cbfc636=\"\"> Prev </a> \n                  <a class=\"btn btn-sm btn-primary button-size\" @click.prevent=\"goToNextPage\" _v-5cbfc636=\"\"> Next </a> \n                  <a class=\"btn btn-sm btn-primary button-size\" @click.prevent=\"goToLastPage\" _v-5cbfc636=\"\"> End </a> \n                  <br _v-5cbfc636=\"\"> <br _v-5cbfc636=\"\">\n                </div>\n              </div>\n            </div>\n          </div>\n        </div>\n      </div>\n\n      <!-- <pre>{{ $data | json }}</pre>  -->\n\n    </div>\n\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div class=\"container-fluid\" _v-5cbfc636=\"\">\n  <div class=\"row\" _v-5cbfc636=\"\">\n   \n      <div class=\"panel panel-default\" _v-5cbfc636=\"\"> \n        <div class=\"panel-heading\" _v-5cbfc636=\"\">\n          <h3 class=\"panel-title\" _v-5cbfc636=\"\">\n            {{tableTitle}}\n            <span style=\"color:blue; padding-top:10px; padding-right:20px\" align=\"left\" v-if=\"loading\" _v-5cbfc636=\"\">\n              <img src=\"/assets/icons/loading_image.gif\" _v-5cbfc636=\"\">   \n            </span>\n          </h3>\n        </div> \n        <div class=\"panel-body\" _v-5cbfc636=\"\">\n          <div class=\"row\" _v-5cbfc636=\"\">\n            <div v-if=\"showYear\" _v-5cbfc636=\"\">\n              <div class=\"col-xs-1 selectwidth \" v-if=\"showYear\" _v-5cbfc636=\"\">\n                Year: \n                <select name=\"year\" class=\"form-control selectwidth\" v-model=\"yearSelected\" @change=\"changeYearMonth()\" _v-5cbfc636=\"\">\n                  <option v-for=\"(key, value) in years\" value=\"{{value}}\" _v-5cbfc636=\"\"> {{value}} </option>\n                </select>\n              </div>\n              <div class=\"col-xs-1\" v-if=\"showMonth\" _v-5cbfc636=\"\">\n                Month: \n                <select name=\"month\" class=\"form-control selectwidth\" v-model=\"monthSelected\" @change=\"changeYearMonth()\" _v-5cbfc636=\"\">\n                  <option v-for=\"(key, value) in months\" value=\"{{key + 1}}\" _v-5cbfc636=\"\"> {{value}} </option>\n                </select>\n              </div>\n            </div>\n          </div>\n          <br _v-5cbfc636=\"\">\n          <div class=\"table-responsive table-hscroll table-height\" _v-5cbfc636=\"\">\n            <table id=\"{{id}}\" class=\"table table-striped table-bordered table-condensed table-hover\" _v-5cbfc636=\"\">\n              <colgroup _v-5cbfc636=\"\"><col v-for=\"col in cols\" :width=\"col.width\" _v-5cbfc636=\"\">\n              <!--/div-->\n              </colgroup><thead _v-5cbfc636=\"\">\n                <tr _v-5cbfc636=\"\">\n                  <th class=\"header\" v-for=\"col in cols\" _v-5cbfc636=\"\"> \n                       {{ ts[col.name] }}\n                  </th>\n                </tr>\n              </thead>\n              <tbody _v-5cbfc636=\"\">\n                <tr v-for=\"1 in 10\" _v-5cbfc636=\"\">\n                  <td v-for=\"1 in cols.length\" _v-5cbfc636=\"\"> &nbsp; </td>\n                </tr> \n                  \n                <tr v-for=\"row in rows\" _v-5cbfc636=\"\"> \n                  <td v-for=\"(key, value) in row\" @click=\"itemSelected(row)\" _v-5cbfc636=\"\">\n                    <span v-if=\"key=='deleted_at'\" _v-5cbfc636=\"\">\n                        <span v-if=\"value==undefined\" _v-5cbfc636=\"\">\n                            <span class=\"btn btn-xs btn-success\" _v-5cbfc636=\"\"> Active </span>\n                           <!--  <i class=\"glyphicon glyphicon-ok\"></i> -->\n                        </span>\n                        <span v-else=\"\" _v-5cbfc636=\"\">\n                            <span class=\"btn btn-xs btn-danger\" _v-5cbfc636=\"\"> Inactive </span>\n                            <!-- <i class=\"glyphicon glyphicon-remove\" ></i> -->\n                        </span>\n                    </span>\n\n                    <span v-else=\"\" _v-5cbfc636=\"\">\n                        {{value}} \n                    </span>\n\n                  </td>\n              \n                  <td v-if=\"(arrIconInfo.length > 0)\" _v-5cbfc636=\"\">\n                    <span v-for=\"info in arrIconInfo\" _v-5cbfc636=\"\">\n                      <a href=\"{{info.url}}\" title=\"{{info.title}}\" @click.prevent=\"clickIcon(row, info)\" _v-5cbfc636=\"\"> <i class=\"{{info.icon}}\" _v-5cbfc636=\"\"></i> {{info.text}} </a>\n                    </span>\n                  </td>\n\n                  <td v-if=\"(arrIconActions.length > 0)\" _v-5cbfc636=\"\">\n                    <span v-for=\"action in arrIconActions\" _v-5cbfc636=\"\">\n                      <a href=\"{{action.url}}\" title=\"{{action.title}}\" @click.prevent=\"clickIcon(row, action)\" _v-5cbfc636=\"\"> <i class=\"{{action.icon}}\" _v-5cbfc636=\"\"></i> {{action.text}} </a>\n                    </span>\n                  </td>\n                </tr> \n               </tbody> \n            </table> \n          </div>\n          <div _v-5cbfc636=\"\"> \n\n          </div>\n            <div class=\"row\" _v-5cbfc636=\"\">\n               <div class=\"col-sm-6\" _v-5cbfc636=\"\">\n                <div align=\"left\" style=\"padding-top:10px\" _v-5cbfc636=\"\">\n                  <p style=\"font-size:13px;\" _v-5cbfc636=\"\"> \n                     Showing: {{from}} to {{to}} of {{total}} items\n                  </p>\n                </div>\n              </div>\n              <div v-if=\"NoMorePages\" style=\"color:gray\" align=\"right\" _v-5cbfc636=\"\"> \n                  <strong _v-5cbfc636=\"\"> <em _v-5cbfc636=\"\">No more Pages</em></strong> \n              </div>  \n              <div class=\"col-sm-6\" _v-5cbfc636=\"\">\n                <div align=\"right\" style=\"padding-top:10px\" _v-5cbfc636=\"\">\n                  <a class=\"btn btn-sm btn-primary button-size\" @click.prevent=\"goToFisrtPage\" _v-5cbfc636=\"\"> Start </a> \n                  <a class=\"btn btn-sm btn-primary button-size\" @click.prevent=\"goToPrevPage\" _v-5cbfc636=\"\"> Prev </a> \n                  <a class=\"btn btn-sm btn-primary button-size\" @click.prevent=\"goToNextPage\" _v-5cbfc636=\"\"> Next </a> \n                  <a class=\"btn btn-sm btn-primary button-size\" @click.prevent=\"goToLastPage\" _v-5cbfc636=\"\"> End </a> \n                  <br _v-5cbfc636=\"\"> <br _v-5cbfc636=\"\">\n                </div>\n              </div>\n            </div>\n          </div>\n        </div>\n      </div>\n      <!-- <pre>{{ $data | json }}</pre>  -->\n    </div>\n\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -16863,7 +16663,7 @@ module.exports = {
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div _v-3a3fb885=\"\">\n  <mypopup slot=\"message\" _v-3a3fb885=\"\"></mypopup>\n\t<myimport slot=\"modal-import\" url-import=\"secutiry/roles_transactions/import\" _v-3a3fb885=\"\"></myimport>\n\t<div class=\"container-fluid\" _v-3a3fb885=\"\">\n\t\t<div class=\"row\" _v-3a3fb885=\"\">\n\t\t\t<div class=\"col-sm-2\" _v-3a3fb885=\"\">\n\t\t\t\t<mysubmenu submenu=\"security\" _v-3a3fb885=\"\"></mysubmenu>\n\t\t\t</div>\n\t\t\n\t\t\t<div class=\"col-sm-10\" _v-3a3fb885=\"\">\n\t\t\t\t\n\t\t\t\t<mycrudtable table-title=\"Access Rights List\" table-id=\"table1\" select-fields=\"{\n\n\t\t\t\t\t\t\t&quot;0&quot;: {\n\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;select&quot;,\n\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;role_name&quot;,\n\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Role Name&quot;, \n\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t&quot;url&quot;: &quot;security/roles/getAllRolesActivebyPage&quot;,\n\t\t\t\t\t\t\t\t&quot;table&quot;: &quot;roles&quot;\n\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t}\" columns-names=\"{\n\t\t\t\t\t\t\t\t&quot;0&quot;: { &quot;name&quot;: &quot;id&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;1&quot;: { &quot;name&quot;: &quot;roleName&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;2&quot;: { &quot;name&quot;: &quot;moduleName&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;3&quot;: { &quot;name&quot;: &quot;transactionName&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;4&quot;: { &quot;name&quot;: &quot;transactionDescription&quot; , &quot;width&quot;:&quot;30%&quot;},\n\t\t\t\t\t\t\t\t&quot;5&quot;: { &quot;name&quot;: &quot;transactionActionName&quot; , &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;6&quot;: { &quot;name&quot;: &quot;createdBy&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;7&quot;: { &quot;name&quot;: &quot;updatedBy&quot;, &quot;width&quot;:&quot;10%&quot;},\t\t\n\t\t\t\t\t\t\t\t&quot;8&quot;: { &quot;name&quot;: &quot;info&quot;, &quot;width&quot;:&quot;10%&quot;}\n\t\t\t\t\t\t}\" url=\"security/roles_transactions\" icon-info=\"{\n\t\t\t\t\t\t\t\t&quot;0&quot;: { &quot;url&quot;: &quot;#&quot;, &quot;name&quot;:&quot;truck&quot;, &quot;title&quot;:&quot;List Of....&quot;, &quot;icon&quot;: &quot;fa fa-truck&quot;, &quot;text&quot;:&quot;&quot;},\n\t\t\t\t\t\t\t\t&quot;1&quot;: { &quot;url&quot;: &quot;#&quot;, &quot;name&quot;:&quot;user&quot;, &quot;title&quot;:&quot;List Of....&quot;, &quot;icon&quot;: &quot;fa fa-user&quot;, &quot;text&quot;:&quot;&quot;}\n\t\t\t\t\t\t}\" icon-actions=\"{\n\n\t\t\t\t\t\t}\" _v-3a3fb885=\"\">\n\t\t\t\t\n\t\t\t\t\t\t<mycrudbuttons slot=\"crud\" url-export=\"security/roles_transactions/export\" btn-actions=\"{\n         \t\t\t\t\t\t&quot;0&quot;: {&quot;title&quot;: &quot;Add&quot;,    &quot;method&quot;: &quot;Add&quot;,    &quot;disabled&quot;: false},\n          \t\t\t\t\t\t&quot;1&quot;: {&quot;title&quot;: &quot;Export&quot;, &quot;method&quot;: &quot;Export&quot;, &quot;disabled&quot;: false}, \n          \t\t\t\t\t\t&quot;2&quot;: {&quot;title&quot;: &quot;Import&quot;, &quot;method&quot;: &quot;Import&quot;, &quot;disabled&quot;: false}\n        \t\t\t\t\t}\" _v-3a3fb885=\"\">\n\t\t\t\t\t\t</mycrudbuttons>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<mycrudform slot=\"forma\" url=\"security/roles_transactions\" form-title=\"Access Rights\" input-fields=\"{\n\t\t\t\t\t\t\t\t\t&quot;0&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;id&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Id&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;readonly&quot;:&quot;true&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;\n\t\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\t&quot;1&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;select&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;role_name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Role Name&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;url&quot;: &quot;security/roles/getAllRolesActive&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;table&quot;: &quot;roles&quot;\n\t\t\t\t\t\t\t\t\t },\n\n\t\t\t\t\t\t\t\t\t&quot;2&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;select&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;module_name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Module Name&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;url&quot;: &quot;security/modules/getAllModulesActive&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;table&quot;: &quot;modules&quot;\n\t\t\t\t\t\t\t\t\t },\n\n\t\t\t\t\t\t\t\t\t &quot;3&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;select&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;transaction_name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Transaction Name&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;url&quot;: &quot;security/roles_transactions/moduleSelected&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;table&quot;: &quot;transactions&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;selectFather&quot;: &quot;module_name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;selectFatherId&quot;: &quot;1&quot;\n\t\t\t\t\t\t\t\t\t }, \n\n\t\t\t\t\t\t\t\t\t &quot;4&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;hidden&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;transaction_description&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Transaction Description&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;readonly&quot;:&quot;true&quot;\t\n\t\t\t\t\t\t\t\t\t }, \n\n\n\t\t\t\t\t\t\t\t\t &quot;5&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;select&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;transaction_action_name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Transaction Action&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;url&quot;: &quot;security/roles_transactions/transactionActions&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;table&quot;: &quot;transactions_actions&quot;\n\t\t\t\t\t\t\t\t\t }\n\n\t\t\t\t\t\t\t\t}\" _v-3a3fb885=\"\">\n\t\t\t\t\t\t</mycrudform>\n\t\t\t\t</mycrudtable>\n\t\t\t<div _v-3a3fb885=\"\">\n\t\t</div>\n\t</div>\n </div>\n\n \n\n</div></div>"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div _v-3a3fb885=\"\">\n  <mypopup slot=\"message\" _v-3a3fb885=\"\"></mypopup>\n\t<myimport slot=\"modal-import\" url-import=\"secutiry/roles_transactions/import\" _v-3a3fb885=\"\"></myimport>\n\t<div class=\"container-fluid\" _v-3a3fb885=\"\">\n\t\t<div class=\"row\" _v-3a3fb885=\"\">\n\t\t\t<!--<div class=\"col-sm-2\">\n\t\t\t\t<mysubmenu submenu= \"security\"></mysubmenu>\n\t\t\t</div>-->\n\t\t\n\t\t\t<div class=\"col-sm-12\" _v-3a3fb885=\"\">\n\t\t\t\t\n\t\t\t\t<mycrudtable table-title=\"Access Rights List\" table-id=\"table1\" select-fields=\"{\n\n\t\t\t\t\t\t\t&quot;0&quot;: {\n\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;select&quot;,\n\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;role_name&quot;,\n\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Role Name&quot;, \n\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t&quot;url&quot;: &quot;security/roles/getAllRolesActivebyPage&quot;,\n\t\t\t\t\t\t\t\t&quot;table&quot;: &quot;roles&quot;\n\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t}\" columns-names=\"{\n\t\t\t\t\t\t\t\t&quot;0&quot;: { &quot;name&quot;: &quot;id&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;1&quot;: { &quot;name&quot;: &quot;roleName&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;2&quot;: { &quot;name&quot;: &quot;moduleName&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;3&quot;: { &quot;name&quot;: &quot;transactionName&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;4&quot;: { &quot;name&quot;: &quot;transactionDescription&quot; , &quot;width&quot;:&quot;30%&quot;},\n\t\t\t\t\t\t\t\t&quot;5&quot;: { &quot;name&quot;: &quot;transactionActionName&quot; , &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;6&quot;: { &quot;name&quot;: &quot;createdBy&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;7&quot;: { &quot;name&quot;: &quot;updatedBy&quot;, &quot;width&quot;:&quot;10%&quot;},\t\t\n\t\t\t\t\t\t\t\t&quot;8&quot;: { &quot;name&quot;: &quot;info&quot;, &quot;width&quot;:&quot;10%&quot;}\n\t\t\t\t\t\t}\" url=\"security/roles_transactions\" icon-info=\"{\n\t\t\t\t\t\t\t\t&quot;0&quot;: { &quot;url&quot;: &quot;#&quot;, &quot;name&quot;:&quot;truck&quot;, &quot;title&quot;:&quot;List Of....&quot;, &quot;icon&quot;: &quot;fa fa-truck&quot;, &quot;text&quot;:&quot;&quot;},\n\t\t\t\t\t\t\t\t&quot;1&quot;: { &quot;url&quot;: &quot;#&quot;, &quot;name&quot;:&quot;user&quot;, &quot;title&quot;:&quot;List Of....&quot;, &quot;icon&quot;: &quot;fa fa-user&quot;, &quot;text&quot;:&quot;&quot;}\n\t\t\t\t\t\t}\" icon-actions=\"{\n\n\t\t\t\t\t\t}\" _v-3a3fb885=\"\">\n\t\t\t\t\n\t\t\t\t\t\t<mycrudbuttons slot=\"crud\" url-export=\"security/roles_transactions/export\" btn-actions=\"{\n         \t\t\t\t\t\t&quot;0&quot;: {&quot;title&quot;: &quot;Add&quot;,    &quot;method&quot;: &quot;Add&quot;,    &quot;disabled&quot;: false},\n          \t\t\t\t\t\t&quot;1&quot;: {&quot;title&quot;: &quot;Export&quot;, &quot;method&quot;: &quot;Export&quot;, &quot;disabled&quot;: false}, \n          \t\t\t\t\t\t&quot;2&quot;: {&quot;title&quot;: &quot;Import&quot;, &quot;method&quot;: &quot;Import&quot;, &quot;disabled&quot;: false}\n        \t\t\t\t\t}\" _v-3a3fb885=\"\">\n\t\t\t\t\t\t</mycrudbuttons>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<mycrudform slot=\"forma\" url=\"security/roles_transactions\" form-title=\"Access Rights\" input-fields=\"{\n\t\t\t\t\t\t\t\t\t&quot;0&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;id&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Id&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;readonly&quot;:&quot;true&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;\n\t\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\t&quot;1&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;select&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;role_name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Role Name&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;url&quot;: &quot;security/roles/getAllRolesActive&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;table&quot;: &quot;roles&quot;\n\t\t\t\t\t\t\t\t\t },\n\n\t\t\t\t\t\t\t\t\t&quot;2&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;select&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;module_name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Module Name&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;url&quot;: &quot;security/modules/getAllModulesActive&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;table&quot;: &quot;modules&quot;\n\t\t\t\t\t\t\t\t\t },\n\n\t\t\t\t\t\t\t\t\t &quot;3&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;select&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;transaction_name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Transaction Name&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;url&quot;: &quot;security/roles_transactions/moduleSelected&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;table&quot;: &quot;transactions&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;selectFather&quot;: &quot;module_name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;selectFatherId&quot;: &quot;1&quot;\n\t\t\t\t\t\t\t\t\t }, \n\n\t\t\t\t\t\t\t\t\t &quot;4&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;hidden&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;transaction_description&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Transaction Description&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;readonly&quot;:&quot;true&quot;\t\n\t\t\t\t\t\t\t\t\t }, \n\n\n\t\t\t\t\t\t\t\t\t &quot;5&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;select&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;transaction_action_name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Transaction Action&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;url&quot;: &quot;security/roles_transactions/transactionActions&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;table&quot;: &quot;transactions_actions&quot;\n\t\t\t\t\t\t\t\t\t }\n\n\t\t\t\t\t\t\t\t}\" _v-3a3fb885=\"\">\n\t\t\t\t\t\t</mycrudform>\n\t\t\t\t</mycrudtable>\n\t\t\t<div _v-3a3fb885=\"\">\n\t\t</div>\n\t</div>\n </div>\n\n \n\n</div></div>"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -16983,7 +16783,7 @@ module.exports = {
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div _v-4792ea36=\"\">\n \t<mypopup slot=\"message\" _v-4792ea36=\"\"></mypopup>\n\t<myimport slot=\"modal-import\" url-import=\"security/modules/import\" _v-4792ea36=\"\"></myimport>\n\n\t<div class=\"container-fluid\" _v-4792ea36=\"\">\n\t\t<div class=\"row\" _v-4792ea36=\"\">\n\t\t\t<div class=\"col-sm-2\" _v-4792ea36=\"\">\n\t\t\t\t<mysubmenu submenu=\"security\" _v-4792ea36=\"\"></mysubmenu>\n\t\t\t</div>\n\t\t\t<div class=\"col-sm-10\" _v-4792ea36=\"\">\n\t\t\t\t<p class=\"bg-info\" align=\"center\" _v-4792ea36=\"\">\n\t\t      <br _v-4792ea36=\"\">\n\t\t        This option allows to follow up how the users use the system and how many times they logged.\n\t\t      <br _v-4792ea36=\"\"><br _v-4792ea36=\"\">\n\t    \t</p>\n\n\t\t\t\t<myhorizontallinks name=\"horizontal-links\" _v-4792ea36=\"\"></myhorizontallinks>\n\n\t    \t<div class=\"row\" style=\"padding:0px\" _v-4792ea36=\"\">\n\t\t\t\t\t<div class=\"col-sm-12\" style=\"padding:0px\" _v-4792ea36=\"\">\n\t\t\t\t\t \n\t\t\t\t\t  <div style=\"padding-left:10px;padding-right:20px\" _v-4792ea36=\"\">\n\t\t\t\t\t  \n\t\t\t\t\t  \t<mychart id=\"Chart1\" type=\"spline\" width=\"500\" height=\"250\" url=\"/security/dashboard/transactionsActionsUsedByDay\" title=\"Actions by Day\" x-title=\"Days\" y-title=\"Actions\" legend-position=\"bottom\" legend-display=\"false\" show-year=\"true\" show-month=\"true\" _v-4792ea36=\"\">\n\n\t\t\t\t\t  \t</mychart>\n\n\t\t\t\t\t \t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t<div class=\"row\" style=\"padding:0px\" _v-4792ea36=\"\">\n\t\t\t\t\t<div class=\"col-sm-12\" _v-4792ea36=\"\">\n\t\t\t\t\t \n\t\t\t\t\t\t<mytableyearmonth table-id=\"table1\" table-title=\"Actions Used\" columns-names=\"{\n\t\t\t\t\t\t\t\t&quot;0&quot;: { &quot;name&quot;: &quot;moduleName&quot;, &quot;width&quot;:&quot;25%&quot;},\n\t\t\t\t\t\t\t\t&quot;1&quot;: { &quot;name&quot;: &quot;transactionName&quot; , &quot;width&quot;:&quot;25%&quot;},\n\t\t\t\t\t\t\t\t&quot;2&quot;: { &quot;name&quot;: &quot;transactionActionName&quot; , &quot;width&quot;:&quot;25%&quot;},\n\t\t\t\t\t\t\t\t&quot;3&quot;: { &quot;name&quot;: &quot;clicks&quot; , &quot;width&quot;:&quot;25%&quot;}\n\t\t\t\t\t\t\t}\" url=\"security/dashboard/transactionsActionsUsed\" icon-info=\"{ }\" icon-actions=\"{ }\" show-year=\"true\" show-month=\"true\" _v-4792ea36=\"\">\n\n\t\t\t\t\t\t\t</mytableyearmonth>\n\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\n\t\t\t\t</div>\n\n\t\t\t\t<div class=\"row\" style=\"padding:0px\" _v-4792ea36=\"\">\n\t\t\t\t\t<div class=\"col-sm-12\" style=\"padding:0px\" _v-4792ea36=\"\">\n\t\t\t\t\t \n\t\t\t\t\t  <div style=\"padding-left:10px;padding-right:20px\" _v-4792ea36=\"\">\n\t\t\t\t\t  \n\t\t\t\t\t  \t<mychart id=\"Chart2\" type=\"column\" width=\"500\" height=\"250\" url=\"/security/dashboard/transactionsActionsUsedByMonth\" title=\"Actions by Month\" x-title=\"Days\" y-title=\"Actions\" legend-position=\"top\" legend-display=\"false\" show-year=\"true\" show-month=\"false\" _v-4792ea36=\"\">\n\t\t\t\t\t  \t</mychart>\n\n\t\t\t\t\t \t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\n\t\t\t</div>\t\t\n\t\t</div>\t\t\n\t</div>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div _v-4792ea36=\"\">\n \t<mypopup slot=\"message\" _v-4792ea36=\"\"></mypopup>\n\t<myimport slot=\"modal-import\" url-import=\"security/modules/import\" _v-4792ea36=\"\"></myimport>\n\n\t<div class=\"container-fluid\" _v-4792ea36=\"\">\n\t\t<div class=\"row\" _v-4792ea36=\"\">\n\t\t\t<!--<div class=\"col-sm-2\">\n\t\t\t\t<mysubmenu submenu= \"security\"></mysubmenu>\n\t\t\t</div>-->\n\t\t\t<div class=\"col-sm-12\" _v-4792ea36=\"\">\n\t\t\t\t<p class=\"bg-info\" align=\"center\" _v-4792ea36=\"\">\n\t\t      <br _v-4792ea36=\"\">\n\t\t        This option allows to follow up how the users use the system and how many times they logged.\n\t\t      <br _v-4792ea36=\"\"><br _v-4792ea36=\"\">\n\t    \t</p>\n\n\t\t\t\t<myhorizontallinks name=\"horizontal-links\" _v-4792ea36=\"\"></myhorizontallinks>\n\n\t    \t<div class=\"row\" style=\"padding:0px\" _v-4792ea36=\"\">\n\t\t\t\t\t<div class=\"col-sm-12\" style=\"padding:0px\" _v-4792ea36=\"\">\n\t\t\t\t\t \n\t\t\t\t\t  <div style=\"padding-left:10px;padding-right:20px\" _v-4792ea36=\"\">\n\t\t\t\t\t  \n\t\t\t\t\t  \t<mychart id=\"Chart1\" type=\"spline\" width=\"500\" height=\"250\" url=\"/security/dashboard/transactionsActionsUsedByDay\" title=\"Actions by Day\" x-title=\"Days\" y-title=\"Actions\" legend-position=\"bottom\" legend-display=\"false\" show-year=\"true\" show-month=\"true\" _v-4792ea36=\"\">\n\n\t\t\t\t\t  \t</mychart>\n\n\t\t\t\t\t \t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t<div class=\"row\" style=\"padding:0px\" _v-4792ea36=\"\">\n\t\t\t\t\t<div class=\"col-sm-12\" _v-4792ea36=\"\">\n\t\t\t\t\t \n\t\t\t\t\t\t<mytableyearmonth table-id=\"table1\" table-title=\"Actions Used\" columns-names=\"{\n\t\t\t\t\t\t\t\t&quot;0&quot;: { &quot;name&quot;: &quot;moduleName&quot;, &quot;width&quot;:&quot;25%&quot;},\n\t\t\t\t\t\t\t\t&quot;1&quot;: { &quot;name&quot;: &quot;transactionName&quot; , &quot;width&quot;:&quot;25%&quot;},\n\t\t\t\t\t\t\t\t&quot;2&quot;: { &quot;name&quot;: &quot;transactionActionName&quot; , &quot;width&quot;:&quot;25%&quot;},\n\t\t\t\t\t\t\t\t&quot;3&quot;: { &quot;name&quot;: &quot;clicks&quot; , &quot;width&quot;:&quot;25%&quot;}\n\t\t\t\t\t\t\t}\" url=\"security/dashboard/transactionsActionsUsed\" icon-info=\"{ }\" icon-actions=\"{ }\" show-year=\"true\" show-month=\"true\" _v-4792ea36=\"\">\n\n\t\t\t\t\t\t\t</mytableyearmonth>\n\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\n\t\t\t\t</div>\n\n\t\t\t\t<div class=\"row\" style=\"padding:0px\" _v-4792ea36=\"\">\n\t\t\t\t\t<div class=\"col-sm-12\" style=\"padding:0px\" _v-4792ea36=\"\">\n\t\t\t\t\t \n\t\t\t\t\t  <div style=\"padding-left:10px;padding-right:20px\" _v-4792ea36=\"\">\n\t\t\t\t\t  \n\t\t\t\t\t  \t<mychart id=\"Chart2\" type=\"column\" width=\"500\" height=\"250\" url=\"/security/dashboard/transactionsActionsUsedByMonth\" title=\"Actions by Month\" x-title=\"Days\" y-title=\"Actions\" legend-position=\"top\" legend-display=\"false\" show-year=\"true\" show-month=\"false\" _v-4792ea36=\"\">\n\t\t\t\t\t  \t</mychart>\n\n\t\t\t\t\t \t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\n\t\t\t</div>\t\t\n\t\t</div>\t\t\n\t</div>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -17103,7 +16903,7 @@ module.exports = {
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div _v-58a10f66=\"\">\n <mypopup slot=\"message\" _v-58a10f66=\"\"></mypopup>\n <myimport slot=\"modal-import\" url-import=\"security/modules/import\" _v-58a10f66=\"\"></myimport>\n\n\t<div class=\"container-fluid\" _v-58a10f66=\"\">\n\t\t<div class=\"row\" _v-58a10f66=\"\">\n\t\t\t<div class=\"col-sm-2\" _v-58a10f66=\"\">\n\t\t\t\t<mysubmenu submenu=\"security\" _v-58a10f66=\"\"></mysubmenu>\n\t\t\t</div>\n\t\t\n\t\t\t<div class=\"col-sm-10\" _v-58a10f66=\"\">\n\t\t\t\t\n\t\t\t\t<mycrudtable table-id=\"table1\" table-title=\"Module List\" select-fields=\"{ }\" columns-names=\"{\n\t\t\t\t\t\t\t\t&quot;0&quot;: { &quot;name&quot;: &quot;id&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;1&quot;: { &quot;name&quot;: &quot;moduleName&quot;, &quot;width&quot;:&quot;25%&quot;},\n\t\t\t\t\t\t\t\t&quot;2&quot;: { &quot;name&quot;: &quot;moduleDescription&quot; , &quot;width&quot;:&quot;50%&quot;},\n\t\t\t\t\t\t\t\t&quot;3&quot;: { &quot;name&quot;: &quot;moduleOrder&quot; , &quot;width&quot;:&quot;50%&quot;},\n\t\t\t\t\t\t\t\t&quot;4&quot;: { &quot;name&quot;: &quot;status&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;5&quot;: { &quot;name&quot;: &quot;createdBy&quot;, &quot;width&quot;:&quot;15%&quot;},\n\t\t\t\t\t\t\t\t&quot;6&quot;: { &quot;name&quot;: &quot;updatedBy&quot;, &quot;width&quot;:&quot;25%&quot;}\n\t\t\t\t\t\t}\" url=\"security/modules\" icon-info=\"{ }\" icon-actions=\"{ }\" _v-58a10f66=\"\">\n\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t<mycrudbuttons slot=\"crud\" url-export=\"security/modules/export\" btn-actions=\"{\n         \t\t\t\t\t\t&quot;0&quot;: {&quot;title&quot;: &quot;Add&quot;,    &quot;method&quot;: &quot;Add&quot;,    &quot;disabled&quot;: false},\n        \t\t\t\t\t\t&quot;1&quot;: {&quot;title&quot;: &quot;Export&quot;, &quot;method&quot;: &quot;Export&quot;, &quot;disabled&quot;: false}, \n        \t\t\t\t\t\t&quot;2&quot;: {&quot;title&quot;: &quot;Import&quot;, &quot;method&quot;: &quot;Import&quot;, &quot;disabled&quot;: false}        \t\t\t\t\n        \t\t\t}\" _v-58a10f66=\"\">\n\t\t\t\t\t\t</mycrudbuttons>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<mycrudform slot=\"forma\" url=\"security/modules\" form-title=\"Module\" input-fields=\"{\n\t\t\t\t\t\t\t\t\t&quot;0&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;id&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Id&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;readonly&quot;:&quot;true&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\t&quot;1&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;module_name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Module Name&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;Type the Module Name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\t&quot;2&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;textarea&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;module_description&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Module Description&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;Type the Module Description&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t },\n\n\t\t\t\t\t\t\t\t\t&quot;3&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;module_order&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Module order&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;Type the Module Order&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\t&quot;4&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;status&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;deleted_at&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Status&quot;\n\t\t\t\t\t\t\t\t\t }\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t}\" _v-58a10f66=\"\">\n\t\t\t\t\t\t</mycrudform>\n\t\t\t\t</mycrudtable>\n\t\t\t<div _v-58a10f66=\"\">\n\t\t</div>\n\t</div>\n </div>\n</div></div>"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div _v-58a10f66=\"\">\n <mypopup slot=\"message\" _v-58a10f66=\"\"></mypopup>\n <myimport slot=\"modal-import\" url-import=\"security/modules/import\" _v-58a10f66=\"\"></myimport>\n\n\t<div class=\"container-fluid\" _v-58a10f66=\"\">\n\t\t<div class=\"row\" _v-58a10f66=\"\">\n\t\t\t<!--<div class=\"col-sm-2\">\n\t\t\t\t<mysubmenu submenu= \"security\"></mysubmenu>\n\t\t\t</div>-->\n\t\t\n\t\t\t<div class=\"col-sm-12\" _v-58a10f66=\"\">\n\t\t\t\t\n\t\t\t\t<mycrudtable table-id=\"table1\" table-title=\"Module List\" select-fields=\"{ }\" columns-names=\"{\n\t\t\t\t\t\t\t\t&quot;0&quot;: { &quot;name&quot;: &quot;id&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;1&quot;: { &quot;name&quot;: &quot;moduleName&quot;, &quot;width&quot;:&quot;25%&quot;},\n\t\t\t\t\t\t\t\t&quot;2&quot;: { &quot;name&quot;: &quot;moduleDescription&quot; , &quot;width&quot;:&quot;50%&quot;},\n\t\t\t\t\t\t\t\t&quot;3&quot;: { &quot;name&quot;: &quot;moduleOrder&quot; , &quot;width&quot;:&quot;50%&quot;},\n\t\t\t\t\t\t\t\t&quot;4&quot;: { &quot;name&quot;: &quot;status&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;5&quot;: { &quot;name&quot;: &quot;createdBy&quot;, &quot;width&quot;:&quot;15%&quot;},\n\t\t\t\t\t\t\t\t&quot;6&quot;: { &quot;name&quot;: &quot;updatedBy&quot;, &quot;width&quot;:&quot;25%&quot;}\n\t\t\t\t\t\t}\" url=\"security/modules\" icon-info=\"{ }\" icon-actions=\"{ }\" _v-58a10f66=\"\">\n\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t<mycrudbuttons slot=\"crud\" url-export=\"security/modules/export\" btn-actions=\"{\n         \t\t\t\t\t\t&quot;0&quot;: {&quot;title&quot;: &quot;Add&quot;,    &quot;method&quot;: &quot;Add&quot;,    &quot;disabled&quot;: false},\n        \t\t\t\t\t\t&quot;1&quot;: {&quot;title&quot;: &quot;Export&quot;, &quot;method&quot;: &quot;Export&quot;, &quot;disabled&quot;: false}, \n        \t\t\t\t\t\t&quot;2&quot;: {&quot;title&quot;: &quot;Import&quot;, &quot;method&quot;: &quot;Import&quot;, &quot;disabled&quot;: false}        \t\t\t\t\n        \t\t\t}\" _v-58a10f66=\"\">\n\t\t\t\t\t\t</mycrudbuttons>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<mycrudform slot=\"forma\" url=\"security/modules\" form-title=\"Module\" input-fields=\"{\n\t\t\t\t\t\t\t\t\t&quot;0&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;id&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Id&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;readonly&quot;:&quot;true&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\t&quot;1&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;module_name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Module Name&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;Type the Module Name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\t&quot;2&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;textarea&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;module_description&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Module Description&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;Type the Module Description&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t },\n\n\t\t\t\t\t\t\t\t\t&quot;3&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;module_order&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Module order&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;Type the Module Order&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\t&quot;4&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;status&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;deleted_at&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Status&quot;\n\t\t\t\t\t\t\t\t\t }\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t}\" _v-58a10f66=\"\">\n\t\t\t\t\t\t</mycrudform>\n\t\t\t\t</mycrudtable>\n\t\t\t<div _v-58a10f66=\"\">\n\t\t</div>\n\t</div>\n </div>\n</div></div>"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -17343,7 +17143,7 @@ module.exports = {
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div _v-36e62ffa=\"\">\n <mypopup slot=\"message\" _v-36e62ffa=\"\"></mypopup>\n <myimport slot=\"modal-import\" url-import=\"security/roles/import\" _v-36e62ffa=\"\"></myimport>\n\t<!--mytopmenu></mytopmenu-->\n\t<div class=\"container-fluid\" _v-36e62ffa=\"\">\n\t\t<div class=\"row\" _v-36e62ffa=\"\">\n\t\t\t<div class=\"col-sm-2\" _v-36e62ffa=\"\">\n\t\t\t\t<mysubmenu submenu=\"security\" _v-36e62ffa=\"\"></mysubmenu>\n\t\t\t</div>\n\t\t\n\t\t\t<div class=\"col-sm-10\" _v-36e62ffa=\"\">\n\n\t\t\t\t<mycrudtable table-id=\"table1\" table-title=\"Role List\" select-fields=\"{}\" columns-names=\"{\n\t\t\t\t\t\t\t\t&quot;0&quot;: { &quot;name&quot;: &quot;id&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;1&quot;: { &quot;name&quot;: &quot;rolName&quot;, &quot;width&quot;:&quot;25%&quot;},\n\t\t\t\t\t\t\t\t&quot;2&quot;: { &quot;name&quot;: &quot;rolDescription&quot; , &quot;width&quot;:&quot;50%&quot;},\n\t\t\t\t\t\t\t\t&quot;3&quot;: { &quot;name&quot;: &quot;status&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;4&quot;: { &quot;name&quot;: &quot;createdBy&quot;, &quot;width&quot;:&quot;15%&quot;},\n\t\t\t\t\t\t\t\t&quot;5&quot;: { &quot;name&quot;: &quot;updatedBy&quot;, &quot;width&quot;:&quot;25%&quot;},\n\t\t\t\t\t\t\t\t&quot;6&quot;: { &quot;name&quot;: &quot;info&quot;, &quot;width&quot;:&quot;25%&quot;},\n\t\t\t\t\t\t\t\t&quot;7&quot;: { &quot;name&quot;: &quot;actions&quot;, &quot;width&quot;:&quot;25%&quot;}\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t}\" url=\"security/roles\" icon-info=\"{\n\t\t\t\t\t\t\t\t&quot;0&quot;: { &quot;url&quot;: &quot;#&quot;, &quot;name&quot;:&quot;truck&quot;, &quot;title&quot;:&quot;List Of....&quot;, &quot;icon&quot;: &quot;fa fa-file-text-o&quot;, &quot;text&quot;:&quot;&quot;},\n\t\t\t\t\t\t\t\t&quot;1&quot;: { &quot;url&quot;: &quot;#&quot;, &quot;name&quot;:&quot;truck&quot;, &quot;title&quot;:&quot;List Of....&quot;, &quot;icon&quot;: &quot;fa fa-truck&quot;, &quot;text&quot;:&quot;&quot;},\n\t\t\t\t\t\t\t\t&quot;2&quot;: { &quot;url&quot;: &quot;#&quot;, &quot;name&quot;:&quot;truck&quot;, &quot;title&quot;:&quot;List Of....&quot;, &quot;icon&quot;: &quot;fa fa-road&quot;, &quot;text&quot;:&quot;&quot;}\n\t\t\t\t\t\t}\" icon-actions=\"{\n\t\t\t\t\t\t\t\t&quot;0&quot;: { &quot;url&quot;: &quot;/users&quot;, &quot;name&quot;:&quot;truck&quot;, &quot;title&quot;:&quot;List Of....&quot;, &quot;icon&quot;: &quot;fa fa-user&quot;, &quot;text&quot;:&quot;&quot;},\n\t\t\t\t\t\t\t\t&quot;1&quot;: { &quot;url&quot;: &quot;#&quot;, &quot;name&quot;:&quot;truck&quot;, &quot;title&quot;:&quot;List Of....&quot;, &quot;icon&quot;: &quot;fa fa-comment-o&quot;, &quot;text&quot;:&quot;&quot;},\n\t\t\t\t\t\t\t\t&quot;2&quot;: { &quot;url&quot;: &quot;#&quot;, &quot;name&quot;:&quot;truck&quot;, &quot;title&quot;:&quot;List Of....&quot;, &quot;icon&quot;: &quot;fa fa-map-marker&quot;, &quot;text&quot;:&quot;&quot;},\n\t\t\t\t\t\t\t\t&quot;3&quot;: { &quot;url&quot;: &quot;#&quot;, &quot;name&quot;:&quot;user&quot;, &quot;title&quot;:&quot;List Of....&quot;, &quot;icon&quot;: &quot;fa fa-trash&quot;, &quot;text&quot;:&quot;&quot;}\n\t\t\t\t\t\t}\" _v-36e62ffa=\"\">\n\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t<mycrudbuttons slot=\"crud\" url-export=\"security/roles/export\" btn-actions=\"{\n         \t\t\t\t\t\t&quot;0&quot;: {&quot;title&quot;: &quot;Add&quot;,    &quot;method&quot;: &quot;Add&quot;,    &quot;disabled&quot;: false},\n        \t\t\t\t\t\t&quot;1&quot;: {&quot;title&quot;: &quot;Export&quot;, &quot;method&quot;: &quot;Export&quot;, &quot;disabled&quot;: false}, \n        \t\t\t\t\t\t&quot;2&quot;: {&quot;title&quot;: &quot;Import&quot;, &quot;method&quot;: &quot;Import&quot;, &quot;disabled&quot;: false}        \t\t\t\t\n        \t\t\t}\" _v-36e62ffa=\"\">\n\t\t\t\t\t\t</mycrudbuttons>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<mycrudform slot=\"forma\" url=\"security/roles\" form-title=\"Role\" input-fields=\"{\n\t\t\t\t\t\t\t\t\t&quot;0&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;id&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Id&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;readonly&quot;:&quot;true&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\t&quot;1&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;role_name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Role Name&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;Type the Role Name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\t&quot;2&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;textarea&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;role_description&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Role Description&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;Type the Role Description&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t },\n\n\t\t\t\t\t\t\t\t\t&quot;3&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;status&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;deleted_at&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Status&quot;\n\t\t\t\t\t\t\t\t\t }\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t}\" _v-36e62ffa=\"\">\n\t\t\t\t\t\t</mycrudform>\n\t\t\t\t</mycrudtable>\n\t\t\t<div _v-36e62ffa=\"\">\n\t\t</div>\n\t</div>\n </div>\n</div></div>"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div _v-36e62ffa=\"\">\n <mypopup slot=\"message\" _v-36e62ffa=\"\"></mypopup>\n <myimport slot=\"modal-import\" url-import=\"security/roles/import\" _v-36e62ffa=\"\"></myimport>\n\t<!--mytopmenu></mytopmenu-->\n\t<div class=\"container-fluid\" _v-36e62ffa=\"\">\n\t\t<div class=\"row\" _v-36e62ffa=\"\">\n\t\t\t<!--<div class=\"col-sm-2\">\n\t\t\t\t<mysubmenu submenu= \"security\"></mysubmenu>\n\t\t\t</div>-->\n\t\t\n\t\t\t<div class=\"col-sm-12\" _v-36e62ffa=\"\">\n\n\t\t\t\t<mycrudtable table-id=\"table1\" table-title=\"Role List\" select-fields=\"{}\" columns-names=\"{\n\t\t\t\t\t\t\t\t&quot;0&quot;: { &quot;name&quot;: &quot;id&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;1&quot;: { &quot;name&quot;: &quot;rolName&quot;, &quot;width&quot;:&quot;25%&quot;},\n\t\t\t\t\t\t\t\t&quot;2&quot;: { &quot;name&quot;: &quot;rolDescription&quot; , &quot;width&quot;:&quot;50%&quot;},\n\t\t\t\t\t\t\t\t&quot;3&quot;: { &quot;name&quot;: &quot;status&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;4&quot;: { &quot;name&quot;: &quot;createdBy&quot;, &quot;width&quot;:&quot;15%&quot;},\n\t\t\t\t\t\t\t\t&quot;5&quot;: { &quot;name&quot;: &quot;updatedBy&quot;, &quot;width&quot;:&quot;25%&quot;},\n\t\t\t\t\t\t\t\t&quot;6&quot;: { &quot;name&quot;: &quot;info&quot;, &quot;width&quot;:&quot;25%&quot;},\n\t\t\t\t\t\t\t\t&quot;7&quot;: { &quot;name&quot;: &quot;actions&quot;, &quot;width&quot;:&quot;25%&quot;}\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t}\" url=\"security/roles\" icon-info=\"{\n\t\t\t\t\t\t\t\t&quot;0&quot;: { &quot;url&quot;: &quot;#&quot;, &quot;name&quot;:&quot;truck&quot;, &quot;title&quot;:&quot;List Of....&quot;, &quot;icon&quot;: &quot;fa fa-file-text-o&quot;, &quot;text&quot;:&quot;&quot;},\n\t\t\t\t\t\t\t\t&quot;1&quot;: { &quot;url&quot;: &quot;#&quot;, &quot;name&quot;:&quot;truck&quot;, &quot;title&quot;:&quot;List Of....&quot;, &quot;icon&quot;: &quot;fa fa-truck&quot;, &quot;text&quot;:&quot;&quot;},\n\t\t\t\t\t\t\t\t&quot;2&quot;: { &quot;url&quot;: &quot;#&quot;, &quot;name&quot;:&quot;truck&quot;, &quot;title&quot;:&quot;List Of....&quot;, &quot;icon&quot;: &quot;fa fa-road&quot;, &quot;text&quot;:&quot;&quot;}\n\t\t\t\t\t\t}\" icon-actions=\"{\n\t\t\t\t\t\t\t\t&quot;0&quot;: { &quot;url&quot;: &quot;/users&quot;, &quot;name&quot;:&quot;truck&quot;, &quot;title&quot;:&quot;List Of....&quot;, &quot;icon&quot;: &quot;fa fa-user&quot;, &quot;text&quot;:&quot;&quot;},\n\t\t\t\t\t\t\t\t&quot;1&quot;: { &quot;url&quot;: &quot;#&quot;, &quot;name&quot;:&quot;truck&quot;, &quot;title&quot;:&quot;List Of....&quot;, &quot;icon&quot;: &quot;fa fa-comment-o&quot;, &quot;text&quot;:&quot;&quot;},\n\t\t\t\t\t\t\t\t&quot;2&quot;: { &quot;url&quot;: &quot;#&quot;, &quot;name&quot;:&quot;truck&quot;, &quot;title&quot;:&quot;List Of....&quot;, &quot;icon&quot;: &quot;fa fa-map-marker&quot;, &quot;text&quot;:&quot;&quot;},\n\t\t\t\t\t\t\t\t&quot;3&quot;: { &quot;url&quot;: &quot;#&quot;, &quot;name&quot;:&quot;user&quot;, &quot;title&quot;:&quot;List Of....&quot;, &quot;icon&quot;: &quot;fa fa-trash&quot;, &quot;text&quot;:&quot;&quot;}\n\t\t\t\t\t\t}\" _v-36e62ffa=\"\">\n\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t<mycrudbuttons slot=\"crud\" url-export=\"security/roles/export\" btn-actions=\"{\n         \t\t\t\t\t\t&quot;0&quot;: {&quot;title&quot;: &quot;Add&quot;,    &quot;method&quot;: &quot;Add&quot;,    &quot;disabled&quot;: false},\n        \t\t\t\t\t\t&quot;1&quot;: {&quot;title&quot;: &quot;Export&quot;, &quot;method&quot;: &quot;Export&quot;, &quot;disabled&quot;: false}, \n        \t\t\t\t\t\t&quot;2&quot;: {&quot;title&quot;: &quot;Import&quot;, &quot;method&quot;: &quot;Import&quot;, &quot;disabled&quot;: false}        \t\t\t\t\n        \t\t\t}\" _v-36e62ffa=\"\">\n\t\t\t\t\t\t</mycrudbuttons>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<mycrudform slot=\"forma\" url=\"security/roles\" form-title=\"Role\" input-fields=\"{\n\t\t\t\t\t\t\t\t\t&quot;0&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;id&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Id&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;readonly&quot;:&quot;true&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\t&quot;1&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;role_name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Role Name&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;Type the Role Name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\t&quot;2&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;textarea&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;role_description&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Role Description&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;Type the Role Description&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t },\n\n\t\t\t\t\t\t\t\t\t&quot;3&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;status&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;deleted_at&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Status&quot;\n\t\t\t\t\t\t\t\t\t }\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t}\" _v-36e62ffa=\"\">\n\t\t\t\t\t\t</mycrudform>\n\t\t\t\t</mycrudtable>\n\t\t\t<div _v-36e62ffa=\"\">\n\t\t</div>\n\t</div>\n </div>\n</div></div>"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -17463,7 +17263,7 @@ module.exports = {
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div _v-325bac7f=\"\">\n <mypopup slot=\"message\" _v-325bac7f=\"\"></mypopup>\n <myimport slot=\"modal-import\" url-import=\"security/transactions/import\" _v-325bac7f=\"\"></myimport>\n\n\t<div class=\"container-fluid\" _v-325bac7f=\"\">\n\t\t<div class=\"row\" _v-325bac7f=\"\">\n\t\t\t<div class=\"col-sm-2\" _v-325bac7f=\"\">\n\t\t\t\t<mysubmenu submenu=\"security\" _v-325bac7f=\"\"></mysubmenu>\n\t\t\t</div>\n\t\t\n\t\t\t<div class=\"col-sm-10\" _v-325bac7f=\"\">\n\t\t\t\t\n\t\t\t\t<mycrudtable table-id=\"table1\" table-title=\"Transaction List\" select-fields=\"{ }\" columns-names=\"{\n\t\t\t\t\t\t\t\t&quot;0&quot;: { &quot;name&quot;: &quot;id&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;1&quot;: { &quot;name&quot;: &quot;moduleName&quot;, &quot;width&quot;:&quot;25%&quot;},\n\t\t\t\t\t\t\t\t&quot;2&quot;: { &quot;name&quot;: &quot;transactionName&quot;, &quot;width&quot;:&quot;25%&quot;},\n\t\t\t\t\t\t\t\t&quot;3&quot;: { &quot;name&quot;: &quot;transactionDescription&quot; , &quot;width&quot;:&quot;50%&quot;},\n\t\t\t\t\t\t\t\t&quot;4&quot;: { &quot;name&quot;: &quot;transactionOrder&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;5&quot;: { &quot;name&quot;: &quot;status&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;6&quot;: { &quot;name&quot;: &quot;createdBy&quot;, &quot;width&quot;:&quot;15%&quot;},\n\t\t\t\t\t\t\t\t&quot;7&quot;: { &quot;name&quot;: &quot;updatedBy&quot;, &quot;width&quot;:&quot;25%&quot;}\n\t\t\t\t\t\t}\" url=\"security/transactions\" icon-info=\"{ }\" icon-actions=\"{ }\" _v-325bac7f=\"\">\n\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t<mycrudbuttons slot=\"crud\" url-export=\"security/transactions/export\" btn-actions=\"{\n         \t\t\t\t\t\t&quot;0&quot;: {&quot;title&quot;: &quot;Add&quot;,    &quot;method&quot;: &quot;Add&quot;,    &quot;disabled&quot;: false},\n        \t\t\t\t\t\t&quot;1&quot;: {&quot;title&quot;: &quot;Export&quot;, &quot;method&quot;: &quot;Export&quot;, &quot;disabled&quot;: false}, \n        \t\t\t\t\t\t&quot;2&quot;: {&quot;title&quot;: &quot;Import&quot;, &quot;method&quot;: &quot;Import&quot;, &quot;disabled&quot;: false}        \t\t\t\t\n        \t\t\t}\" _v-325bac7f=\"\">\n\t\t\t\t\t\t</mycrudbuttons>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<mycrudform slot=\"forma\" url=\"security/transactions\" form-title=\"Transaction\" input-fields=\"{\n\t\t\t\t\t\t\t\t\t&quot;0&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;id&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Id&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;readonly&quot;:&quot;true&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\t&quot;1&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;select&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;module_name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Module Name&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;url&quot;: &quot;security/modules/getAllModulesActive&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;table&quot;: &quot;modules&quot;\n\t\t\t\t\t\t\t\t\t },\n\n\t\t\t\t\t\t\t\t\t&quot;2&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;transaction_name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Transaction Name&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;Type the Transaction Name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\t&quot;3&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;textarea&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;transaction_description&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Transaction Description&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;Type the Transaction Description&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t },\n\n\t\t\t\t\t\t\t\t\t&quot;4&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;transaction_order&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Transaction Order&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;Type the Transaction Order&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\t&quot;5&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;status&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;deleted_at&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Status&quot;\n\t\t\t\t\t\t\t\t\t }\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t}\" _v-325bac7f=\"\">\n\t\t\t\t\t\t</mycrudform>\n\t\t\t\t</mycrudtable>\n\t\t\t<div _v-325bac7f=\"\">\n\t\t</div>\n\t</div>\n </div>\n</div></div>"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div _v-325bac7f=\"\">\n <mypopup slot=\"message\" _v-325bac7f=\"\"></mypopup>\n <myimport slot=\"modal-import\" url-import=\"security/transactions/import\" _v-325bac7f=\"\"></myimport>\n\n\t<div class=\"container-fluid\" _v-325bac7f=\"\">\n\t\t<div class=\"row\" _v-325bac7f=\"\">\n\t\t\t<!--<div class=\"col-sm-2\">\n\t\t\t\t<mysubmenu submenu= \"security\"></mysubmenu>\n\t\t\t</div>-->\n\t\t\n\t\t\t<div class=\"col-sm-12\" _v-325bac7f=\"\">\n\t\t\t\t\n\t\t\t\t<mycrudtable table-id=\"table1\" table-title=\"Transaction List\" select-fields=\"{ }\" columns-names=\"{\n\t\t\t\t\t\t\t\t&quot;0&quot;: { &quot;name&quot;: &quot;id&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;1&quot;: { &quot;name&quot;: &quot;moduleName&quot;, &quot;width&quot;:&quot;25%&quot;},\n\t\t\t\t\t\t\t\t&quot;2&quot;: { &quot;name&quot;: &quot;transactionName&quot;, &quot;width&quot;:&quot;25%&quot;},\n\t\t\t\t\t\t\t\t&quot;3&quot;: { &quot;name&quot;: &quot;transactionDescription&quot; , &quot;width&quot;:&quot;50%&quot;},\n\t\t\t\t\t\t\t\t&quot;4&quot;: { &quot;name&quot;: &quot;transactionOrder&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;5&quot;: { &quot;name&quot;: &quot;status&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;6&quot;: { &quot;name&quot;: &quot;createdBy&quot;, &quot;width&quot;:&quot;15%&quot;},\n\t\t\t\t\t\t\t\t&quot;7&quot;: { &quot;name&quot;: &quot;updatedBy&quot;, &quot;width&quot;:&quot;25%&quot;}\n\t\t\t\t\t\t}\" url=\"security/transactions\" icon-info=\"{ }\" icon-actions=\"{ }\" _v-325bac7f=\"\">\n\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t<mycrudbuttons slot=\"crud\" url-export=\"security/transactions/export\" btn-actions=\"{\n         \t\t\t\t\t\t&quot;0&quot;: {&quot;title&quot;: &quot;Add&quot;,    &quot;method&quot;: &quot;Add&quot;,    &quot;disabled&quot;: false},\n        \t\t\t\t\t\t&quot;1&quot;: {&quot;title&quot;: &quot;Export&quot;, &quot;method&quot;: &quot;Export&quot;, &quot;disabled&quot;: false}, \n        \t\t\t\t\t\t&quot;2&quot;: {&quot;title&quot;: &quot;Import&quot;, &quot;method&quot;: &quot;Import&quot;, &quot;disabled&quot;: false}        \t\t\t\t\n        \t\t\t}\" _v-325bac7f=\"\">\n\t\t\t\t\t\t</mycrudbuttons>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<mycrudform slot=\"forma\" url=\"security/transactions\" form-title=\"Transaction\" input-fields=\"{\n\t\t\t\t\t\t\t\t\t&quot;0&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;id&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Id&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;readonly&quot;:&quot;true&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\t&quot;1&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;select&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;module_name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Module Name&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;url&quot;: &quot;security/modules/getAllModulesActive&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;table&quot;: &quot;modules&quot;\n\t\t\t\t\t\t\t\t\t },\n\n\t\t\t\t\t\t\t\t\t&quot;2&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;transaction_name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Transaction Name&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;Type the Transaction Name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\t&quot;3&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;textarea&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;transaction_description&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Transaction Description&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;Type the Transaction Description&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t },\n\n\t\t\t\t\t\t\t\t\t&quot;4&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;transaction_order&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Transaction Order&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;Type the Transaction Order&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\t&quot;5&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;status&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;deleted_at&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Status&quot;\n\t\t\t\t\t\t\t\t\t }\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t}\" _v-325bac7f=\"\">\n\t\t\t\t\t\t</mycrudform>\n\t\t\t\t</mycrudtable>\n\t\t\t<div _v-325bac7f=\"\">\n\t\t</div>\n\t</div>\n </div>\n</div></div>"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)

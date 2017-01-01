@@ -37,10 +37,10 @@
 					  		type="spline"
 					  		width="500"
 					  		height="250"
-							url="/security/dashboard/transactionsActionsUsedByDay"
-							title="Actions by Day"
+							url="/security/dashboard/modulesUsedByDay"
+							title="Modules Used by Day"
 							x-title="Days"
-							y-title="Actions"
+							y-title="Modules Used"
 							legend-position="bottom"
 							legend-display="false"
 							show-year="true"
@@ -60,16 +60,15 @@
 
 							table-id="table1"
 
-							table-title="Actions Used" 
+							table-title="Modules Used" 
 
 							columns-names='{
-								"0": { "name": "moduleName", "width":"25%"},
-								"1": { "name": "transactionName" , "width":"25%"},
-								"2": { "name": "transactionActionName" , "width":"25%"},
-								"3": { "name": "clicks" , "width":"25%"}
+								"0": { "name": "moduleName", "width":"50%"},
+								"1": { "name": "clicks" , "width":"50%"}
+									
 							}' 
 							
-							url="security/dashboard/transactionsActionsUsed"
+							url="security/dashboard/modulesUsed"
 
 							icon-info='{ }'
 
@@ -84,7 +83,7 @@
 							</mytableyearmonth>
 
 						</div>
-					
+						
 				</div>
 
 				<div class="row" style="padding:0px">
@@ -97,10 +96,10 @@
 					  		type="column"
 					  		width="500"
 					  		height="250"
-							url="/security/dashboard/transactionsActionsUsedByMonth"
-							title="Actions by Month"
+							url="/security/dashboard/modulesUsedByMonth"
+							title="Modules Used by Month"
 							x-title="Days"
-							y-title="Actions"
+							y-title="Modules Used"
 							legend-position="top"
 							legend-display="false"
 							show-year="true"

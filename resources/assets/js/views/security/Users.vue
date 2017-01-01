@@ -16,64 +16,52 @@
 			</div>-->
 		
 			<div class="col-sm-12">
-
-				<mycrudtable  
+				
+				<mycrudtable  table-title="User List" 
 
 						table-id="table1"
-						
-						table-title="Role List" 
 
 						select-fields='{}'
 									
 						columns-names='{
 								"0": { "name": "id", "width":"10%"},
-								"1": { "name": "rolName", "width":"25%"},
-								"2": { "name": "rolDescription" , "width":"50%"},
-								"3": { "name": "status", "width":"10%"},
-								"4": { "name": "createdBy", "width":"15%"},
-								"5": { "name": "updatedBy", "width":"25%"},
-								"6": { "name": "info", "width":"25%"},
-								"7": { "name": "actions", "width":"25%"}
-								
+								"1": { "name": "username", "width":"15%"},
+								"2": { "name": "userFullname", "width":"25%"},
+								"3": { "name": "emailAccount" , "width":"50%"},
+								"4": { "name": "roleName" , "width":"10%"},
+								"5": { "name": "status", "width":"10%"},
+								"6": { "name": "createdBy", "width":"15%"},
+								"7": { "name": "updatedBy", "width":"25%"}
 						}' 
 						
-						url="security/roles"
-
+						url="security/users"
 
 						icon-info='{
-								"0": { "url": "#", "name":"truck", "title":"List Of....", "icon": "fa fa-file-text-o", "text":""},
-								"1": { "url": "#", "name":"truck", "title":"List Of....", "icon": "fa fa-truck", "text":""},
-								"2": { "url": "#", "name":"truck", "title":"List Of....", "icon": "fa fa-road", "text":""}
+							
 						}'
 
-
 						icon-actions='{
-								"0": { "url": "/users", "name":"truck", "title":"List Of....", "icon": "fa fa-user", "text":""},
-								"1": { "url": "#", "name":"truck", "title":"List Of....", "icon": "fa fa-comment-o", "text":""},
-								"2": { "url": "#", "name":"truck", "title":"List Of....", "icon": "fa fa-map-marker", "text":""},
-								"3": { "url": "#", "name":"user", "title":"List Of....", "icon": "fa fa-trash", "text":""}
+							
 						}'
 
 						>
-						
 				
 						<mycrudbuttons
 							slot="crud" 
-							url-export="security/roles/export"
+							url-export="security/users/export"
 							btn-actions='{
          						"0": {"title": "Add",    "method": "Add",    "disabled": false},
-        						"1": {"title": "Export", "method": "Export", "disabled": false}, 
-        						"2": {"title": "Import", "method": "Import", "disabled": false}        				
-        			}'
+          						"1": {"title": "Export", "method": "Export", "disabled": false}, 
+          						"2": {"title": "Import", "method": "Import", "disabled": false}        					}'
 						>
 						</mycrudbuttons>
 						
 						<mycrudform 
 							slot="forma" 
 
-							url="security/roles"
+							url="security/users"
 
-							form-title="Role"
+							form-title="User"
 
 							input-fields='{
 									"0": {
@@ -89,25 +77,46 @@
 
 									"1": {
 										"type": "text",
-										"name": "role_name",
+										"name": "username",
 										"value": "", 
-										"label": "Role Name", 
-										"placeholder":"Type the Role Name",
+										"label": "Username",	
+										"placeholder":"Type the User ID",
 										"required": "true",	
 										"maxlength": ""
 									},
 
 									"2": {
-										"type": "textarea",
-										"name": "role_description",
+										"type": "text",
+										"name": "user_fullname",
 										"value": "", 
-										"label": "Role Description", 
-										"placeholder":"Type the Role Description",
+										"label": "User Fullname", 
+										"placeholder":"Type the User Fullname",
+										"required": "true",	
+										"maxlength": ""
+									},
+
+									"3": {
+										"type": "text",
+										"name": "email",
+										"value": "", 
+										"label": "User Email", 
+										"placeholder":"Type the User Email",
 										"required": "true",	
 										"maxlength": ""
 									 },
 
-									"3": {
+									 "4": {
+										"type": "select",
+										"name": "role_name",
+										"value": "", 
+										"label": "Role Name", 
+										"required": "true",
+										"maxlength": "",
+										"url": "security/roles/getAllRolesActive",
+										"table": "roles"
+									 },
+
+									 "5": {
 										"type": "status",
 										"name": "deleted_at",
 										"label": "Status"

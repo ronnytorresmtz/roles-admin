@@ -78,9 +78,6 @@
 <div class="container-fluid">
   <div class="row">
     <div class="row">
-
-     
-
       <div :class="colWidthTable" v-show="IsCrudExpanded">
         <div class="panel panel-default" > 
           <div class="panel-heading">
@@ -103,7 +100,6 @@
                         required={{select.required}}  
                         :disabled="select.readonly"
                         @change="accessRightForRoleSelected($event)">
-                        
                         <option 
                           v-for="op in getFieldName(select.table)"
                           :selected="op.selected" 
@@ -157,11 +153,9 @@
                       <span v-if="key=='deleted_at'" >
                           <span v-if="value==undefined">
                               <span class="btn btn-xs btn-success"> Active </span>
-                             <!--  <i class="glyphicon glyphicon-ok"></i> -->
                           </span>
                           <span v-else>
                               <span class="btn btn-xs btn-danger"> Inactive </span>
-                              <!-- <i class="glyphicon glyphicon-remove" ></i> -->
                           </span>
                       </span>
 
@@ -196,9 +190,6 @@
                   <p style="font-size:13px;" > 
                      Showing: {{from}} to {{to}} of {{total}} items
                   </p>
-                  <!-- <span style="color:blue; padding-top:10px; padding-right:20px" align="left" v-if='loading'>
-                   <img src="/assets/icons/loading_image.gif"/>  Loading 
-                  </span> -->
                   </div>
                 </div>
                 <div v-if="NoMorePages" style="color:gray" align="right"> 
@@ -217,21 +208,11 @@
             </div>
           </div>
         </div>
-        <!-- form  component-->
+        <!-- end form  component-->
         <div :class="colWidthCrud" v-show="IsCrudDisplayed">
             <slot name="forma"></slot>
         </div>
-      
       </div>
-<!-- 
-     <div v-show='loading'>
-        <div class="loading-spin">
-          <p style="position: absolute; color: White; top: 50%; left: 50%;">
-            <img src="http://pulse.sindlab.com.pk//images/ajax-loading.gif">
-          </p>
-        </div>
-      <div>  -->
-
       <!-- <pre>{{ $data | json }}</pre>  -->
     </div>
   </div>
@@ -262,7 +243,6 @@
       this.arrIconInfo=this.jsonToArray(this.iconInfo);
       this.arrIconActions=this.jsonToArray(this.iconActions);
       this.showTableOnly=(this.showTableOnly=='false') ? false : true;
-
       this.fillSelectFields();   
       this.initialUrl = this.url;
       this.lastUrl =this.initialUrl;
@@ -305,7 +285,6 @@
     methods: {
 
       clickIcon: function(row, link){
-         // alert(link.name + ': ' + row.id + ' Url: ' + link.url);
         this.$route.router.go(link.url);
       },
 
@@ -383,7 +362,6 @@
         else{
           var page_url=responde.prev_page_url; 
         }
-
         //set the route for first, prev, next, last page action
         if (page_url){
           this.first_page_url=page_url.slice(0, page_url.search('page')) + 'page=' + this.first_page + this.setSearchParam();
@@ -421,16 +399,6 @@
         return arr;
       },
 
-      // fillSelectFields: function(){
-
-      //   for (var i = 0; i < this.selects.length; i++) {
-          
-      //     console.log (this.selects[i].url);
-      //     console.log (this.selects[i].table);""
-      //   }
-              
-      // },
-
       getFieldName: function(name){
         return this.$get(name);
       },
@@ -464,11 +432,9 @@
           this.$set(select.table, option);
       },
 
-
       displayPopUpMessage: function(response){
         this.$dispatch('displayAlert', (response.status==200) ? 'success' : 'danger', response.data.message + ' (' + response.status + ')');
       },
-
 
       accessRightForRoleSelected: function(e){
        this.IsCrudDisplayed=false;
@@ -482,7 +448,6 @@
     events: {
 
       displayCrud: function(val) {
-        //this.IsCrudDisplayed = !this.IsCrudDisplayed;
         this.IsCrudDisplayed = val;
       },
 

@@ -4,6 +4,10 @@
 
 # Roles Admin Application
 
+[![Build Status](https://travis-ci.org/ronnytorresmtz/framework.svg)](https://travis-ci.org/ronnytorresmtz/roles-admin)
+[![Coverage Status](http://img.shields.io/coveralls/ronnytorresmtz/roles-admin.svg?style=flat-square)](https://coveralls.io/r/ronnytorresmtz/roles-admin)
+[![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://badges.mit-license.org)
+
 The idea behind this Roles Admin Application is to have an isolate application from the Main Business Application your are developing.
 
 This Roles Admin Application will allows you to store (in a database) the modules names, transactions name and the security access level for the users. The modules names normally will be the Main Menu Options and the transactions will be the Sub Menu Options.
@@ -17,7 +21,7 @@ From you Business Application, you can store actions like query, create, update,
 [![Total Downloads](https://poser.pugx.org/laravel/framework/downloads.svg)](https://packagist.org/packages/laravel/framework)
 [![Latest Stable Version](https://poser.pugx.org/laravel/framework/v/stable.svg)](https://packagist.org/packages/laravel/framework)
 [![Latest Unstable Version](https://poser.pugx.org/laravel/framework/v/unstable.svg)](https://packagist.org/packages/laravel/framework)
-<!--[![License](https://poser.pugx.org/laravel/framework/license.svg)](https://packagist.org/packages/laravel/framework)-->
+[![License](https://poser.pugx.org/laravel/framework/license.svg)](https://packagist.org/packages/laravel/framework)-->
 
 
 ##What is included in this web application?
@@ -67,3 +71,4 @@ Used to Remove Row Tables in only one Vue Custom Component
 - Migrate vue to vue 2.0 and decide to used Vuex or Events to handle the compoments communicatione instead Bradcast method.
 - Migrate to Laravel 5.3
 - New functionalities to Support Multiple Business Applications for One Roles Admin Database.
+

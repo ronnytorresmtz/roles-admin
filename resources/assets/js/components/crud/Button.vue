@@ -20,7 +20,6 @@
     </span>
  </div>
  <br/>
-
 <!--pre>{{ $data | json }}</pre-->
 </template>
 

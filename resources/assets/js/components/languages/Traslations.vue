@@ -12,8 +12,7 @@ module.exports = {
       long_months: ['January','Febrary','March','April','May','June','July','August','September','October','November','Dicember'],
       long_week_day: ['Monday', 'Tuesday', 'Wednesday','Thursday','Friday','Saturday','Sunday'],
       shor_week_day: ['Mon', 'Tue', 'Wed','Thu','Fri','Sat','Sun'],
-
-
+      
       //General
       id: 'Id',
       status: 'Status',
@@ -25,28 +24,7 @@ module.exports = {
 
       // *** FACILITIES ***
 
-      //Institutes
-      instituteId: 'Institute Id',
-      instituteName: 'Institute Name',
-      instituteDescription: 'Institute Description',
-
-     //Plans
-      campusId: 'Campus Id',
-      campusName: 'Campus Name',
-      campusDescription: 'Campus Description',
-
-      // *** ACADEMIC ***
-
-      //Plans
-      planId:           'Plan Id',
-      planName:         'Plan Name',
-      planDescription:  'Plan Description',
-
-     //Programs
-      programId:          'Program Id',
-      programName:        'Program Name',
-      programDescription: 'Program Description',
-
+      
       //*** SECUTIRY ***
      
       //Users
@@ -59,7 +37,7 @@ module.exports = {
       rolName:        'Role Name',
       rolDescription: 'Role Description',
 
-      //Access RUghts
+      //Access Rights
       moduleName:             'Module Name',
       transactionName:        'Transaction Name',
       transactionDescription: 'Transaction Description',
@@ -101,31 +79,6 @@ module.exports = {
       links: 'Ligas',
       info: 'Info',
 
-
-      // *** FACILITIES ***
-
-      //Institutes
-      instituteId: 'Instituto Id',
-      instituteName: 'Nombre de Instituto',
-      instituteDescription: 'Descripción de Instituto',
-
-     //Plans
-      campusId: 'Campus Id',
-      campusName: 'Nombre de Campus',
-      campusDescription: 'Descripción del Campus',
-
-      // *** ACADEMIC ***
-
-      //Plans
-      planId: 'Plan Id',
-      planName: 'Nombre de Plan',
-      planDescription: 'Descripción del Plan',
-
-      //Programs
-      programId: 'Programa Id',
-      programName: 'Nombre de Programa',
-      programDescription: 'Descripción del Programa',
-
       //*** SECUTIRY ***
 
       //Users
@@ -164,27 +117,6 @@ module.exports = {
     
   },
 
-  test: {
-     
-    users:{
-      id: 'Id',
-      status: 'Estatus',
-      createdBy: 'Fecha de Creación',
-      updatedBy: 'Fecha de Modificación',
-      username: 'Cuenta de Usuario',
-      userFullname: 'Nombre de Usuario',
-      emailAccount: 'Cuenta de Correo' , 
-      roleName: 'Perfil de Usuario',
-    },
-
-    roles:{
-       rolName: 'Nombre de Role',
-      rolDescription: 'Descripción del Role',
-    },
-
-
-    
-  } ,
 };
 
 </script>

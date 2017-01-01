@@ -37,14 +37,14 @@
 					  		type="spline"
 					  		width="500"
 					  		height="250"
-							url="/security/dashboard/transactionsActionsUsedByDay"
-							title="Actions by Day"
-							x-title="Days"
-							y-title="Actions"
-							legend-position="bottom"
-							legend-display="false"
-							show-year="true"
-							show-month="true"
+							  url="/security/dashboard/usersLoggedByDay"
+							  title="Users Logged by Day"
+							  x-title="Days"
+							  y-title="Users Logged"
+							  legend-position="bottom"
+							  legend-display="false"
+							  show-year="true"
+							  show-month="true"
 					  	>
 
 					  	</mychart>
@@ -54,22 +54,22 @@
 				</div>
 				
 				<div class="row" style="padding:0px">
-					<div class="col-sm-12" >
+					<div class="col-sm-6" >
 					 
 						<mytableyearmonth  
 
 							table-id="table1"
 
-							table-title="Actions Used" 
+							table-title="Top User Logged" 
 
 							columns-names='{
-								"0": { "name": "moduleName", "width":"25%"},
-								"1": { "name": "transactionName" , "width":"25%"},
-								"2": { "name": "transactionActionName" , "width":"25%"},
-								"3": { "name": "clicks" , "width":"25%"}
+									"0": { "name": "username", "width":"25%"},
+									"1": { "name": "userFullname" , "width":"50%"},
+									"2": { "name": "timesLogged" , "width":"50%"}
+									
 							}' 
 							
-							url="security/dashboard/transactionsActionsUsed"
+							url="security/dashboard/usersLogged"
 
 							icon-info='{ }'
 
@@ -85,6 +85,36 @@
 
 						</div>
 					
+
+					<div class="col-sm-6" >
+					 
+					  <mytableyearmonth  
+
+					  			table-id="table2"
+
+									table-title="Actions by User Logged" 
+
+									columns-names='{
+											"0": { "name": "username", "width":"25%"},
+											"1": { "name": "actions" , "width":"50%"},
+											"2": { "name": "clicks", "width":"10%"}
+									}' 
+									
+									url="security/dashboard/actionsByUsersLogged"
+
+									icon-info='{ }'
+
+									icon-actions='{ }'
+
+									show-year ="true"
+							
+									show-month = "true"
+
+									>
+
+						</mytableyearmonth>
+
+					</div>
 				</div>
 
 				<div class="row" style="padding:0px">
@@ -97,14 +127,14 @@
 					  		type="column"
 					  		width="500"
 					  		height="250"
-							url="/security/dashboard/transactionsActionsUsedByMonth"
-							title="Actions by Month"
-							x-title="Days"
-							y-title="Actions"
-							legend-position="top"
-							legend-display="false"
-							show-year="true"
-							show-month="false"
+							  url="/security/dashboard/usersLoggedByMonth"
+							  title="Users Logged by Month"
+							  x-title="Days"
+							  y-title="Users Logged"
+							  legend-position="top"
+							  legend-display="false"
+							  show-year="true"
+							  show-month="false"
 					  	>
 					  	</mychart>
 

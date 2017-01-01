@@ -43,7 +43,6 @@
     <div class="panel panel-default" > 
       <div class="pull-right expand-botton">
         <button class="btn btn-xs btn-default expand-botton" @click.prevent="expand" v-text="expandOrCollapse">
-       <!--i class="glyphicon glyphicon-align-justify" ></i-->
         </button>
       </div>
       <div class="panel-heading">
@@ -146,12 +145,10 @@
         <button class="btn btn-sm btn-success button-size" v-show="displayBtnSave" :disabled="isDisableBtnSave" @click.prevent="btnSave" > Save </button> 
         <button class="btn btn-sm btn-success button-size" v-show="displayBtnUpdate" :disabled="isDisableBtnUpdate" @click.prevent="btnUpdate" > Update </a> 
         <button class="btn btn-sm btn-danger button-size" v-show="displayBtnDelete" @click.prevent="btnDelete" > Delete </button>
-        <!-- <button class="btn btn-sm btn-success button-size" v-show="displayBtnReset" @click.prevent="btnReset" > Reset </button> -->
         <button class="btn btn-sm btn-success button-size" v-show="displayBtnExport" @click.prevent="btnExport" > Export </button>
         <button class="btn btn-sm btn-success button-size" v-show="displayBtnImport" @click.prevent="btnImport" > Import </button>
         <button class="btn btn-sm btn-default button-size" @click.prevent="btnClose" > Close </button>
       </div>
-
       
         <div class="processing" align="left" v-if="processing">
           <img src="/assets/icons/loading_image.gif"/> Processing
@@ -160,18 +157,13 @@
           <br><br>
         </div>
         <br>
-
        <!--  <pre>{{ $data | json }}</pre> -->
-
     </div> 
   </div>
 
-
 </template>
 
-
 <script>
-
   var CONST_NEW='New';
 
   module.exports = {
@@ -180,7 +172,6 @@
 
     ready: function(){
       this.fields=this.jsonToArray(this.inputFields);
-      //this.fields=arr;
       this.countFieldsRequired();
       this.fillSelectFields(); 
     },
@@ -261,19 +252,6 @@
             this.displayPopUpMessage(response);
           }); 
           this.$set(field.table, option);
-
-
-          // var obj = {};
-          // obj[field.table] = option;
-          // this.fields2.push(obj);
-
-          // for (var i = 0; i < this.fields2.length; i++) {
-          //     this.fields2[i].eoles(function(obj){
-          //         console.log(obj);
-          //     }); 
-          // }
-
-
       },
 
       countFieldsRequired: function(){
@@ -467,8 +445,6 @@
               break;
             }
           }
-          
-          
       },
 
       setValueInSelect: function(field){

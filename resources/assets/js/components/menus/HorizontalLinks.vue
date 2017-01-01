@@ -32,21 +32,6 @@
 
     methods: {
 
-      userlogged: function(){
-          alert('facilities');
-      },
-
-      modulesused: function(){
-          alert('academic');
-      },
-
-      transactionsused: function(){
-          alert('treasury');
-      },
-
-      actionsused: function(){
-          alert('security');
-      },
     }
    
   }
