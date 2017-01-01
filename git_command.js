@@ -14,3 +14,7 @@ MERGE
 git checkout master
 gti merge {Branch Name}
 git push origin master
+
+LOG
+//Tree graphic log with commit comment in one line
+git log --graph --oneline --decorate --all
