@@ -17,13 +17,13 @@
 		
 			<div class="col-sm-12">
 
-				<mytopmessage 
+				<mymessage 
 					message="This option allows to add, update, active, inactive, import and export the roles of the application."
 					color="info"
 					align="center"
 				>
 
-				</mytopmessage>
+				</mymessage>
 
 				<mycrudtable  
 

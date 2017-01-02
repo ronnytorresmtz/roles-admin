@@ -11,7 +11,7 @@ import MyImport          from '../../components/crud/Import.vue';
 import MyLink            from '../../components/crud/Link.vue';
 import MyChart           from '../../components/graphs/Chart.vue';
 import MyHorizontalLinks from '../../components/menus/HorizontalLinks.vue';
-import MyTopMessage      from '../../components/messages/TopMessage.vue';
+import MyMessage      from '../../components/messages/Message.vue';
 
 module.exports = {
    
@@ -34,7 +34,7 @@ module.exports = {
       'mylink':            MyLink,
       'mychart':           MyChart,
       'myhorizontallinks': MyHorizontalLinks,
-      'mytopmessage':      MyTopMessage,
+      'mymessage':         MyMessage,
     },
 
     events: {

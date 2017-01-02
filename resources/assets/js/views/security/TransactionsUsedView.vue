@@ -19,12 +19,12 @@
 				<mysubmenu submenu= "security"></mysubmenu>
 			</div>-->
 			<div class="col-sm-12" >
-				<mytopmessage 
+				<mymessage 
 					message="This option allows to follow up how the users use the system and how many times they logged."
 					color="info"
 					align="center"
 				>
-				</mytopmessage>
+				</mymessage>
 
 				<myhorizontallinks name="horizontal-links"></myhorizontallinks>
 

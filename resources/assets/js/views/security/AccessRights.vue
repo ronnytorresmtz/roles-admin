@@ -15,12 +15,12 @@
 		
 			<div class="col-sm-12">
 
-				<mytopmessage 
+				<mymessage 
 					message="This options allows to set the access rights for each role at transaction level for each module."
 					color="info"
 					align="center"
 				>
-				</mytopmessage>
+				</mymessage>
 
 				<mycrudtable  
 				
