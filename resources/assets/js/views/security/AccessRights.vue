@@ -14,10 +14,19 @@
 			</div>-->
 		
 			<div class="col-sm-12">
-				
-				<mycrudtable  table-title="Access Rights List" 
 
+				<mytopmessage 
+					message="This options allows to set the access rights for each role at transaction level for each module."
+					color="info"
+					align="center"
+				>
+				</mytopmessage>
+
+				<mycrudtable  
+				
 						table-id="table1"
+
+						table-title="Access Rights List" 
 
 						select-fields='{
 
@@ -48,6 +57,8 @@
 
 						icon-info='{	}'
 						icon-actions='{		}'
+
+						top-message= 'dfadfdsfasdfsdfadsfasdfasdfasdfasdfsdf'
 
 						>
 				

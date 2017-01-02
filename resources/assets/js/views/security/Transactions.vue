@@ -16,6 +16,14 @@
 			</div>-->
 		
 			<div class="col-sm-12">
+
+				<mytopmessage 
+					message="This option allows to add, update, active, inactive, import and export the transactions for each module for the application."
+					color="info"
+					align="center"
+				>
+
+				</mytopmessage>
 				
 				<mycrudtable  
 

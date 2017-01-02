@@ -67,13 +67,6 @@
 </style>
 
 <template>
-<p class="bg-info" align="center" v-show="showTableOnly">
-  <br>
-    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nostrum quos, doloremque voluptatem optio fugit autem reiciendis temporibus. 
-  <br><br>
-<p>
-
-<slot name="horizontal-links"></slot>
 
 <div class="container-fluid">
   <div class="row">
@@ -234,7 +227,7 @@
 
     mixins: [MyLang],
 
-    props: ['tableId', 'tableTitle', 'selectFields', 'columnsNames', 'url', 'iconInfo', 'iconActions', 'showTableOnly'],
+    props: ['tableId', 'tableTitle', 'selectFields', 'columnsNames', 'url', 'iconInfo', 'iconActions'],
 
     ready: function(){
       this.id=this.tableId;
