@@ -15,10 +15,10 @@
 
 	<div class="container-fluid" >
 		<div class="row" >
-			<!--<div class="col-sm-2">
+			<div class="col-sm-2">
 				<mysubmenu submenu= "security"></mysubmenu>
-			</div>-->
-			<div class="col-sm-12" >
+			</div>
+			<div class="col-sm-10" >
 				<mymessage 
 					message="This option allows to follow up how the users use the system and how many times they logged."
 					color="info"

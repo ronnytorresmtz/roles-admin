@@ -3,16 +3,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <head>
   <meta charset="UTF-8">
-  <title>Rolys</title>
-  {{-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"> --}}
+  <title>Roles Admin</title>
 
   <link rel="stylesheet" href="assets/css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/css/bootstrap-theme.min.css">
   <link rel="stylesheet" href="assets/css/font-awesome.min.css">
-
-
-  {{-- favicon --}}
- <!-- <link rel="icon" type="image/png" href="/assets/icons/loading_image.ico" /> -->
  
  </head>
  
