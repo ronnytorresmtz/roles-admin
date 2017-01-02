@@ -16,6 +16,13 @@
 			</div>-->
 		
 			<div class="col-sm-12">
+
+				<mytopmessage 
+					message="This option allows to add, update, active, inactive, import and export the users of the application."
+					color="info"
+					align="center"
+				>
+				</mytopmessage>
 				
 				<mycrudtable  table-title="User List" 
 

@@ -19,15 +19,16 @@
 				<mysubmenu submenu= "security"></mysubmenu>
 			</div>-->
 			<div class="col-sm-12" >
-				<p class="bg-info" align="center">
-		      <br>
-		        This option allows to follow up how the users use the system and how many times they logged.
-		      <br><br>
-	    	</p>
+				<mytopmessage 
+					message="This option allows to follow up how the users use the system and how many times they logged."
+					color="info"
+					align="center"
+				>
+				</mytopmessage>
 
 				<myhorizontallinks name="horizontal-links"></myhorizontallinks>
 
-	    	<div class="row" style="padding:0px">
+				<div class="row" style="padding:0px">
 					<div class="col-sm-12" style="padding:0px">
 					 
 					  <div style="padding-left:10px;padding-right:20px">
