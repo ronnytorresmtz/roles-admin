@@ -1,4 +1,9 @@
 <style scoped>
+
+.logout{
+  position: relative;
+  padding-left: 53  0px;
+}
  
 </style>
 
@@ -12,12 +17,16 @@
   <div>
     <nav class="navbar navbar-default">
       <div class="container-fluid" >
-        <a class="navbar-brand" href="#">Roleis</a>
-        <ul class="nav navbar-nav"   v-for="menu in menus"> 
-          <li>
-            <a v-link="menu.initialURL">{{menu.title}}</a>
-          </li>
-        </ul>
+        <a class="navbar-brand" href="#">Roles Admin</a>
+            <ul class="nav navbar-nav"   > 
+              <li v-for="menu in menus">
+                <a v-link="menu.initialURL">{{menu.title}}</a>
+              </li>
+              <li> 
+                <a href="#" class="logout"> Logout </a> 
+              <li> 
+            </ul>
+
       </div>
     </nav>
  </div>
@@ -25,6 +34,7 @@
 
 <script>
   module.exports = {
+
    data: function(){
       return{
         menus: []
