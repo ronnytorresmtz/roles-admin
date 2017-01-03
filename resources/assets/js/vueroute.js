@@ -11,6 +11,9 @@ import TopMenu              from './components/menus/TopMenu.vue';
 // import MySubMenu         from './components/menus/SubMenu.vue';
 // import MyTable           from './components/crud/Table.vue';
 
+//login
+import LoginView             from './views/login/LoginView.vue';
+
 //Security
 import UsersLoggedView      from './views/security/UsersLoggedView.vue';
 import ModulesUsedView      from './views/security/ModulesUsedView.vue';
@@ -38,6 +41,11 @@ var router = new VueRouter({
 });
 
 router.map({
+
+    '/login': {
+        component: LoginView, 
+    },
+
     '/dashboard': {
         component: UsersLoggedView, 
     },

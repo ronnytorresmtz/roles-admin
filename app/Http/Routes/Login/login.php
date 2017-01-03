@@ -15,7 +15,6 @@ Route::group(array('middleware' => 'guest'), function(){
 		'uses'			=> 'LoginController@getLogIn'
 	));
 
-
 });
 
 
@@ -36,11 +35,11 @@ Route::post('login/logIn', array(
 ));	
 
 
-Route::get('login/forgotYourPassword', array(
+// Route::get('login/forgotYourPassword', array(
 
-	'as'			=> 'login.forgotYourPassword',
-	'uses'			=> 'LoginController@getForgotYourPassword'
-));
+// 	'as'			=> 'login.forgotYourPassword',
+// 	'uses'			=> 'LoginController@getForgotYourPassword'
+// ));
 
 Route::post('login/sendYourPassword', array(
 

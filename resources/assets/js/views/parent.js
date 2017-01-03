@@ -1,4 +1,5 @@
 
+import MyLogin           from '../../components/login/Login.vue';
 import MyPopUp           from '../../components/messages/PopUp.vue';
 import MyTopMenu         from '../../components/menus/TopMenu.vue';
 import MySubMenu         from '../../components/menus/SubMenu.vue';
@@ -11,7 +12,7 @@ import MyImport          from '../../components/crud/Import.vue';
 import MyLink            from '../../components/crud/Link.vue';
 import MyChart           from '../../components/graphs/Chart.vue';
 import MyHorizontalLinks from '../../components/menus/HorizontalLinks.vue';
-import MyMessage      from '../../components/messages/Message.vue';
+import MyMessage         from '../../components/messages/Message.vue';
 
 module.exports = {
    
@@ -22,6 +23,7 @@ module.exports = {
     },
 
     components: { 
+      'mylogin':           MyLogin,
       'mypopup':           MyPopUp,
     	'mytopmenu':         MyTopMenu,
     	'mycrudbuttons':     MyButton,

@@ -4,6 +4,10 @@
   position: relative;
   padding-left: 53  0px;
 }
+
+a{
+    cursor: pointer;
+  }
  
 </style>
 
@@ -23,10 +27,14 @@
                 <a v-link="menu.initialURL">{{menu.title}}</a>
               </li>
               <li> 
-                <a href="#" class="logout"> Logout </a> 
+                <a 
+                  class="logout"
+                  @click="logout"
+                > 
+                Logout 
+                </a> 
               <li> 
             </ul>
-
       </div>
     </nav>
  </div>
@@ -49,13 +57,18 @@
         {'title':'Roles', 'initialURL': '/roles'},
         {'title':'Users', 'initialURL': '/users'},
         {'title':'Access Rights', 'initialURL': '/accessrights'},    
-        {'title':'Help', 'initialURL': '/help'}
+        {'title':'Help', 'initialURL': '/help'},
       ]
       
-      this.$route.router.go('/dashboard');
+      this.$route.router.go('/login');
     },
 
     methods: {
+
+      logout: function(){
+        window.location.href = '/login/logOut'; 
+
+      }
       
     }
    

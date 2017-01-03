@@ -33,71 +33,60 @@ class LoginController extends Controller {
 
 
     public function getLogIn(){
-
-    	return View::make ('login.logIn');
+		return View::make ('vueroute');
     }
-
    
-	public function postLogIn(Request $request){
 
+	public function postLogIn(Request $request){
 		//Verify if the user has access to the application
 		if ($this->loginService->verifyUserLogin($request)){
-
 			Event::fire(new RegisterTransactionAccessEvent('login.login.login'));
-
-			return View::make ('home.home');
+			return response()->json('authorize', 200);
 		}
-
-		return redirect()->back()->withInput();
+		return response()->json('not authorize', 401);
 	}
 
 
 	public function getLogOut(){
-
 		// check if the user is loggeded 
 		if (Auth::check()){
-
 				Event::fire(new RegisterTransactionAccessEvent('login.login.logout'));
-
 				Auth::logout();
 		}
-
-		return View::make ('login.logIn');
+		return redirect()->route('/');
 	}
 
 
-	public function getForgotYourPassword(){
+	// public function getForgotYourPassword(){
 
-		Session::forget('message');
+	// 	Session::forget('message');
 
-		return View::make ('login.forgot_your_password');
-	}
+	// 	return View::make ('login.forgot_your_password');
+	// }
 
 
 	//public function postSendYourPassword(ForgotPasswordRequest $request){	
 	public function postSendYourPassword(Request $request){	
-		//Mail::pretend(true)
+		Mail::pretend(true);
 
 		//validate the fields base on the rules define in the model, messages define in the Languages Files (Lang Directory)
-		$validator=$this->validationService->validateInputs($this->userRepository, $request->all(), 'SendPasswordForm','validation.login');
+		// $validator=$this->validationService->validateInputs($this->userRepository, $request->all(), 'SendPasswordForm','validation.login');
 		
-		if ($validator->fails()) {
-		
-			// return back with input data and error messages
-			return redirect()->route('login.forgotYourPassword')->withInput()->withErrors($validator);
-		}
+		// if ($validator->fails()) {
+		// 	return response()->json('The email sent is an invalid email account', 400);
+		// }
 
 		// send a email to the user with a token 
 		if ($this->userRepository->sendTokenToUserViaMail($request->all())){
 
-			Event::fire(new RegisterTransactionAccessEvent('login.login.sendYourPassword'));
+			//Event::fire(new RegisterTransactionAccessEvent('login.login.sendYourPassword'));
 
-			return View::make('login.forgot_your_password');
+			return response()->json('The instructions to set a new password were sent', 200);
 
 		}
 
 		// return back with input data
-		return redirect()->route('login.forgotYourPassword')->withInput();
+		return response()->json('The application could not sent the instrucctions to set a new password, try again or call the system administrator.', 400);
 	}
 
 

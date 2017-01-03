@@ -15986,6 +15986,116 @@ if (module.hot) {(function () {  module.hot.accept()
   }
 })()}
 },{"babel-runtime/helpers/defineProperty":4,"vue":71,"vue-hot-reload-api":45}],81:[function(require,module,exports){
+var __vueify_style__ = require("vueify-insert-css").insert("\n a[_v-0072dba4]{\n    cursor: pointer;\n  }\n\n.error-email[_v-0072dba4]{\n  color:red;\n  font-size: 12px;\n  font-style:italic;\n}\n")
+'use strict';
+
+module.exports = {
+
+  ready: function ready() {},
+
+  data: function data() {
+    return {
+      username: '',
+      password: '',
+      email: '',
+      loading: false,
+      forgotYourPassword: false,
+      emailErrMessage: true
+    };
+  },
+
+  methods: {
+
+    showEmailToSend: function showEmailToSend() {
+      this.forgotYourPassword = !this.forgotYourPassword;
+    },
+
+    btnLogin: function btnLogin() {
+      this.checkLogIn(this.username, this.password, '/dashboard');
+    },
+
+    btnLoginDemo: function btnLoginDemo() {
+      this.checkLogIn("demo_user", "demo123", '/dashboard');
+    },
+
+    btnSendEmail: function btnSendEmail() {
+      if (this.isValidEmail(this.email)) {
+        this.loading = true;
+        console.log(this.email);
+        this.$http.post('login/sendYourPassword', { email: this.email }).then(function (response) {
+          this.displayPopUpMessage(response);
+        }).then(function (response) {
+          this.loading = false;
+          this.forgotYourPassword = false;
+        }).catch(function (response) {
+          this.displayPopUpMessage(response);
+          this.loading = false;
+        });
+      }
+    },
+
+    checkLogIn: function checkLogIn(username, password, url) {
+      this.loading = true;
+      this.$http.post('login/logIn', { username: username, password: password }).then(function (response) {
+        if (response.status == 200) {
+          this.$route.router.go(url);
+        } else {
+          this.displayPopUpMessage(response);
+        }
+      }).then(function (response) {
+        this.loading = false;
+      }).catch(function (response) {
+        this.displayPopUpMessage(response);
+        this.loading = false;
+      });
+    },
+
+    displayPopUpMessage: function displayPopUpMessage(response) {
+      this.$dispatch('displayAlert', response.status == 200 ? 'success' : 'danger', response.data + ' (' + response.status + ')');
+    },
+
+    isValidEmail: function isValidEmail(email) {
+      var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+      return emailReg.test(email);
+    }
+
+  },
+
+  watch: {
+
+    'username': function username() {
+      this.forgotYourPassword = false;
+    },
+
+    'password': function password() {
+      this.forgotYourPassword = false;
+    },
+
+    'email': function email() {
+      this.emailErrMessage = this.email ? !this.isValidEmail(this.email) : true;
+    }
+
+  }
+
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n  <div _v-0072dba4=\"\">\n    <slot name=\"message\" _v-0072dba4=\"\"></slot>\n    <div class=\"panel panel-default\" style=\"margin-top:50px\" _v-0072dba4=\"\"> \n      <div class=\"panel-heading\" _v-0072dba4=\"\">\n        <h3 class=\"panel-title\" _v-0072dba4=\"\">Sign In\n          <span style=\"color:blue; padding-top:10px; padding-right:20px\" align=\"left\" v-if=\"loading\" _v-0072dba4=\"\">\n              <img src=\"/assets/icons/loading_image.gif\" _v-0072dba4=\"\">   \n            </span>\n        </h3>\n      </div>  \n      <div class=\"panel-body body-height\" _v-0072dba4=\"\"> \n        <div class=\"row\" _v-0072dba4=\"\">\n\t\t\t\t\t\t<div class=\"col-sm-12 text-left\" _v-0072dba4=\"\">\n\t\t\t\t\t\t\t\t<div class=\"input-group\" _v-0072dba4=\"\">\n\t\t\t\t\t\t\t\t\t<span class=\"input-group-addon\" id=\"basic-addon1\" _v-0072dba4=\"\">\n\t\t\t\t\t\t\t\t\t\t<i class=\"glyphicon glyphicon-user\" _v-0072dba4=\"\"></i>\n\t\t\t\t\t\t\t\t\t</span>\t\t\t\n\t\t\t\t\t\t\t\t\t<input type=\"text\" v-model=\"username\" name=\"username\" id=\"username\" class=\"form-control\" ,=\"\" placeholder=\"Type the user name\" value=\"\" _v-0072dba4=\"\">\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t<br _v-0072dba4=\"\">\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\n\t\t\t\t\t<div class=\"row\" _v-0072dba4=\"\">\n\t\t\t\t\t\t<div class=\"col-sm-12 text-left\" _v-0072dba4=\"\">\n\t\t\t\t\t\t\t\t<div class=\"input-group\" _v-0072dba4=\"\">\n\t\t\t\t\t\t\t\t\t<span class=\"input-group-addon\" id=\"basic-addon1\" _v-0072dba4=\"\">\n\t\t\t\t\t\t\t\t\t\t<i class=\"glyphicon glyphicon-lock\" _v-0072dba4=\"\"></i>\n\t\t\t\t\t\t\t\t\t</span>\t\n\n\t\t\t\t\t\t\t\t\t<input type=\"password\" v-model=\"password\" name=\"password\" id=\"password\" class=\"form-control\" ,=\"\" placeholder=\"Type the password\" _v-0072dba4=\"\">\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\n\t\t\t\t\t<br _v-0072dba4=\"\">\n\t\t\t\t\t\n          <div class=\"row\" _v-0072dba4=\"\">\n            <div class=\"col-sm-6 text-left\" _v-0072dba4=\"\">\n              <div class=\"control-group\" _v-0072dba4=\"\">\n                <input type=\"checkbox\" _v-0072dba4=\"\">\n                Remember Me\n              </div>\t\n            </div>\t\n\t\t\t\t\t\t\t\t\t\t\t\n            <div class=\"col-sm-6 text-right\" _v-0072dba4=\"\">\n              <div class=\"control-group\" _v-0072dba4=\"\">\n                <a @click=\"showEmailToSend\" _v-0072dba4=\"\">\n                Forgot your Password \n                </a>\t\n              </div>\n            </div>\t\n          </div>\n          \n          <hr _v-0072dba4=\"\">\n\n\n          <div v-show=\"forgotYourPassword\" _v-0072dba4=\"\">\n            <div class=\"row\" _v-0072dba4=\"\">\n              <div class=\"col-sm-12 text-left\" _v-0072dba4=\"\">\n\n                  <div class=\"alert alert-info\" _v-0072dba4=\"\">\n                    <p _v-0072dba4=\"\"><strong _v-0072dba4=\"\">Get Your Password</strong></p>\n                    Enter the email address associated with your account, then click Send. You will recieve an email with instrucctions to set a new password.'\n\t\t\t\t\t\t\t    </div>\n                  <div class=\"input-group\" _v-0072dba4=\"\">\n                    <span class=\"input-group-addon\" id=\"basic-addon1\" _v-0072dba4=\"\">\n                      <i class=\"glyphicon glyphicon-envelope\" _v-0072dba4=\"\"></i>\n                    </span>\t\t\t\n                    <input type=\"email\" v-model=\"email\" name=\"email\" id=\"email\" class=\"form-control\" ,=\"\" placeholder=\"Type an email address\" value=\"\" _v-0072dba4=\"\">\n                    \n                  </div>\n                  <span v-show=\"emailErrMessage\" class=\"error-email\" _v-0072dba4=\"\">Please type a valid email address</span>\n                  <hr _v-0072dba4=\"\">\n\n                    <div class=\"control-group\" _v-0072dba4=\"\">\n                        <div class=\"row\" _v-0072dba4=\"\">\n                          <div class=\"col-sm-6\" _v-0072dba4=\"\"></div>\n                          <div class=\"col-sm-6\" align=\"right\" _v-0072dba4=\"\">\n                            <button class=\"btn btn-sm btn-primary\" style=\"width: 100px\" :disabled=\"(email) ? false : true\" @click=\"btnSendEmail\" _v-0072dba4=\"\">\n                              Send\n                            </button>\n                          </div>\t\t\t\n                        </div>\t\n                    </div>\t\n\n              </div>\n            </div>\n          </div>\n          \n          <div class=\"control-group\" v-show=\"!forgotYourPassword\" _v-0072dba4=\"\">\n            <div class=\"row\" _v-0072dba4=\"\">\n              <div class=\"col-sm-6\" align=\"left\" _v-0072dba4=\"\">\n                <button class=\"btn btn-sm btn-success\" @click=\"btnLoginDemo\" _v-0072dba4=\"\"> \n                 Login User Demo \n                </button>\n              </div>\n\n              <div class=\"col-sm-6\" align=\"right\" _v-0072dba4=\"\">\n                 <button class=\"btn btn-sm btn-primary\" style=\"width: 100px\" :disabled=\"(username &amp;&amp; password) ? false : true\" @click=\"btnLogin\" _v-0072dba4=\"\">\n                  Sign in \n                 </button>\n              </div>\t\t\t\n            </div>\t\n        </div>\t\n\t\t\t\t\n      </div>       \n    </div> \n  </div>\n\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "c:\\xampp\\htdocs\\roles-admin\\resources\\assets\\js\\components\\login\\Login.vue"
+  module.hot.dispose(function () {
+    require("vueify-insert-css").cache["\n a[_v-0072dba4]{\n    cursor: pointer;\n  }\n\n.error-email[_v-0072dba4]{\n  color:red;\n  font-size: 12px;\n  font-style:italic;\n}\n"] = false
+    document.head.removeChild(__vueify_style__)
+  })
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":71,"vue-hot-reload-api":45,"vueify-insert-css":72}],82:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n.links[_v-0993f47b]{\n  display: inline;\n  padding-right: 40px;\n}\n\n")
 'use strict';
 
@@ -16020,7 +16130,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":71,"vue-hot-reload-api":45,"vueify-insert-css":72}],82:[function(require,module,exports){
+},{"vue":71,"vue-hot-reload-api":45,"vueify-insert-css":72}],83:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n\t.cursor-hand{\n\t\tcursor: pointer;\n\t}\n  \n  .left-panel-border{\n    border-top:none;\n    border-left:none;\n    border-right:none;\n\n  }\n\n")
 "use strict";
 
@@ -16077,8 +16187,8 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"babel-runtime/core-js/json/stringify":2,"vue":71,"vue-hot-reload-api":45,"vueify-insert-css":72}],83:[function(require,module,exports){
-var __vueify_style__ = require("vueify-insert-css").insert("\n\n.logout[_v-141a6d4c]{\n  position: relative;\n  padding-left: 53  0px;\n}\n \n")
+},{"babel-runtime/core-js/json/stringify":2,"vue":71,"vue-hot-reload-api":45,"vueify-insert-css":72}],84:[function(require,module,exports){
+var __vueify_style__ = require("vueify-insert-css").insert("\n\n.logout[_v-141a6d4c]{\n  position: relative;\n  padding-left: 53  0px;\n}\n\na[_v-141a6d4c]{\n    cursor: pointer;\n  }\n \n")
 'use strict';
 
 module.exports = {
@@ -16092,21 +16202,27 @@ module.exports = {
   ready: function ready() {
     this.menus = [{ 'title': 'Dashboard', 'initialURL': '/dashboard' }, { 'title': 'Modules', 'initialURL': '/modules' }, { 'title': 'Transactions', 'initialURL': '/transactions' }, { 'title': 'Roles', 'initialURL': '/roles' }, { 'title': 'Users', 'initialURL': '/users' }, { 'title': 'Access Rights', 'initialURL': '/accessrights' }, { 'title': 'Help', 'initialURL': '/help' }];
 
-    this.$route.router.go('/dashboard');
+    this.$route.router.go('/login');
   },
 
-  methods: {}
+  methods: {
+
+    logout: function logout() {
+      window.location.href = '/login/logOut';
+    }
+
+  }
 
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n\n   <link rel=\"icon\" type=\"image/png\" href=\"/assets/icons/loading_image.gif\" _v-141a6d4c=\"\">\n   \n <div _v-141a6d4c=\"\">\n   <nav class=\"navbar navbar-default\" _v-141a6d4c=\"\">\n     <div class=\"container-fluid\" _v-141a6d4c=\"\">\n       <a class=\"navbar-brand\" href=\"#\" _v-141a6d4c=\"\">Roles Admin</a>\n           <ul class=\"nav navbar-nav\" _v-141a6d4c=\"\"> \n             <li v-for=\"menu in menus\" _v-141a6d4c=\"\">\n               <a v-link=\"menu.initialURL\" _v-141a6d4c=\"\">{{menu.title}}</a>\n             </li>\n             <li _v-141a6d4c=\"\"> \n               <a href=\"#\" class=\"logout\" _v-141a6d4c=\"\"> Logout </a> \n             </li><li _v-141a6d4c=\"\"> \n           </li></ul>\n\n     </div>\n   </nav>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n\n   <link rel=\"icon\" type=\"image/png\" href=\"/assets/icons/loading_image.gif\" _v-141a6d4c=\"\">\n   \n <div _v-141a6d4c=\"\">\n   <nav class=\"navbar navbar-default\" _v-141a6d4c=\"\">\n     <div class=\"container-fluid\" _v-141a6d4c=\"\">\n       <a class=\"navbar-brand\" href=\"#\" _v-141a6d4c=\"\">Roles Admin</a>\n           <ul class=\"nav navbar-nav\" _v-141a6d4c=\"\"> \n             <li v-for=\"menu in menus\" _v-141a6d4c=\"\">\n               <a v-link=\"menu.initialURL\" _v-141a6d4c=\"\">{{menu.title}}</a>\n             </li>\n             <li _v-141a6d4c=\"\"> \n               <a class=\"logout\" @click=\"logout\" _v-141a6d4c=\"\"> \n               Logout \n               </a> \n             </li><li _v-141a6d4c=\"\"> \n           </li></ul>\n     </div>\n   </nav>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   var id = "c:\\xampp\\htdocs\\roles-admin\\resources\\assets\\js\\components\\menus\\TopMenu.vue"
   module.hot.dispose(function () {
-    require("vueify-insert-css").cache["\n\n.logout[_v-141a6d4c]{\n  position: relative;\n  padding-left: 53  0px;\n}\n \n"] = false
+    require("vueify-insert-css").cache["\n\n.logout[_v-141a6d4c]{\n  position: relative;\n  padding-left: 53  0px;\n}\n\na[_v-141a6d4c]{\n    cursor: pointer;\n  }\n \n"] = false
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
@@ -16115,7 +16231,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":71,"vue-hot-reload-api":45,"vueify-insert-css":72}],84:[function(require,module,exports){
+},{"vue":71,"vue-hot-reload-api":45,"vueify-insert-css":72}],85:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n")
 'use strict';
 
@@ -16149,7 +16265,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":71,"vue-hot-reload-api":45,"vueify-insert-css":72}],85:[function(require,module,exports){
+},{"vue":71,"vue-hot-reload-api":45,"vueify-insert-css":72}],86:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n.popup {\n  position: relative;\n}\n\n.popup-position {\n  padding: 15px;\n  position: absolute;\n  border: 1px solid transparent;\n  border-radius: 4px;\n  width: 500px;\n  margin: auto; \n  left:0px;\n  right: 0px;\n  top: -30px;    \n  text-align: center;\n  z-index: 1;\n  padding: 20px;\n}\n\n.popup-info{\n  color: #31708f;\n  background-color: #d9edf7;\n  border-color: #bce8f1;\n}\n\n.popup-success {\n  color: #3c763d;\n  background-color: #dff0d8;\n  border-color: #d6e9c6;\n}\n\n.popup-warning {\n  color: #8a6d3b;\n  background-color: #fcf8e3;\n  border-color: #faebcc;\n}\n\n.popup-danger {\n  color: #a94442;\n  background-color: #f2dede;\n  border-color: #ebccd1;\n}\n\n.popup-close{\n  position: absolute;\n  margin-right: 10px;\n  right: 0;\n  top: 0;\n  cursor: pointer;\n  font-size: x-large;\n\n}\n\n.center{\n  margin: 0 auto;\n}\n\n")
 'use strict';
 
@@ -16210,7 +16326,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":71,"vue-hot-reload-api":45,"vueify-insert-css":72}],86:[function(require,module,exports){
+},{"vue":71,"vue-hot-reload-api":45,"vueify-insert-css":72}],87:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n.button-size[_v-72ce7614]{\n  width: 50px;\n}\n\n.header[_v-72ce7614] {\n  font-weight: bold;\n}\n\n.table-hscroll[_v-72ce7614]{\n   white-space:nowrap;\n   overflow-x:auto; \n   overflow-y:auto; \n   width:auto; \n}\n\n.table-height[_v-72ce7614]{\n  height:auto;\n}\n\n.selectwidth[_v-72ce7614]{\n  width:80px;\n}\n\n")
 'use strict';
 
@@ -16396,7 +16512,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/languages/Languages.vue":79,"vue":71,"vue-hot-reload-api":45,"vueify-insert-css":72}],87:[function(require,module,exports){
+},{"../../components/languages/Languages.vue":79,"vue":71,"vue-hot-reload-api":45,"vueify-insert-css":72}],88:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n.button-size[_v-5cbfc636]{\n  width: 50px;\n}\n\ntr[_v-5cbfc636]{\n  cursor: pointer;\n}\n\n.table-hscroll[_v-5cbfc636]{\n   white-space:nowrap;\n   overflow-x:auto; \n   overflow-y:auto; \n   width:auto; \n}\n\n.table-height[_v-5cbfc636]{\n  height:auto;\n}\n\n.selectwidth[_v-5cbfc636]{\n  position: relative;\n  min-width:80px;\n  margin-right: 5px;\n}\n\n")
 'use strict';
 
@@ -16594,9 +16710,13 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/languages/Languages.vue":79,"vue":71,"vue-hot-reload-api":45,"vueify-insert-css":72}],88:[function(require,module,exports){
-var __vueify_style__ = require("vueify-insert-css").insert("\n\n")
+},{"../../components/languages/Languages.vue":79,"vue":71,"vue-hot-reload-api":45,"vueify-insert-css":72}],89:[function(require,module,exports){
+var __vueify_style__ = require("vueify-insert-css").insert("\n\n\n")
 'use strict';
+
+var _Login = require('../../components/login/Login.vue');
+
+var _Login2 = _interopRequireDefault(_Login);
 
 var _PopUp = require('../../components/messages/PopUp.vue');
 
@@ -16659,6 +16779,136 @@ module.exports = {
   },
 
   components: {
+    'mylogin': _Login2.default,
+    'mypopup': _PopUp2.default,
+    'mytopmenu': _TopMenu2.default,
+    'mycrudbuttons': _Button2.default,
+    'mycrudtable': _Table2.default,
+    'mycrudform': _Form2.default,
+    'mytableyearmonth': _TableYearMonth2.default,
+    'mytablesearch': _TableSearch2.default,
+    'mysubmenu': _SubMenu2.default,
+    'myimport': _Import2.default,
+    'mylink': _Link2.default,
+    'mychart': _Chart2.default,
+    'myhorizontallinks': _HorizontalLinks2.default,
+    'mymessage': _Message2.default
+  },
+
+  events: {
+    activateCrud: function activateCrud(val) {
+      this.$broadcast('displayCrud', val);
+    },
+    executeAction: function executeAction(action) {
+      this.$broadcast('displayCrud', true);
+      this.$broadcast(action);
+    },
+    expandCrud: function expandCrud() {
+      this.$broadcast('expandCrud');
+    },
+    rowSelected: function rowSelected(row) {
+      this.$broadcast('displayCrud', true);
+      this.$broadcast('displayRow', row);
+    },
+    displayAlert: function displayAlert(type, message) {
+      this.$broadcast('displayBoxMessage', type, message);
+    },
+    reloadTable: function reloadTable() {
+      this.$broadcast('reloadData');
+    },
+    selectFile: function selectFile() {
+      this.$broadcast('selectImportFile');
+    }
+
+  }
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div _v-df8ed76e=\"\">\n    <mypopup slot=\"message\" _v-df8ed76e=\"\"></mypopup>\n\t<div class=\"container-fluid\" _v-df8ed76e=\"\">\n\t\t<div class=\"row\" _v-df8ed76e=\"\">\n            <div class=\"col-sm-4\" _v-df8ed76e=\"\"></div>\n\t\t\t<div class=\"col-sm-4\" _v-df8ed76e=\"\">\n               <mylogin _v-df8ed76e=\"\"></mylogin>\n\t\t\t<div _v-df8ed76e=\"\">\n            <div class=\"col-sm-4\" _v-df8ed76e=\"\"></div>\n\t\t</div>\n\t</div>\n </div>\n</div></div>"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "c:\\xampp\\htdocs\\roles-admin\\resources\\assets\\js\\views\\login\\LoginView.vue"
+  module.hot.dispose(function () {
+    require("vueify-insert-css").cache["\n\n\n"] = false
+    document.head.removeChild(__vueify_style__)
+  })
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"../../components/crud/Button.vue":73,"../../components/crud/Form.vue":74,"../../components/crud/Import.vue":75,"../../components/crud/Link.vue":76,"../../components/crud/Table.vue":77,"../../components/graphs/Chart.vue":78,"../../components/login/Login.vue":81,"../../components/menus/HorizontalLinks.vue":82,"../../components/menus/SubMenu.vue":83,"../../components/menus/TopMenu.vue":84,"../../components/messages/Message.vue":85,"../../components/messages/PopUp.vue":86,"../../components/table/TableSearch.vue":87,"../../components/table/TableYearMonth.vue":88,"vue":71,"vue-hot-reload-api":45,"vueify-insert-css":72}],90:[function(require,module,exports){
+var __vueify_style__ = require("vueify-insert-css").insert("\n\n")
+'use strict';
+
+var _Login = require('../../components/login/Login.vue');
+
+var _Login2 = _interopRequireDefault(_Login);
+
+var _PopUp = require('../../components/messages/PopUp.vue');
+
+var _PopUp2 = _interopRequireDefault(_PopUp);
+
+var _TopMenu = require('../../components/menus/TopMenu.vue');
+
+var _TopMenu2 = _interopRequireDefault(_TopMenu);
+
+var _SubMenu = require('../../components/menus/SubMenu.vue');
+
+var _SubMenu2 = _interopRequireDefault(_SubMenu);
+
+var _Button = require('../../components/crud/Button.vue');
+
+var _Button2 = _interopRequireDefault(_Button);
+
+var _Table = require('../../components/crud/Table.vue');
+
+var _Table2 = _interopRequireDefault(_Table);
+
+var _TableYearMonth = require('../../components/table/TableYearMonth.vue');
+
+var _TableYearMonth2 = _interopRequireDefault(_TableYearMonth);
+
+var _TableSearch = require('../../components/table/TableSearch.vue');
+
+var _TableSearch2 = _interopRequireDefault(_TableSearch);
+
+var _Form = require('../../components/crud/Form.vue');
+
+var _Form2 = _interopRequireDefault(_Form);
+
+var _Import = require('../../components/crud/Import.vue');
+
+var _Import2 = _interopRequireDefault(_Import);
+
+var _Link = require('../../components/crud/Link.vue');
+
+var _Link2 = _interopRequireDefault(_Link);
+
+var _Chart = require('../../components/graphs/Chart.vue');
+
+var _Chart2 = _interopRequireDefault(_Chart);
+
+var _HorizontalLinks = require('../../components/menus/HorizontalLinks.vue');
+
+var _HorizontalLinks2 = _interopRequireDefault(_HorizontalLinks);
+
+var _Message = require('../../components/messages/Message.vue');
+
+var _Message2 = _interopRequireDefault(_Message);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+module.exports = {
+
+  data: function data() {
+    return {};
+  },
+
+  components: {
+    'mylogin': _Login2.default,
     'mypopup': _PopUp2.default,
     'mytopmenu': _TopMenu2.default,
     'mycrudbuttons': _Button2.default,
@@ -16718,9 +16968,13 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/crud/Button.vue":73,"../../components/crud/Form.vue":74,"../../components/crud/Import.vue":75,"../../components/crud/Link.vue":76,"../../components/crud/Table.vue":77,"../../components/graphs/Chart.vue":78,"../../components/menus/HorizontalLinks.vue":81,"../../components/menus/SubMenu.vue":82,"../../components/menus/TopMenu.vue":83,"../../components/messages/Message.vue":84,"../../components/messages/PopUp.vue":85,"../../components/table/TableSearch.vue":86,"../../components/table/TableYearMonth.vue":87,"vue":71,"vue-hot-reload-api":45,"vueify-insert-css":72}],89:[function(require,module,exports){
+},{"../../components/crud/Button.vue":73,"../../components/crud/Form.vue":74,"../../components/crud/Import.vue":75,"../../components/crud/Link.vue":76,"../../components/crud/Table.vue":77,"../../components/graphs/Chart.vue":78,"../../components/login/Login.vue":81,"../../components/menus/HorizontalLinks.vue":82,"../../components/menus/SubMenu.vue":83,"../../components/menus/TopMenu.vue":84,"../../components/messages/Message.vue":85,"../../components/messages/PopUp.vue":86,"../../components/table/TableSearch.vue":87,"../../components/table/TableYearMonth.vue":88,"vue":71,"vue-hot-reload-api":45,"vueify-insert-css":72}],91:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n.link-space[_v-4792ea36] {\n\tpadding-right: 40px;\n}\n\n")
 'use strict';
+
+var _Login = require('../../components/login/Login.vue');
+
+var _Login2 = _interopRequireDefault(_Login);
 
 var _PopUp = require('../../components/messages/PopUp.vue');
 
@@ -16783,6 +17037,7 @@ module.exports = {
   },
 
   components: {
+    'mylogin': _Login2.default,
     'mypopup': _PopUp2.default,
     'mytopmenu': _TopMenu2.default,
     'mycrudbuttons': _Button2.default,
@@ -16842,9 +17097,13 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/crud/Button.vue":73,"../../components/crud/Form.vue":74,"../../components/crud/Import.vue":75,"../../components/crud/Link.vue":76,"../../components/crud/Table.vue":77,"../../components/graphs/Chart.vue":78,"../../components/menus/HorizontalLinks.vue":81,"../../components/menus/SubMenu.vue":82,"../../components/menus/TopMenu.vue":83,"../../components/messages/Message.vue":84,"../../components/messages/PopUp.vue":85,"../../components/table/TableSearch.vue":86,"../../components/table/TableYearMonth.vue":87,"vue":71,"vue-hot-reload-api":45,"vueify-insert-css":72}],90:[function(require,module,exports){
+},{"../../components/crud/Button.vue":73,"../../components/crud/Form.vue":74,"../../components/crud/Import.vue":75,"../../components/crud/Link.vue":76,"../../components/crud/Table.vue":77,"../../components/graphs/Chart.vue":78,"../../components/login/Login.vue":81,"../../components/menus/HorizontalLinks.vue":82,"../../components/menus/SubMenu.vue":83,"../../components/menus/TopMenu.vue":84,"../../components/messages/Message.vue":85,"../../components/messages/PopUp.vue":86,"../../components/table/TableSearch.vue":87,"../../components/table/TableYearMonth.vue":88,"vue":71,"vue-hot-reload-api":45,"vueify-insert-css":72}],92:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n\n")
 'use strict';
+
+var _Login = require('../../components/login/Login.vue');
+
+var _Login2 = _interopRequireDefault(_Login);
 
 var _PopUp = require('../../components/messages/PopUp.vue');
 
@@ -16907,6 +17166,7 @@ module.exports = {
   },
 
   components: {
+    'mylogin': _Login2.default,
     'mypopup': _PopUp2.default,
     'mytopmenu': _TopMenu2.default,
     'mycrudbuttons': _Button2.default,
@@ -16966,9 +17226,13 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/crud/Button.vue":73,"../../components/crud/Form.vue":74,"../../components/crud/Import.vue":75,"../../components/crud/Link.vue":76,"../../components/crud/Table.vue":77,"../../components/graphs/Chart.vue":78,"../../components/menus/HorizontalLinks.vue":81,"../../components/menus/SubMenu.vue":82,"../../components/menus/TopMenu.vue":83,"../../components/messages/Message.vue":84,"../../components/messages/PopUp.vue":85,"../../components/table/TableSearch.vue":86,"../../components/table/TableYearMonth.vue":87,"vue":71,"vue-hot-reload-api":45,"vueify-insert-css":72}],91:[function(require,module,exports){
+},{"../../components/crud/Button.vue":73,"../../components/crud/Form.vue":74,"../../components/crud/Import.vue":75,"../../components/crud/Link.vue":76,"../../components/crud/Table.vue":77,"../../components/graphs/Chart.vue":78,"../../components/login/Login.vue":81,"../../components/menus/HorizontalLinks.vue":82,"../../components/menus/SubMenu.vue":83,"../../components/menus/TopMenu.vue":84,"../../components/messages/Message.vue":85,"../../components/messages/PopUp.vue":86,"../../components/table/TableSearch.vue":87,"../../components/table/TableYearMonth.vue":88,"vue":71,"vue-hot-reload-api":45,"vueify-insert-css":72}],93:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n.link-space[_v-40e3ea6f] {\n\tpadding-right: 40px;\n}\n\n")
 'use strict';
+
+var _Login = require('../../components/login/Login.vue');
+
+var _Login2 = _interopRequireDefault(_Login);
 
 var _PopUp = require('../../components/messages/PopUp.vue');
 
@@ -17031,6 +17295,7 @@ module.exports = {
   },
 
   components: {
+    'mylogin': _Login2.default,
     'mypopup': _PopUp2.default,
     'mytopmenu': _TopMenu2.default,
     'mycrudbuttons': _Button2.default,
@@ -17090,9 +17355,13 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/crud/Button.vue":73,"../../components/crud/Form.vue":74,"../../components/crud/Import.vue":75,"../../components/crud/Link.vue":76,"../../components/crud/Table.vue":77,"../../components/graphs/Chart.vue":78,"../../components/menus/HorizontalLinks.vue":81,"../../components/menus/SubMenu.vue":82,"../../components/menus/TopMenu.vue":83,"../../components/messages/Message.vue":84,"../../components/messages/PopUp.vue":85,"../../components/table/TableSearch.vue":86,"../../components/table/TableYearMonth.vue":87,"vue":71,"vue-hot-reload-api":45,"vueify-insert-css":72}],92:[function(require,module,exports){
+},{"../../components/crud/Button.vue":73,"../../components/crud/Form.vue":74,"../../components/crud/Import.vue":75,"../../components/crud/Link.vue":76,"../../components/crud/Table.vue":77,"../../components/graphs/Chart.vue":78,"../../components/login/Login.vue":81,"../../components/menus/HorizontalLinks.vue":82,"../../components/menus/SubMenu.vue":83,"../../components/menus/TopMenu.vue":84,"../../components/messages/Message.vue":85,"../../components/messages/PopUp.vue":86,"../../components/table/TableSearch.vue":87,"../../components/table/TableYearMonth.vue":88,"vue":71,"vue-hot-reload-api":45,"vueify-insert-css":72}],94:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n\n")
 'use strict';
+
+var _Login = require('../../components/login/Login.vue');
+
+var _Login2 = _interopRequireDefault(_Login);
 
 var _PopUp = require('../../components/messages/PopUp.vue');
 
@@ -17155,6 +17424,7 @@ module.exports = {
   },
 
   components: {
+    'mylogin': _Login2.default,
     'mypopup': _PopUp2.default,
     'mytopmenu': _TopMenu2.default,
     'mycrudbuttons': _Button2.default,
@@ -17214,9 +17484,13 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/crud/Button.vue":73,"../../components/crud/Form.vue":74,"../../components/crud/Import.vue":75,"../../components/crud/Link.vue":76,"../../components/crud/Table.vue":77,"../../components/graphs/Chart.vue":78,"../../components/menus/HorizontalLinks.vue":81,"../../components/menus/SubMenu.vue":82,"../../components/menus/TopMenu.vue":83,"../../components/messages/Message.vue":84,"../../components/messages/PopUp.vue":85,"../../components/table/TableSearch.vue":86,"../../components/table/TableYearMonth.vue":87,"vue":71,"vue-hot-reload-api":45,"vueify-insert-css":72}],93:[function(require,module,exports){
+},{"../../components/crud/Button.vue":73,"../../components/crud/Form.vue":74,"../../components/crud/Import.vue":75,"../../components/crud/Link.vue":76,"../../components/crud/Table.vue":77,"../../components/graphs/Chart.vue":78,"../../components/login/Login.vue":81,"../../components/menus/HorizontalLinks.vue":82,"../../components/menus/SubMenu.vue":83,"../../components/menus/TopMenu.vue":84,"../../components/messages/Message.vue":85,"../../components/messages/PopUp.vue":86,"../../components/table/TableSearch.vue":87,"../../components/table/TableYearMonth.vue":88,"vue":71,"vue-hot-reload-api":45,"vueify-insert-css":72}],95:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n\n")
 'use strict';
+
+var _Login = require('../../components/login/Login.vue');
+
+var _Login2 = _interopRequireDefault(_Login);
 
 var _PopUp = require('../../components/messages/PopUp.vue');
 
@@ -17279,6 +17553,7 @@ module.exports = {
   },
 
   components: {
+    'mylogin': _Login2.default,
     'mypopup': _PopUp2.default,
     'mytopmenu': _TopMenu2.default,
     'mycrudbuttons': _Button2.default,
@@ -17338,9 +17613,13 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/crud/Button.vue":73,"../../components/crud/Form.vue":74,"../../components/crud/Import.vue":75,"../../components/crud/Link.vue":76,"../../components/crud/Table.vue":77,"../../components/graphs/Chart.vue":78,"../../components/menus/HorizontalLinks.vue":81,"../../components/menus/SubMenu.vue":82,"../../components/menus/TopMenu.vue":83,"../../components/messages/Message.vue":84,"../../components/messages/PopUp.vue":85,"../../components/table/TableSearch.vue":86,"../../components/table/TableYearMonth.vue":87,"vue":71,"vue-hot-reload-api":45,"vueify-insert-css":72}],94:[function(require,module,exports){
+},{"../../components/crud/Button.vue":73,"../../components/crud/Form.vue":74,"../../components/crud/Import.vue":75,"../../components/crud/Link.vue":76,"../../components/crud/Table.vue":77,"../../components/graphs/Chart.vue":78,"../../components/login/Login.vue":81,"../../components/menus/HorizontalLinks.vue":82,"../../components/menus/SubMenu.vue":83,"../../components/menus/TopMenu.vue":84,"../../components/messages/Message.vue":85,"../../components/messages/PopUp.vue":86,"../../components/table/TableSearch.vue":87,"../../components/table/TableYearMonth.vue":88,"vue":71,"vue-hot-reload-api":45,"vueify-insert-css":72}],96:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n.link-space[_v-0f79cca1] {\n\tpadding-right: 40px;\n}\n\n")
 'use strict';
+
+var _Login = require('../../components/login/Login.vue');
+
+var _Login2 = _interopRequireDefault(_Login);
 
 var _PopUp = require('../../components/messages/PopUp.vue');
 
@@ -17403,6 +17682,7 @@ module.exports = {
   },
 
   components: {
+    'mylogin': _Login2.default,
     'mypopup': _PopUp2.default,
     'mytopmenu': _TopMenu2.default,
     'mycrudbuttons': _Button2.default,
@@ -17462,9 +17742,13 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/crud/Button.vue":73,"../../components/crud/Form.vue":74,"../../components/crud/Import.vue":75,"../../components/crud/Link.vue":76,"../../components/crud/Table.vue":77,"../../components/graphs/Chart.vue":78,"../../components/menus/HorizontalLinks.vue":81,"../../components/menus/SubMenu.vue":82,"../../components/menus/TopMenu.vue":83,"../../components/messages/Message.vue":84,"../../components/messages/PopUp.vue":85,"../../components/table/TableSearch.vue":86,"../../components/table/TableYearMonth.vue":87,"vue":71,"vue-hot-reload-api":45,"vueify-insert-css":72}],95:[function(require,module,exports){
+},{"../../components/crud/Button.vue":73,"../../components/crud/Form.vue":74,"../../components/crud/Import.vue":75,"../../components/crud/Link.vue":76,"../../components/crud/Table.vue":77,"../../components/graphs/Chart.vue":78,"../../components/login/Login.vue":81,"../../components/menus/HorizontalLinks.vue":82,"../../components/menus/SubMenu.vue":83,"../../components/menus/TopMenu.vue":84,"../../components/messages/Message.vue":85,"../../components/messages/PopUp.vue":86,"../../components/table/TableSearch.vue":87,"../../components/table/TableYearMonth.vue":88,"vue":71,"vue-hot-reload-api":45,"vueify-insert-css":72}],97:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n\n")
 'use strict';
+
+var _Login = require('../../components/login/Login.vue');
+
+var _Login2 = _interopRequireDefault(_Login);
 
 var _PopUp = require('../../components/messages/PopUp.vue');
 
@@ -17527,6 +17811,7 @@ module.exports = {
   },
 
   components: {
+    'mylogin': _Login2.default,
     'mypopup': _PopUp2.default,
     'mytopmenu': _TopMenu2.default,
     'mycrudbuttons': _Button2.default,
@@ -17586,9 +17871,13 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/crud/Button.vue":73,"../../components/crud/Form.vue":74,"../../components/crud/Import.vue":75,"../../components/crud/Link.vue":76,"../../components/crud/Table.vue":77,"../../components/graphs/Chart.vue":78,"../../components/menus/HorizontalLinks.vue":81,"../../components/menus/SubMenu.vue":82,"../../components/menus/TopMenu.vue":83,"../../components/messages/Message.vue":84,"../../components/messages/PopUp.vue":85,"../../components/table/TableSearch.vue":86,"../../components/table/TableYearMonth.vue":87,"vue":71,"vue-hot-reload-api":45,"vueify-insert-css":72}],96:[function(require,module,exports){
+},{"../../components/crud/Button.vue":73,"../../components/crud/Form.vue":74,"../../components/crud/Import.vue":75,"../../components/crud/Link.vue":76,"../../components/crud/Table.vue":77,"../../components/graphs/Chart.vue":78,"../../components/login/Login.vue":81,"../../components/menus/HorizontalLinks.vue":82,"../../components/menus/SubMenu.vue":83,"../../components/menus/TopMenu.vue":84,"../../components/messages/Message.vue":85,"../../components/messages/PopUp.vue":86,"../../components/table/TableSearch.vue":87,"../../components/table/TableYearMonth.vue":88,"vue":71,"vue-hot-reload-api":45,"vueify-insert-css":72}],98:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n.link-space[_v-aef9bb96] {\n\tpadding-right: 40px;\n}\n\n")
 'use strict';
+
+var _Login = require('../../components/login/Login.vue');
+
+var _Login2 = _interopRequireDefault(_Login);
 
 var _PopUp = require('../../components/messages/PopUp.vue');
 
@@ -17651,6 +17940,7 @@ module.exports = {
   },
 
   components: {
+    'mylogin': _Login2.default,
     'mypopup': _PopUp2.default,
     'mytopmenu': _TopMenu2.default,
     'mycrudbuttons': _Button2.default,
@@ -17710,12 +18000,16 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/crud/Button.vue":73,"../../components/crud/Form.vue":74,"../../components/crud/Import.vue":75,"../../components/crud/Link.vue":76,"../../components/crud/Table.vue":77,"../../components/graphs/Chart.vue":78,"../../components/menus/HorizontalLinks.vue":81,"../../components/menus/SubMenu.vue":82,"../../components/menus/TopMenu.vue":83,"../../components/messages/Message.vue":84,"../../components/messages/PopUp.vue":85,"../../components/table/TableSearch.vue":86,"../../components/table/TableYearMonth.vue":87,"vue":71,"vue-hot-reload-api":45,"vueify-insert-css":72}],97:[function(require,module,exports){
+},{"../../components/crud/Button.vue":73,"../../components/crud/Form.vue":74,"../../components/crud/Import.vue":75,"../../components/crud/Link.vue":76,"../../components/crud/Table.vue":77,"../../components/graphs/Chart.vue":78,"../../components/login/Login.vue":81,"../../components/menus/HorizontalLinks.vue":82,"../../components/menus/SubMenu.vue":83,"../../components/menus/TopMenu.vue":84,"../../components/messages/Message.vue":85,"../../components/messages/PopUp.vue":86,"../../components/table/TableSearch.vue":87,"../../components/table/TableYearMonth.vue":88,"vue":71,"vue-hot-reload-api":45,"vueify-insert-css":72}],99:[function(require,module,exports){
 'use strict';
 
 var _TopMenu = require('./components/menus/TopMenu.vue');
 
 var _TopMenu2 = _interopRequireDefault(_TopMenu);
+
+var _LoginView = require('./views/login/LoginView.vue');
+
+var _LoginView2 = _interopRequireDefault(_LoginView);
 
 var _UsersLoggedView = require('./views/security/UsersLoggedView.vue');
 
@@ -17766,6 +18060,9 @@ var Vue = require('vue');
 // import MySubMenu         from './components/menus/SubMenu.vue';
 // import MyTable           from './components/crud/Table.vue';
 
+//login
+
+
 //Security
 
 //Component_Template Don´t Delete This Line
@@ -17785,6 +18082,11 @@ var router = new VueRouter({
 });
 
 router.map({
+
+    '/login': {
+        component: _LoginView2.default
+    },
+
     '/dashboard': {
         component: _UsersLoggedView2.default
     },
@@ -17833,6 +18135,6 @@ var App = Vue.extend({
 
 router.start(App, '#app');
 
-},{"./components/menus/TopMenu.vue":83,"./views/security/AccessRights.vue":88,"./views/security/ActionsUsedView.vue":89,"./views/security/Modules.vue":90,"./views/security/ModulesUsedView.vue":91,"./views/security/Roles.vue":92,"./views/security/Transactions.vue":93,"./views/security/TransactionsUsedView.vue":94,"./views/security/Users.vue":95,"./views/security/UsersLoggedView.vue":96,"vue":71,"vue-resource":59,"vue-router":70}]},{},[97]);
+},{"./components/menus/TopMenu.vue":84,"./views/login/LoginView.vue":89,"./views/security/AccessRights.vue":90,"./views/security/ActionsUsedView.vue":91,"./views/security/Modules.vue":92,"./views/security/ModulesUsedView.vue":93,"./views/security/Roles.vue":94,"./views/security/Transactions.vue":95,"./views/security/TransactionsUsedView.vue":96,"./views/security/Users.vue":97,"./views/security/UsersLoggedView.vue":98,"vue":71,"vue-resource":59,"vue-router":70}]},{},[99]);
 
 //# sourceMappingURL=vueroute.js.map
