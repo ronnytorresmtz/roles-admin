@@ -45,7 +45,6 @@ class UserRepository extends MyAbstractEloquentRepository implements UserReposit
 	//send a mail to the user with a token and security code to reset his password
 	public function sendTokenToUserViaMail($request)
 	{
-	
 		try 
 		{
 			DB::beginTransaction();
@@ -77,15 +76,16 @@ class UserRepository extends MyAbstractEloquentRepository implements UserReposit
 			
 			DB::commit();
 
-			Event::fire(new RegisterTransactionAccessEvent('transactions.users.token.mail'));
+			if (isset(Auth::user()->username)){
+				Event::fire(new RegisterTransactionAccessEvent('mail.forgotyourpassword.sendtoken'));
+			}
 			//set the error message for the user
 			return array('error' => false, 'message' => Lang::get('messages.success_password_sent'));
 
 		} catch (Exception $e) {
-
 			DB::rollback();
 			//set the error message for the user
-			return array('error' => true, 'message' => Lang::get('messages.error_caught_exception') .'&nbsp;' . str_replace("'"," ", $e->getMessage()));
+			return array('error' => true, 'message' => Lang::get('messages.error_caught_exception') .' ' . str_replace("'"," ", $e->getMessage()));
 		}
 	}
 
@@ -480,6 +480,7 @@ class UserRepository extends MyAbstractEloquentRepository implements UserReposit
 		))
 
 		->where('action_name','!=', 'login')
+		->where('username','!=', 'guest')
 		->whereMonth('created_at','=', $request->month)
 		->whereYear('created_at','=', $request->year)
 		->groupBy('username', 'module_name','transaction_name', 'action_name')

@@ -41,9 +41,9 @@ class LoginController extends Controller {
 		//Verify if the user has access to the application
 		if ($this->loginService->verifyUserLogin($request)){
 			Event::fire(new RegisterTransactionAccessEvent('login.login.login'));
-			return response()->json('authorize', 200);
+			return response()->json('The user is authorize to access the application', 200);
 		}
-		return response()->json('not authorize', 401);
+		return response()->json('The username and password are not correct', 401);
 	}
 
 
@@ -57,45 +57,31 @@ class LoginController extends Controller {
 	}
 
 
-	// public function getForgotYourPassword(){
-
-	// 	Session::forget('message');
-
-	// 	return View::make ('login.forgot_your_password');
-	// }
-
-
-	//public function postSendYourPassword(ForgotPasswordRequest $request){	
 	public function postSendYourPassword(Request $request){	
-		Mail::pretend(true);
-
-		//validate the fields base on the rules define in the model, messages define in the Languages Files (Lang Directory)
-		// $validator=$this->validationService->validateInputs($this->userRepository, $request->all(), 'SendPasswordForm','validation.login');
-		
-		// if ($validator->fails()) {
-		// 	return response()->json('The email sent is an invalid email account', 400);
-		// }
-
+		//Mail::pretend(true);
+		$result=[];
 		// send a email to the user with a token 
-		if ($this->userRepository->sendTokenToUserViaMail($request->all())){
+		$result = $this->userRepository->sendTokenToUserViaMail($request);
+
+		if (! $result['error']){
 
 			//Event::fire(new RegisterTransactionAccessEvent('login.login.sendYourPassword'));
 
-			return response()->json('The instructions to set a new password were sent', 200);
+			return response()->json($result['message'], 200);
 
 		}
 
 		// return back with input data
-		return response()->json('The application could not sent the instrucctions to set a new password, try again or call the system administrator.', 400);
+		return response()->json($result['message'], 400);
 	}
 
 
 
-	public function getPasswordReset($token){
+	// public function getPasswordReset($token){
 
-		return View::make('login.reset_your_password')->with('token', $token);
+	// 	return View::make('login.reset_your_password')->with('token', $token);
 
-	}
+	// }
 
 
 	public function postResetYourPassword(Request $request){
@@ -120,8 +106,5 @@ class LoginController extends Controller {
 		// return back with input data
 		return redirect()->back()->withInput();
 	}
-
-
-	
 
 }

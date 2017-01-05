@@ -5,7 +5,10 @@ use Lang, Log, Config, Mail, URL;
 class MailService implements MailServiceInterface{
 
 	public function sentTokenToResetPassoword($user){
+		
 		//send a mail with token and security code to ther user	
+		\Debugbar::info('user:' . $user);
+
 		Mail::send(
 			// HTML Template for the email to be send
 			'emails.password_send', 
@@ -18,6 +21,11 @@ class MailService implements MailServiceInterface{
 			// Message Info using user data
 			function($message) use ($user)
 			{
+
+			\Debugbar::info($user->email);
+		
+
+
 			    $message->to($user->email, $user->user_fullname)->subject(Lang::get('labels.password_recovered'));
 			}
 		);
