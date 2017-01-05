@@ -1,38 +1,9 @@
-//var _ = require('lodash');
-
 var Vue = require('vue');
-
-
-//Store
-//import store             from './store/store.js';
-//Components
-
-import TopMenu              from './components/menus/TopMenu.vue';
-// import MySubMenu         from './components/menus/SubMenu.vue';
-// import MyTable           from './components/crud/Table.vue';
-
-//login
-import LoginView             from './views/login/LoginView.vue';
-
-//Security
-import UsersLoggedView      from './views/security/UsersLoggedView.vue';
-import ModulesUsedView      from './views/security/ModulesUsedView.vue';
-import TransactionsUsedView from './views/security/TransactionsUsedView.vue';
-import ActionsUsedView      from './views/security/ActionsUsedView.vue';
-import UsersView            from './views/security/Users.vue';
-import RolesView            from './views/security/Roles.vue';
-import AccessRightsView     from './views/security/AccessRights.vue';
-import ModulesView          from './views/security/Modules.vue';
-import TransactionsView     from './views/security/Transactions.vue';
-//Component_Template Don´t Delete This Line
-
+var VueRouter = require('vue-router');
 var VueResource=require('vue-resource');
 
-Vue.use(VueResource);
-
-var VueRouter = require('vue-router');
-
 Vue.use(VueRouter);
+Vue.use(VueResource);
 
 //Vue.config.debug = true;
 
@@ -43,43 +14,54 @@ var router = new VueRouter({
 router.map({
 
     '/login': {
-        component: LoginView, 
+        name: 'login',
+        component: require('./views/login/LoginView.vue'),  
     },
 
     '/dashboard': {
-        component: UsersLoggedView, 
+        name: 'dashboard',
+        component: require('./views/security/UsersLoggedView.vue'), 
     },
 
     '/userslogged': {
-        component: UsersLoggedView, 
+        name: 'userlogged',
+        component: require('./views/security/UsersLoggedView.vue'),, 
     },
 
     '/modulesused': {
-        component: ModulesUsedView, 
+        name: 'modulesused',
+        component: require('./views/security/ModulesUsedView.vue'), 
     },
 
     '/transactionsused': {
-        component: TransactionsUsedView, 
+        name: 'transactionsused',
+        component: require('./views/security/TransactionsUsedView.vue'), 
     },
 
     '/actionsused': {
-        component: ActionsUsedView, 
+        name: 'actionsused',
+        component: require('./views/security/ActionsUsedView.vue'), 
     },
 
     '/users': {
-        component: UsersView, 
+        name: 'users',
+        component: require('./views/security/Users.vue'), 
     },
     '/roles': {
-        component: RolesView, 
+        name: 'roles',
+        component: require('./views/security/Roles.vue'), 
     },
     '/accessrights': {
-        component: AccessRightsView, 
+        name: 'accessrights',
+        component: require('./views/security/AccessRights.vue'), 
     },
     '/modules': {
-        component: ModulesView, 
+        name: 'modules',
+        component: require('./views/security/Modules.vue'), 
     },
     '/transactions': {
-        component: TransactionsView, 
+        name: 'transactions',
+        component: require('./views/security/Transactions.vue'), 
     },
     //Link_Template Don´t Delete This Line
 });
@@ -88,7 +70,7 @@ router.map({
 var App = Vue.extend({
   //  store,
     components: { 
-        'topmenu': TopMenu,
+        'topmenu': requiere('./components/menus/TopMenu.vue'),
     }
 
 });

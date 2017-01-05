@@ -389,7 +389,7 @@ class CreateCrudVueSimple extends Command {
 		$directory = 'RouterMap';
 		//Get text to insert in the RouterMapr
 		$modelNew = array(
-			'Component' => $this->replaceTemplateTextWithModel('Component_Template.php', $argument, $directory),
+			//'Component' => $this->replaceTemplateTextWithModel('Component_Template.php', $argument, $directory),
 			'Link'      => $this->replaceTemplateTextWithModel('Link_Template.php', $argument, $directory)
 			);
 		//Get the File to be modified
@@ -400,7 +400,7 @@ class CreateCrudVueSimple extends Command {
 		file_put_contents(base_path() . '\vue-templates\RouterMap\OldRouterMap\vueroute_' . $dateTime . '.js', $modelActual);
 		//Add the new text replacing a comment
 		//App_Use_Repository_Template Don´t Delete This Line
-		$modelActualChanged=str_replace('//Component_Template Don´t Delete This Line', $modelNew['Component'], $modelActual);
+		//$modelActualChanged=str_replace('//Component_Template Don´t Delete This Line', $modelNew['Component'], $modelActual);
 		$modelActualChanged=str_replace('//Link_Template Don´t Delete This Line', $modelNew['Link'], $modelActualChanged);
 		//Generate the new file (orginal + new text)
 		file_put_contents(base_path() . '\resources\assets\js\vueroute.js', $modelActualChanged);
