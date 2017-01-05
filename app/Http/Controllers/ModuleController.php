@@ -65,7 +65,7 @@ class ModuleController extends Controller {
 		
 		$modules=$this->moduleRepository->getAllModulesActive(null);
 
-	  return response()->json($modules, 200);
+	  	return response()->json($modules, 200);
 	}
 
 
@@ -74,7 +74,7 @@ class ModuleController extends Controller {
 		
 		$modules=$this->moduleRepository->getAllModulesActive($this->itemsByPage);
 
-	  return response()->json($modules, 200);
+	  	return response()->json($modules, 200);
 	}
 
 	/**

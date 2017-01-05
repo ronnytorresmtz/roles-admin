@@ -42,7 +42,7 @@ class TransactionActionController extends Controller {
 
     public function getSecurityTransactionsActionsUsed(Request $request)
     {
-    	$transactionActionUsed = $this->transactionActionRepository->getTransactionsActionsUsed($request, $this->itemsByPage);
+    	  $transactionActionUsed = $this->transactionActionRepository->getTransactionsActionsUsed($request, $this->itemsByPage);
       	
       	return response()->json($transactionActionUsed, 200);
     }
