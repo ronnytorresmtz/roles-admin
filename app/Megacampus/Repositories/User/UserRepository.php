@@ -76,9 +76,6 @@ class UserRepository extends MyAbstractEloquentRepository implements UserReposit
 			
 			DB::commit();
 
-			if (isset(Auth::user()->username)){
-				Event::fire(new RegisterTransactionAccessEvent('mail.forgotyourpassword.sendtoken'));
-			}
 			//set the error message for the user
 			return array('error' => false, 'message' => Lang::get('messages.success_password_sent'));
 

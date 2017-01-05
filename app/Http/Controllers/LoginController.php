@@ -65,7 +65,9 @@ class LoginController extends Controller {
 
 		if (! $result['error']){
 
-			//Event::fire(new RegisterTransactionAccessEvent('login.login.sendYourPassword'));
+			if (Auth::check()){
+				Event::fire(new RegisterTransactionAccessEvent('login.login.sendYourPassword'));
+			}
 
 			return response()->json($result['message'], 200);
 
