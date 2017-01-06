@@ -11,21 +11,71 @@ var router = new VueRouter({
   history: false
 });
 
+// router.beforeEach(function(transition){
+//     console.log(transition.to.path);
+
+//     router.app.$http.get('login/userAuthenticated').then(function (response) {
+//         if (response.data=='NOK'){
+//             console.log('/login');
+//             //router.app.$route.router.go('/login');
+//            transition.next({path:"/login"});
+//         }else{
+//             console.log('/otra');
+//             transition.next();
+//         }
+        
+//     }).catch(function (response) {
+//         //this.displayPopUpMessage(response);
+//         alert('Error');
+//     });
+
+// });
+
+
+Vue.http.interceptors.push({
+
+//   request: function (request){
+//     request.headers['Authorization'] = auth.getAuthHeader()
+//     return request
+//   },
+
+  response: function (response) {
+      //console.log(router.$router.path);
+    if (response.status==401){
+        router.app.$route.router.go('/login');
+     }
+     //else{
+    //     router.app.$route.router.go('/dashboard');
+    // }
+    return response;
+  }
+
+});
+
+
+
 router.map({
+
+    '/': {
+        name: 'home',
+        component: require('./views/login/LoginView.vue'),
+        
+    },
 
     '/login': {
         name: 'login',
-        component: require('./views/login/LoginView.vue'),  
+        component: require('./views/login/LoginView.vue'),
     },
 
     '/dashboard': {
         name: 'dashboard',
-        component: require('./views/security/UsersLoggedView.vue'), 
+        component: require('./views/security/UsersLoggedView.vue'),
+        
     },
 
     '/userslogged': {
         name: 'userlogged',
-        component: require('./views/security/UsersLoggedView.vue'),, 
+        component: require('./views/security/UsersLoggedView.vue'),
     },
 
     '/modulesused': {
@@ -66,11 +116,17 @@ router.map({
     //Link_Template Don´t Delete This Line
 });
 
+// router.redirect({
+//   '*': '/dashboard'
+// });
+
+
+
 
 var App = Vue.extend({
   //  store,
     components: { 
-        'topmenu': requiere('./components/menus/TopMenu.vue'),
+        'topmenu': require('./components/menus/TopMenu.vue'),
     }
 
 });
