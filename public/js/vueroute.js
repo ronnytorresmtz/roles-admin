@@ -15280,11 +15280,9 @@ module.exports = {
         url: this.urlImport,
         data: { values: data }
       }).error(function (response) {
-        console.log(response);
         $('#myModal').modal('hide');
         self.displayErrorMessage(response);
       }).success(function (response) {
-        console.log(response.error);
         if (!response.error) {
           self.reloadAfterAction();
           $('#myModal').modal('hide');
@@ -15525,41 +15523,41 @@ module.exports = {
     readPageData: function readPageData(url, displayMsg) {
       this.NoMorePages = false;
       this.loading = true;
-      this.$http.get(url).then(function (responde) {
-        this.setDataResponde(responde.data);
-        this.routesFirstPrevNextLast(responde.data);
+      this.$http.get(url).then(function (response) {
+        this.setDataResponse(response.data);
+        this.routesFirstPrevNextLast(response.data);
         $("#" + this.id + " td").remove();
-      }).then(function (responde) {
+      }).then(function (response) {
         this.loading = false;
-      }).catch(function (responde) {
-        alert(responde.status);
+      }).catch(function (response) {
+        this.displayPopUpMessage(response);
         this.loading = false;
       });
     },
 
-    setDataResponde: function setDataResponde(responde) {
-      this.rows = responde.data;
-      this.total = responde.total;
-      this.per_page = responde.per_page;
-      this.current_page = responde.current_page;
-      this.last_page = responde.last_page;
-      if (responde.to > 0) this.from = responde.from;else this.from = 0;
-      this.to = responde.to;
+    setDataResponse: function setDataResponse(response) {
+      this.rows = response.data;
+      this.total = response.total;
+      this.per_page = response.per_page;
+      this.current_page = response.current_page;
+      this.last_page = response.last_page;
+      if (response.to > 0) this.from = response.from;else this.from = 0;
+      this.to = response.to;
     },
 
-    routesFirstPrevNextLast: function routesFirstPrevNextLast(responde) {
+    routesFirstPrevNextLast: function routesFirstPrevNextLast(response) {
       //get url without parameters
-      if (responde.next_page_url) {
-        var page_url = responde.next_page_url;
+      if (response.next_page_url) {
+        var page_url = response.next_page_url;
       } else {
-        var page_url = responde.prev_page_url;
+        var page_url = response.prev_page_url;
       }
       //set the route for first, prev, next, last page action
       if (page_url) {
         this.first_page_url = page_url.slice(0, page_url.search('page')) + 'page=' + this.first_page + this.setSearchParam();
 
-        this.next_page_url = responde.next_page_url + this.setSearchParam();
-        this.prev_page_url = responde.prev_page_url + this.setSearchParam();
+        this.next_page_url = response.next_page_url + this.setSearchParam();
+        this.prev_page_url = response.prev_page_url + this.setSearchParam();
 
         this.last_page_url = page_url.slice(0, page_url.search('page')) + 'page=' + this.last_page + this.setSearchParam();
       }
@@ -15611,9 +15609,9 @@ module.exports = {
           info.selected = '';
           option.push(info);
         }
-      }).then(function (responde) {
+      }).then(function (response) {
         this.loading = false;
-      }).catch(function (responde) {
+      }).catch(function (response) {
         this.displayPopUpMessage(response);
         this.loading = false;
       });
@@ -15770,9 +15768,13 @@ module.exports = {
         $('#' + this.id).highcharts(this.setOptions(this.series));
         this.loading = false;
       }).catch(function (responde) {
+        this.displayPopUpMessage(response);
         this.loading = false;
-        alert('alerta: ' + responde.status);
       });
+    },
+
+    displayPopUpMessage: function displayPopUpMessage(response) {
+      this.$dispatch('displayAlert', response.status == 200 ? 'success' : 'danger', response.data.message + ' (' + response.status + ')');
     },
 
     setOptions: function setOptions(series) {
@@ -15991,7 +15993,9 @@ var __vueify_style__ = require("vueify-insert-css").insert("\n a[_v-0072dba4]{\n
 
 module.exports = {
 
-  ready: function ready() {},
+  ready: function ready() {
+    // this.isUserAuthenticated();
+  },
 
   data: function data() {
     return {
@@ -16005,6 +16009,20 @@ module.exports = {
   },
 
   methods: {
+
+    // isUserAuthenticated: function(){
+    //   this.$http.get('login/userAuthenticated').then(function(response){
+    //     console.log(response.status);
+
+    //   }).then(function (response) {
+    //     if (response.status!=200){
+    //       this.$route.router.go('/login');
+    //      }
+    //   });
+    //   }).catch(function (response) {
+    //     this.displayPopUpMessage(response);
+    //   });
+    // },
 
     showEmailToSend: function showEmailToSend() {
       this.forgotYourPassword = !this.forgotYourPassword;
@@ -16021,7 +16039,6 @@ module.exports = {
     btnSendEmail: function btnSendEmail() {
       if (this.isValidEmail(this.email)) {
         this.loading = true;
-        console.log(this.email);
         this.$http.post('login/sendYourPassword', { email: this.email }).then(function (response) {
           this.displayPopUpMessage(response);
         }).then(function (response) {
@@ -16422,42 +16439,46 @@ module.exports = {
     readPageData: function readPageData(url, displayMsg) {
       this.NoMorePages = false;
       this.loading = true;
-      this.$http.get(url).then(function (responde) {
-        this.setDataResponde(responde.data);
-        this.routesFirstPrevNextLast(responde.data);
+      this.$http.get(url).then(function (response) {
+        this.setDataResponse(response.data);
+        this.routesFirstPrevNextLast(response.data);
         $('#' + this.id + ' td').remove();
-      }).then(function (responde) {
+      }).then(function (response) {
         this.loading = false;
-      }).catch(function (responde) {
-        alert(responde.status);
+      }).catch(function (response) {
+        this.displayPopUpMessage(response);
         this.loading = false;
       });
     },
 
-    setDataResponde: function setDataResponde(responde) {
-      this.rows = responde.data;
-      this.total = responde.total;
-      this.per_page = responde.per_page;
-      this.current_page = responde.current_page;
-      this.last_page = responde.last_page;
-      if (responde.to > 0) this.from = responde.from;else this.from = 0;
-      this.to = responde.to;
+    setDataResponse: function setDataResponse(response) {
+      this.rows = response.data;
+      this.total = response.total;
+      this.per_page = response.per_page;
+      this.current_page = response.current_page;
+      this.last_page = response.last_page;
+      if (response.to > 0) this.from = response.from;else this.from = 0;
+      this.to = response.to;
     },
 
-    routesFirstPrevNextLast: function routesFirstPrevNextLast(responde) {
+    routesFirstPrevNextLast: function routesFirstPrevNextLast(response) {
       //get url without parameters
-      if (responde.next_page_url) {
-        var page_url = responde.next_page_url;
+      if (response.next_page_url) {
+        var page_url = response.next_page_url;
       } else {
-        var page_url = responde.prev_page_url;
+        var page_url = response.prev_page_url;
       }
       //set the route for first, prev, next, last page action
       if (page_url) {
         this.first_page_url = page_url.slice(0, page_url.search('page')) + 'page=' + this.first_page + this.setSearchParam();
-        this.next_page_url = responde.next_page_url + this.setSearchParam();
-        this.prev_page_url = responde.prev_page_url + this.setSearchParam();
+        this.next_page_url = response.next_page_url + this.setSearchParam();
+        this.prev_page_url = response.prev_page_url + this.setSearchParam();
         this.last_page_url = page_url.slice(0, page_url.search('page')) + 'page=' + this.last_page + this.setSearchParam();
       }
+    },
+
+    displayPopUpMessage: function displayPopUpMessage(response) {
+      this.$dispatch('displayAlert', response.status == 200 ? 'success' : 'danger', response.data.message + ' (' + response.status + ')');
     },
 
     setSearchParam: function setSearchParam() {
@@ -16613,41 +16634,41 @@ module.exports = {
     readPageData: function readPageData(url, year, month, displayMsg) {
       this.NoMorePages = false;
       this.loading = true;
-      this.$http.get(url, { "year": year, "month": month }).then(function (responde) {
-        this.setDataResponde(responde.data);
-        this.routesFirstPrevNextLast(responde.data);
+      this.$http.get(url, { "year": year, "month": month }).then(function (response) {
+        this.setDataResponse(response.data);
+        this.routesFirstPrevNextLast(response.data);
         $('#' + this.id + ' td').remove();
-      }).then(function (responde) {
+      }).then(function (response) {
         this.loading = false;
-      }).catch(function (responde) {
-        alert(responde.status);
+      }).catch(function (response) {
+        this.displayPopUpMessage(response);
         this.loading = false;
       });
     },
 
-    setDataResponde: function setDataResponde(responde) {
-      this.rows = responde.data;
-      this.total = responde.total;
-      this.per_page = responde.per_page;
-      this.current_page = responde.current_page;
-      this.last_page = responde.last_page;
-      if (responde.to > 0) this.from = responde.from;else this.from = 0;
-      this.to = responde.to;
+    setDataResponse: function setDataResponse(response) {
+      this.rows = response.data;
+      this.total = response.total;
+      this.per_page = response.per_page;
+      this.current_page = response.current_page;
+      this.last_page = response.last_page;
+      if (response.to > 0) this.from = response.from;else this.from = 0;
+      this.to = response.to;
     },
 
-    routesFirstPrevNextLast: function routesFirstPrevNextLast(responde) {
+    routesFirstPrevNextLast: function routesFirstPrevNextLast(response) {
       //get url without parameters
-      if (responde.next_page_url) {
-        var page_url = responde.next_page_url;
+      if (response.next_page_url) {
+        var page_url = response.next_page_url;
       } else {
-        var page_url = responde.prev_page_url;
+        var page_url = response.prev_page_url;
       }
       //set the route for first, prev, next, last page action
       if (page_url) {
 
         this.first_page_url = page_url.slice(0, page_url.search('page')) + 'page=' + this.first_page + this.setSearchParam();
-        this.next_page_url = responde.next_page_url + this.setSearchParam();
-        this.prev_page_url = responde.prev_page_url + this.setSearchParam();
+        this.next_page_url = response.next_page_url + this.setSearchParam();
+        this.prev_page_url = response.prev_page_url + this.setSearchParam();
         this.last_page_url = page_url.slice(0, page_url.search('page')) + 'page=' + this.last_page + this.setSearchParam();
       }
     },
@@ -16679,6 +16700,10 @@ module.exports = {
 
     changeYearMonth: function changeYearMonth() {
       this.readPageData(this.lastUrl, this.yearSelected, this.monthSelected, false);
+    },
+
+    displayPopUpMessage: function displayPopUpMessage(response) {
+      this.$dispatch('displayAlert', response.status == 200 ? 'success' : 'danger', response.data.message + ' (' + response.status + ')');
     },
 
     jsonToArray: function jsonToArray(data) {
@@ -18003,77 +18028,12 @@ if (module.hot) {(function () {  module.hot.accept()
 },{"../../components/crud/Button.vue":73,"../../components/crud/Form.vue":74,"../../components/crud/Import.vue":75,"../../components/crud/Link.vue":76,"../../components/crud/Table.vue":77,"../../components/graphs/Chart.vue":78,"../../components/login/Login.vue":81,"../../components/menus/HorizontalLinks.vue":82,"../../components/menus/SubMenu.vue":83,"../../components/menus/TopMenu.vue":84,"../../components/messages/Message.vue":85,"../../components/messages/PopUp.vue":86,"../../components/table/TableSearch.vue":87,"../../components/table/TableYearMonth.vue":88,"vue":71,"vue-hot-reload-api":45,"vueify-insert-css":72}],99:[function(require,module,exports){
 'use strict';
 
-var _TopMenu = require('./components/menus/TopMenu.vue');
-
-var _TopMenu2 = _interopRequireDefault(_TopMenu);
-
-var _LoginView = require('./views/login/LoginView.vue');
-
-var _LoginView2 = _interopRequireDefault(_LoginView);
-
-var _UsersLoggedView = require('./views/security/UsersLoggedView.vue');
-
-var _UsersLoggedView2 = _interopRequireDefault(_UsersLoggedView);
-
-var _ModulesUsedView = require('./views/security/ModulesUsedView.vue');
-
-var _ModulesUsedView2 = _interopRequireDefault(_ModulesUsedView);
-
-var _TransactionsUsedView = require('./views/security/TransactionsUsedView.vue');
-
-var _TransactionsUsedView2 = _interopRequireDefault(_TransactionsUsedView);
-
-var _ActionsUsedView = require('./views/security/ActionsUsedView.vue');
-
-var _ActionsUsedView2 = _interopRequireDefault(_ActionsUsedView);
-
-var _Users = require('./views/security/Users.vue');
-
-var _Users2 = _interopRequireDefault(_Users);
-
-var _Roles = require('./views/security/Roles.vue');
-
-var _Roles2 = _interopRequireDefault(_Roles);
-
-var _AccessRights = require('./views/security/AccessRights.vue');
-
-var _AccessRights2 = _interopRequireDefault(_AccessRights);
-
-var _Modules = require('./views/security/Modules.vue');
-
-var _Modules2 = _interopRequireDefault(_Modules);
-
-var _Transactions = require('./views/security/Transactions.vue');
-
-var _Transactions2 = _interopRequireDefault(_Transactions);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-//var _ = require('lodash');
-
 var Vue = require('vue');
-
-//Store
-//import store             from './store/store.js';
-//Components
-
-// import MySubMenu         from './components/menus/SubMenu.vue';
-// import MyTable           from './components/crud/Table.vue';
-
-//login
-
-
-//Security
-
-//Component_Template Don´t Delete This Line
-
+var VueRouter = require('vue-router');
 var VueResource = require('vue-resource');
 
-Vue.use(VueResource);
-
-var VueRouter = require('vue-router');
-
 Vue.use(VueRouter);
+Vue.use(VueResource);
 
 //Vue.config.debug = true;
 
@@ -18081,54 +18041,116 @@ var router = new VueRouter({
     history: false
 });
 
+// router.beforeEach(function(transition){
+//     console.log(transition.to.path);
+
+//     router.app.$http.get('login/userAuthenticated').then(function (response) {
+//         if (response.data=='NOK'){
+//             console.log('/login');
+//             //router.app.$route.router.go('/login');
+//            transition.next({path:"/login"});
+//         }else{
+//             console.log('/otra');
+//             transition.next();
+//         }
+
+//     }).catch(function (response) {
+//         //this.displayPopUpMessage(response);
+//         alert('Error');
+//     });
+
+// });
+
+Vue.http.interceptors.push({
+
+    //   request: function (request){
+    //     request.headers['Authorization'] = auth.getAuthHeader()
+    //     return request
+    //   },
+
+    response: function response(_response) {
+        //console.log(router.$router.path);
+        if (_response.status == 401) {
+            router.app.$route.router.go('/login');
+        }
+        //else{
+        //     router.app.$route.router.go('/dashboard');
+        // }
+        return _response;
+    }
+
+});
+
 router.map({
 
+    '/': {
+        name: 'home',
+        component: require('./views/login/LoginView.vue')
+
+    },
+
     '/login': {
-        component: _LoginView2.default
+        name: 'login',
+        component: require('./views/login/LoginView.vue')
     },
 
     '/dashboard': {
-        component: _UsersLoggedView2.default
+        name: 'dashboard',
+        component: require('./views/security/UsersLoggedView.vue')
+
     },
 
     '/userslogged': {
-        component: _UsersLoggedView2.default
+        name: 'userlogged',
+        component: require('./views/security/UsersLoggedView.vue')
     },
 
     '/modulesused': {
-        component: _ModulesUsedView2.default
+        name: 'modulesused',
+        component: require('./views/security/ModulesUsedView.vue')
     },
 
     '/transactionsused': {
-        component: _TransactionsUsedView2.default
+        name: 'transactionsused',
+        component: require('./views/security/TransactionsUsedView.vue')
     },
 
     '/actionsused': {
-        component: _ActionsUsedView2.default
+        name: 'actionsused',
+        component: require('./views/security/ActionsUsedView.vue')
     },
 
     '/users': {
-        component: _Users2.default
+        name: 'users',
+        component: require('./views/security/Users.vue')
     },
     '/roles': {
-        component: _Roles2.default
+        name: 'roles',
+        component: require('./views/security/Roles.vue')
     },
     '/accessrights': {
-        component: _AccessRights2.default
+        name: 'accessrights',
+        component: require('./views/security/AccessRights.vue')
     },
     '/modules': {
-        component: _Modules2.default
+        name: 'modules',
+        component: require('./views/security/Modules.vue')
     },
     '/transactions': {
-        component: _Transactions2.default
+        name: 'transactions',
+        component: require('./views/security/Transactions.vue')
     }
 });
+
+// router.redirect({
+//   '*': '/dashboard'
+// });
 
 //Link_Template Don´t Delete This Line
 var App = Vue.extend({
     //  store,
     components: {
-        'topmenu': _TopMenu2.default
+        'topmenu': require('./components/menus/TopMenu.vue')
     }
 
 });
