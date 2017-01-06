@@ -98,11 +98,9 @@
           url: this.urlImport,
           data: {values: data}
         }).error(function(response) {
-          console.log(response);
           $('#myModal').modal('hide');
           self.displayErrorMessage(response);
         }).success(function(response) {
-          console.log(response.error);
           if (! response.error){
             self.reloadAfterAction();
             $('#myModal').modal('hide');

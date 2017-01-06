@@ -165,7 +165,7 @@
   module.exports = {
 
     ready: function(){
-      
+    // this.isUserAuthenticated();
     },
 
     data: function() {
@@ -175,11 +175,28 @@
         email:'',
         loading:false,
         forgotYourPassword:false,
-        emailErrMessage:true
+        emailErrMessage:true,
       }
     },
 
+
     methods: {
+
+      // isUserAuthenticated: function(){
+      //   this.$http.get('login/userAuthenticated').then(function(response){
+      //     console.log(response.status);
+           
+      //   }).then(function (response) {
+      //     if (response.status!=200){
+      //       this.$route.router.go('/login');
+      //      }
+      //   });
+      //   }).catch(function (response) {
+      //     this.displayPopUpMessage(response);
+      //   });
+      // },
+
+
 
       showEmailToSend: function(){
         this.forgotYourPassword = !this.forgotYourPassword;
@@ -196,7 +213,6 @@
       btnSendEmail: function(){
         if (this.isValidEmail(this.email)){
           this.loading = true;
-          console.log(this.email);
           this.$http.post('login/sendYourPassword', {email: this.email}).then(function(response){
             this.displayPopUpMessage(response);
           }).then(function (response) {
