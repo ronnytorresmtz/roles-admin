@@ -46,6 +46,15 @@ class LoginController extends Controller {
 		return response()->json('The username and password are not correct', 401);
 	}
 
+	public function getUserAuthenticated(){
+
+		if (Auth::check()){
+			return response()->json('OK', 200);
+		}
+
+		return response()->json('NOK', 200);
+
+	}
 
 	public function getLogOut(){
 		// check if the user is loggeded 
