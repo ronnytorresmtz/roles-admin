@@ -33,12 +33,17 @@ class RedirectIfAuthenticated {
 	 */
 	public function handle($request, Closure $next)
 	{
-		if ($this->auth->check())
-		{
-			return new RedirectResponse(url('/home'));
-		}
+		
+		//return view('vueroute');
+		
+		// if ($this->auth->check())
+		// {
+		// 	//return new RedirectResponse(url('/home'));
+			
+		// }
 
 		return $next($request);
+		
 	}
 
 }
