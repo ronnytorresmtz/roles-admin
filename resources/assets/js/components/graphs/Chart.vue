@@ -120,9 +120,13 @@ module.exports = {
           $('#' + this.id).highcharts(this.setOptions(this.series));
           this.loading = false;
         }).catch(function (responde) {
+          this.displayPopUpMessage(response);
           this.loading = false;
-          alert('alerta: ' + responde.status);
         });
+      },
+
+      displayPopUpMessage: function(response){
+        this.$dispatch('displayAlert', (response.status==200) ? 'success' : 'danger', response.data.message + ' (' + response.status + ')');
       },
 
 

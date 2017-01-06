@@ -229,6 +229,7 @@
 
     props: ['tableId', 'tableTitle', 'selectFields', 'columnsNames', 'url', 'iconInfo', 'iconActions'],
 
+    
     ready: function(){
       this.id=this.tableId;
       this.cols=this.jsonToArray(this.columnsNames);
@@ -322,45 +323,45 @@
       readPageData: function(url, displayMsg){
         this.NoMorePages=false;
         this.loading= true;
-        this.$http.get(url).then(function (responde){
-          this.setDataResponde(responde.data);
-          this.routesFirstPrevNextLast(responde.data);
+        this.$http.get(url).then(function (response){
+          this.setDataResponse(response.data);
+          this.routesFirstPrevNextLast(response.data);
           $("#" + this.id + " td").remove(); 
-        }).then(function (responde) {
+        }).then(function (response) {
           this.loading= false;
-        }).catch(function (responde) {
-          alert(responde.status);
+        }).catch(function (response) {
+          this. displayPopUpMessage(response);
           this.loading= false;
         });
       },
 
-       setDataResponde: function (responde){
-        this.rows = responde.data;
-        this.total = responde.total;
-        this.per_page = responde.per_page;
-        this.current_page = responde.current_page;
-        this.last_page = responde.last_page;
-        if(responde.to>0)
-          this.from = responde.from;
+       setDataResponse: function (response){
+        this.rows = response.data;
+        this.total = response.total;
+        this.per_page = response.per_page;
+        this.current_page = response.current_page;
+        this.last_page = response.last_page;
+        if(response.to>0)
+          this.from = response.from;
         else
           this.from = 0;
-        this.to = responde.to;
+        this.to = response.to;
       },
 
-      routesFirstPrevNextLast: function(responde){
+      routesFirstPrevNextLast: function(response){
         //get url without parameters
-        if (responde.next_page_url){
-          var page_url=responde.next_page_url; 
+        if (response.next_page_url){
+          var page_url=response.next_page_url; 
         }
         else{
-          var page_url=responde.prev_page_url; 
+          var page_url=response.prev_page_url; 
         }
         //set the route for first, prev, next, last page action
         if (page_url){
           this.first_page_url=page_url.slice(0, page_url.search('page')) + 'page=' + this.first_page + this.setSearchParam();
 
-          this.next_page_url=responde.next_page_url + this.setSearchParam();
-          this.prev_page_url=responde.prev_page_url + this.setSearchParam();
+          this.next_page_url=response.next_page_url + this.setSearchParam();
+          this.prev_page_url=response.prev_page_url + this.setSearchParam();
           
           this.last_page_url=page_url.slice(0, page_url.search('page')) +  'page=' + this.last_page + this.setSearchParam();
          }
@@ -415,9 +416,9 @@
               info.selected='';
               option.push(info);
             } 
-          }).then(function (responde) {
+          }).then(function (response) {
              this.loading= false;
-          }).catch(function (responde) {
+          }).catch(function (response) {
             this.displayPopUpMessage(response);
             this.loading= false;
           });
