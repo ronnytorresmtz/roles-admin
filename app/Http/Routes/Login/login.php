@@ -57,10 +57,18 @@ Route::group(array('middleware' => 'token.verification'), function(){
 	
 });
 
-
 Route::post('login/resetYourPassword', array(
 
 	'as'			=> 'login.resetYourPassword',
 	'uses'			=> 'LoginController@postResetYourPassword'
 ));
+
+Route::get('login/userAuthenticated', array(
+
+	'as'			=> 'login.userAuthenticated',
+	'uses'			=> 'LoginController@getUserAuthenticated'
+));
+
+
+
 
