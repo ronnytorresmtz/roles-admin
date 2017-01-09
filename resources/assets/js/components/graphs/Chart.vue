@@ -1,7 +1,9 @@
 <style scoped>
 
 .selectwidth{
-  width:80px;
+    position: relative;
+    min-width:80px;
+    margin-right: 5px;
 }
   
 </style>
@@ -19,18 +21,20 @@
     </div> 
     <div class="panel-body">
       <div class="row">
-        <div class="col-xs-1" v-if="showYear">
-          Year: 
-          <select name="year" class="form-control selectwidth" v-model="yearSelected" @change="changeYearMonth()">
-            <option v-for="(key, value) in years" value="{{value}}"> {{value}} </option>
-          </select>
-        </div>
-        <div class="col-xs-1" v-if="showMonth" >
-          Month: 
-          <select name="month" class="form-control selectwidth" v-model="monthSelected" @change="changeYearMonth()">
-            <option v-for="(key, value) in months" value="{{key + 1}}"> {{value}} </option>
-          </select>
-        </div>
+          <div v-if="showYear">
+            <div class="col-xs-1 selectwidth " v-if="showYear">
+              Year: 
+              <select name="year" class="form-control selectwidth" v-model="yearSelected" @change="changeYearMonth()">
+                <option v-for="(key, value) in years" value="{{value}}"> {{value}} </option>
+              </select>
+            </div>
+            <div class="col-xs-1" v-if="showMonth" >
+              Month: 
+              <select name="month" class="form-control selectwidth" v-model="monthSelected" @change="changeYearMonth()">
+                <option v-for="(key, value) in months" value="{{key + 1}}"> {{value}} </option>
+              </select>
+            </div>
+          </div>
       </div>
       <div class="row" style="padding-left:10px;padding-right:20px">
         <br>
