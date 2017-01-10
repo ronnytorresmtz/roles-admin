@@ -10,7 +10,7 @@
     border: 1px solid transparent;
     border-radius: 4px;
     width: 500px;
-    margin: auto; 
+    margin: 50px auto; 
     left:0px;
     right: 0px;
     top: -30px;    
@@ -51,10 +51,6 @@
     cursor: pointer;
     font-size: x-large;
 
-  }
-
-  .center{
-    margin: 0 auto;
   }
 
 </style>
