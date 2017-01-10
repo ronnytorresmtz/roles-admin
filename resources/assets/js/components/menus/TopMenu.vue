@@ -22,19 +22,16 @@ a{
     <nav class="navbar navbar-default">
       <div class="container-fluid" >
         <a class="navbar-brand" href="#">Roles Admin</a>
-            <ul class="nav navbar-nav"   > 
-              <li v-for="menu in menus">
+            <ul class="nav navbar-nav" > 
+              <li v-for="menu in menus" >
                 <a v-link="menu.initialURL">{{menu.title}}</a>
               </li>
-              <li> 
-                <a 
-                  class="logout"
-                  @click="logout"
-                > 
-                Logout 
-                </a> 
-              <li> 
             </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li> 
+                <a class="logout" @click="logout" style="margin-right:10px"> Logout </a> 
+              </li> 
+            </ul> 
       </div>
     </nav>
  </div>
@@ -43,6 +40,7 @@ a{
 <script>
   module.exports = {
 
+
    data: function(){
       return{
         menus: []
@@ -50,6 +48,7 @@ a{
     },
 
     ready: function(){
+
       this.menus=[
         {'title':'Dashboard', 'initialURL': '/dashboard'},
         {'title':'Modules', 'initialURL': '/modules'},
@@ -60,17 +59,20 @@ a{
         {'title':'Help', 'initialURL': '/help'},
       ]
       
-      this.$route.router.go('/login');
+     // this.$route.router.go('/login');
     },
 
     methods: {
 
       logout: function(){
         window.location.href = '/login/logOut'; 
+      },
 
-      }
+      displayPopUpMessage: function(response){
+        this.$dispatch('displayAlert', (response.status==200) ? 'success' : 'danger', response.data.message + ' (' + response.status + ')');
+      },
       
-    }
-   
+    },
+
   }
 </script>
