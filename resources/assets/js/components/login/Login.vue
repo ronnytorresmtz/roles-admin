@@ -2,19 +2,23 @@
  a{
     cursor: pointer;
   }
-
-.error-email{
-  color:red;
-  font-size: 12px;
-  font-style:italic;
-}
+  .error-email{
+    color:red;
+    font-size: 12px;
+    font-style:italic;
+  }
+  .component-center{
+      display: block;
+      margin: auto;
+  }
+ 
 </style>
 
 <template>
-
-  <div>
+<div>
     <slot name="message"></slot>
-    <div class="panel panel-default" style="margin-top:50px"> 
+    <br><br><br><br><br><br><br>
+    <div class="panel panel-default" class="component-center"> 
       <div class="panel-heading">
         <h3 class="panel-title">Sign In
           <span style="color:blue; padding-top:10px; padding-right:20px" align="left" v-if='loading'>
@@ -185,7 +189,6 @@
       // isUserAuthenticated: function(){
       //   this.$http.get('login/userAuthenticated').then(function(response){
       //     console.log(response.status);
-           
       //   }).then(function (response) {
       //     if (response.status!=200){
       //       this.$route.router.go('/login');
@@ -239,7 +242,7 @@
         }).catch(function (response) {
           this.displayPopUpMessage(response);
           this.loading= false;
-        });
+        }).bind(this);
 
       },
 
