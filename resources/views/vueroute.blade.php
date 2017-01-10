@@ -15,7 +15,7 @@
  
   <div id="app">
  
-    <topmenu></topmenu> 
+    {{-- <topmenu></topmenu>  --}}
     <router-view></router-view>
  
   </div>
