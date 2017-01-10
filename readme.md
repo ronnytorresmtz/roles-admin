@@ -64,7 +64,7 @@ Used to Open and Close Modal Windows.
 ##What are the next development tasks?
 
 - Eliminate files that were used for testing vue and laravel functionalities.
-- Integrate a Login Form to access the Role Admin Application with an admin user account.
+- ~~Integrate a Login Form to access the Role Admin Application with an admin user account~~.
 - Replace vue-resource for axios.
 - Review options to eliminate JQuery because it is used just in one componet to remove rows of a table. 
 - An API to used by the Main Business Applications to know the access right (modules-transaction-security action level) of a user.
