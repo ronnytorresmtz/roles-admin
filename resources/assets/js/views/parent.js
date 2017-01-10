@@ -14,6 +14,7 @@ import MyChart           from '../../components/graphs/Chart.vue';
 import MyHorizontalLinks from '../../components/menus/HorizontalLinks.vue';
 import MyMessage         from '../../components/messages/Message.vue';
 
+
 module.exports = {
    
     data: function() {
@@ -63,7 +64,6 @@ module.exports = {
       selectFile: function(){
         this.$broadcast('selectImportFile');
       },
-    
 
     }
   }

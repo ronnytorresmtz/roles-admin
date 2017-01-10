@@ -11,27 +11,6 @@ var router = new VueRouter({
   history: false
 });
 
-// router.beforeEach(function(transition){
-//     console.log(transition.to.path);
-
-//     router.app.$http.get('login/userAuthenticated').then(function (response) {
-//         if (response.data=='NOK'){
-//             console.log('/login');
-//             //router.app.$route.router.go('/login');
-//            transition.next({path:"/login"});
-//         }else{
-//             console.log('/otra');
-//             transition.next();
-//         }
-        
-//     }).catch(function (response) {
-//         //this.displayPopUpMessage(response);
-//         alert('Error');
-//     });
-
-// });
-
-
 Vue.http.interceptors.push({
 
 //   request: function (request){
@@ -40,18 +19,14 @@ Vue.http.interceptors.push({
 //   },
 
   response: function (response) {
-      //console.log(router.$router.path);
     if (response.status==401){
         router.app.$route.router.go('/login');
      }
-     //else{
-    //     router.app.$route.router.go('/dashboard');
-    // }
+     
     return response;
   }
 
 });
-
 
 
 router.map({
@@ -120,14 +95,11 @@ router.map({
 //   '*': '/dashboard'
 // });
 
-
-
-
 var App = Vue.extend({
   //  store,
-    components: { 
-        'topmenu': require('./components/menus/TopMenu.vue'),
-    }
+    // components: { 
+    //     'topmenu': require('./components/menus/TopMenu.vue'),
+    // }
 
 });
 
