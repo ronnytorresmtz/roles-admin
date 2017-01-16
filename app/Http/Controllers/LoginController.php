@@ -59,14 +59,15 @@ class LoginController extends Controller {
 	public function getLogOut(){
 		// check if the user is loggeded 
 		if (Auth::check()){
-				Event::fire(new RegisterTransactionAccessEvent('login.login.logout'));
-				Auth::logout();
+			Event::fire(new RegisterTransactionAccessEvent('login.login.logout'));
+			Auth::logout();
 		}
 		return redirect()->route('/');
 	}
 
 
 	public function postSendYourPassword(Request $request){	
+		\Debugbar::info('entro0');
 		//Mail::pretend(true);
 		$result=[];
 		// send a email to the user with a token 
@@ -87,35 +88,22 @@ class LoginController extends Controller {
 	}
 
 
-
-	// public function getPasswordReset($token){
-
-	// 	return View::make('login.reset_your_password')->with('token', $token);
-
-	// }
-
-
 	public function postResetYourPassword(Request $request){
 
-		// validate the fields base on the rules and messages define in the Model, messages define in the Languages Files (Lang Directory)
-		$validator=$this->validationService->validateInputs($this->userRepository, $request->all(), 'ResetPasswordForm','validation.login');
 		
-		if ($validator->fails()) {
-		
-			// return back with input data and error messages
-			return redirect()->back()->withInput()->withErrors($validator);
-		}
 
-		// reset the password for the user
-		if ($this->userRepository->resetUserPassowrd($request->all())){
+		$result=[];
+
+		$result = $this->userRepository->resetUserPassowrd($request);
+
+		if (! $result['error']){
 
 			Event::fire(new RegisterTransactionAccessEvent('login.login.resetUserPassword'));
 
-			return redirect()->route('login');
-
+			return response()->json('OK', 200);
 		}
-		// return back with input data
-		return redirect()->back()->withInput();
+
+		return response()->json('NOK', 401);
 	}
 
 }
