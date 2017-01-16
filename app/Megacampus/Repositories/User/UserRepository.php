@@ -92,12 +92,13 @@ class UserRepository extends MyAbstractEloquentRepository implements UserReposit
 	{
 		try
 		{
-			$user= $this->model->where('remember_security_number','=', $request['remember_security_number'])->first();
+			$user= $this->model
+					->where('remember_security_number','=', $request['security_number'])
+					->where('remember_token','=', $request['token'])
+					->first();
 			//verity if the security code does not exsit in the database to display a message error
 			if (!isset($user)){
-				Session::flash('error', Lang::get('messages.error_remember_security_number_noexist'));
-
-				return false;
+				return array('error' => true, 'message' => Lang::get('messages.error_remember_security_number_noexist'));
 			}		
 			//reset the user password in the database
 			$user->password							= Hash::make($request['new_password']);
@@ -105,27 +106,15 @@ class UserRepository extends MyAbstractEloquentRepository implements UserReposit
 			$user->remember_token 					='';
 			//save the reset ot the user password in the user table
 			if (! $user->save()){
-
 				//set the error message for the user
-				Session::flash('error', Lang::get('messages.error_password_wasnot_reset'));
-
-				return false;
-				
+				return array('error' => true, 'message' => Lang::get('messages.error_password_wasnot_reset'));
 			}
-
 			//set the info message for the user
-			Session::flash('info', Lang::get('messages.success_password_was_reset'));
+			return array('error' => false, 'message' => Lang::get('messages.success_password_was_reset'));
 
-			Event::fire(new RegisterTransactionAccessEvent('transactions.users.resetPassword'));
-
-			return true;
-			
-			
 		} catch (Exception $e) {
 			//set the error message for the user
-			Session::flash('error', Lang::get('messages.error_caught_exception') .'&nbsp;' . str_replace("'"," ", $e->getMessage()));
-
-			return false;
+			return array('error' => true, 'message' =>  Lang::get('messages.error_caught_exception') .'&nbsp;' . str_replace("'"," ", $e->getMessage()));
 		}
 	}
 
