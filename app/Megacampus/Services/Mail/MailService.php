@@ -12,7 +12,7 @@ class MailService implements MailServiceInterface{
 			'emails.password_send', 
 			//data to return to the view of the email to be send
 			array(
-				'link'						 => URL::route('login.passwordReset',	array($user->remember_token)),
+				'link'						 => 'http://' . $_SERVER['HTTP_HOST'] . '/#!/resetYourPassword?token=' . $user->remember_token,
 				'user_fullname'				 => $user->user_fullname,
 				'remember_security_number'	 => $user->remember_security_number
 			), 
