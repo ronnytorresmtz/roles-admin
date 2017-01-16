@@ -47,15 +47,15 @@ Route::post('login/sendYourPassword', array(
 	'uses'			=> 'LoginController@postSendYourPassword'
 ));
 
-Route::group(array('middleware' => 'token.verification'), function(){
+// Route::group(array('middleware' => 'token.verification'), function(){
 
-	Route::get('login/passwordReset/{token}', array(
+// 	Route::post('login/passwordReset/{token}', array(
 
-		'as' 			=> 'login.passwordReset',
-		'uses'			=> 'LoginController@getPasswordReset'
-	));
+// 		'as' 			=> 'login.passwordReset',
+// 		'uses'			=> 'LoginController@getPasswordReset'
+// 	));
 	
-});
+// });
 
 Route::post('login/resetYourPassword', array(
 
