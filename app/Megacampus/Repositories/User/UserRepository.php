@@ -119,6 +119,18 @@ class UserRepository extends MyAbstractEloquentRepository implements UserReposit
 	}
 
 
+	public function findToken($request){
+
+		$token = $this->model->select('remember_token')->where('remember_token','=', $request['token'])->first();
+		if (!isset($token['remember_token'])){
+			return false;
+		}
+		
+		return true;
+
+	}
+
+
 	public function getModel()
 	{
 

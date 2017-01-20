@@ -9,7 +9,7 @@
   }
   .component-center{
       display: block;
-      margin: auto;
+       margin-top: 50px;
   }
  
 </style>
@@ -17,8 +17,7 @@
 <template>
 <div>
     <slot name="message"></slot>
-    <br><br><br><br><br><br><br>
-    <div class="panel panel-default" class="component-center"> 
+    <div class="panel panel-default component-center"> 
       <div class="panel-heading">
         <h3 class="panel-title">Sign In
           <span style="color:blue; padding-top:10px; padding-right:20px" align="left" v-if='loading'>

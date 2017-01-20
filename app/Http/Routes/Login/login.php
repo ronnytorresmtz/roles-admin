@@ -69,6 +69,12 @@ Route::get('login/userAuthenticated', array(
 	'uses'			=> 'LoginController@getUserAuthenticated'
 ));
 
+Route::get('login/tokenExist', array(
+
+	'as'			=> 'login.tokenExist',
+	'uses'			=> 'LoginController@getTokenExist'
+));
+
 
 
 

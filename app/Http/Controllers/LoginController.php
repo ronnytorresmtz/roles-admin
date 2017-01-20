@@ -32,12 +32,14 @@ class LoginController extends Controller {
     }
 
 
-    public function getLogIn(){
+    public function getLogIn()
+	{
 		return View::make ('vueroute');
     }
    
 
-	public function postLogIn(Request $request){
+	public function postLogIn(Request $request)
+	{
 		//Verify if the user has access to the application
 		if ($this->loginService->verifyUserLogin($request)){
 			Event::fire(new RegisterTransactionAccessEvent('login.login.login'));
@@ -46,7 +48,9 @@ class LoginController extends Controller {
 		return response()->json('The username and password are not correct', 401);
 	}
 
-	public function getUserAuthenticated(){
+	
+	public function getUserAuthenticated()
+	{
 
 		if (Auth::check()){
 			return response()->json('OK', 200);
@@ -56,7 +60,9 @@ class LoginController extends Controller {
 
 	}
 
-	public function getLogOut(){
+	
+	public function getLogOut()
+	{
 		// check if the user is loggeded 
 		if (Auth::check()){
 			Event::fire(new RegisterTransactionAccessEvent('login.login.logout'));
@@ -66,9 +72,9 @@ class LoginController extends Controller {
 	}
 
 
-	public function postSendYourPassword(Request $request){	
-		\Debugbar::info('entro0');
-		//Mail::pretend(true);
+	public function postSendYourPassword(Request $request)
+	{	
+		Mail::pretend(true);
 		$result=[];
 		// send a email to the user with a token 
 		$result = $this->userRepository->sendTokenToUserViaMail($request);
@@ -88,9 +94,8 @@ class LoginController extends Controller {
 	}
 
 
-	public function postResetYourPassword(Request $request){
-
-		
+	public function postResetYourPassword(Request $request)
+	{
 
 		$result=[];
 
@@ -98,12 +103,19 @@ class LoginController extends Controller {
 
 		if (! $result['error']){
 
-			Event::fire(new RegisterTransactionAccessEvent('login.login.resetUserPassword'));
+		//	Event::fire(new RegisterTransactionAccessEvent('login.login.resetUserPassword'));
 
-			return response()->json('OK', 200);
+			return response()->json($result, 200);
 		}
 
-		return response()->json('NOK', 401);
+		return response()->json($result, 200);
+	}
+
+
+	public function getTokenExist(Request $request)
+	{
+
+		return response()->json($this->userRepository->findToken($request), 200);
 	}
 
 }
