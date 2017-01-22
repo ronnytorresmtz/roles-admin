@@ -45,7 +45,7 @@ class LoginController extends Controller {
 			Event::fire(new RegisterTransactionAccessEvent('login.login.login'));
 			return response()->json('The user is authorize to access the application', 200);
 		}
-		return response()->json('The username and password are not correct', 401);
+		return response()->json('The username or password are not correct', 401);
 	}
 
 	
