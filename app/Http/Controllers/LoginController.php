@@ -74,7 +74,6 @@ class LoginController extends Controller {
 
 	public function postSendYourPassword(Request $request)
 	{	
-		Mail::pretend(true);
 		$result=[];
 		// send a email to the user with a token 
 		$result = $this->userRepository->sendTokenToUserViaMail($request);
