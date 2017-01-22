@@ -71,7 +71,7 @@
           <div class="row">
             <div class="col-sm-6 text-left">
               <div class="control-group" >
-                <input type="checkbox"></input>
+                <input type="checkbox" v-model="rememberMe"></input>
                 Remember Me
               </div>	
             </div>	
@@ -158,7 +158,7 @@
         </div>	
 				
       </div>       
-    </div> 
+    //</div> 
   </div>
 
 </template>
@@ -166,6 +166,11 @@
 <script>
 
   module.exports = {
+
+    ready: function(){
+      this.username=localStorage.getItem("rememberUserName");
+      this.rememberMe=(this.username) ? true : false;
+    },
 
     data: function() {
       return {
@@ -175,11 +180,20 @@
         loading:false,
         forgotYourPassword:false,
         emailErrMessage:true,
+        rememberMe:false,
       }
     },
 
 
     methods: {
+
+      rememberMe: function(){
+        if (typeof(Storage) !== "undefined") {
+         localStorage.setItem("rememberUserName",  this.rememberMe ?  this.username : '');
+        } else {
+          this.$dispatch('displayAlert', 'danger', 'This funcionality is not support for your browser');
+        }
+      },
 
       showEmailToSend: function(){
         this.forgotYourPassword = !this.forgotYourPassword;
@@ -211,8 +225,11 @@
 
       checkLogIn: function(username, password, url){
         this.loading= true;
+        var rememberMe = this.rememberMe;
+        var username =  this.username;
         this.$http.post('login/logIn', {username: username, password: password}).then(function(response){
             if (response.status==200){
+                localStorage.setItem("rememberUserName",  rememberMe ?  username : '');
                 this.$route.router.go(url);
             }else{
               this.displayPopUpMessage(response);
