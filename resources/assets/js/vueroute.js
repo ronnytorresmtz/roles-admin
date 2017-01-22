@@ -34,7 +34,6 @@ router.map({
     '/': {
         name: 'home',
         component: require('./views/login/LoginView.vue'),
-        
     },
 
     '/login': {
@@ -42,10 +41,14 @@ router.map({
         component: require('./views/login/LoginView.vue'),
     },
 
+    '/resetYourPassword': {
+        name: 'resetYourPassword',
+        component: require('./views/login/ResetYourPasswordView.vue'),
+    },
+
     '/dashboard': {
         name: 'dashboard',
         component: require('./views/security/UsersLoggedView.vue'),
-        
     },
 
     '/userslogged': {

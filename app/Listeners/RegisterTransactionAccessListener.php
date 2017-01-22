@@ -30,7 +30,7 @@ class RegisterTransactionAccessListener
     {
         $userAction = new UserActionLog;
  
-        $userAction->username    = Auth::user()->username;
+        $userAction->username    =  'guest';
         $userAction->module_name = $registerTransactionAccess->module_name;
         $userAction->transaction_name = $registerTransactionAccess->transaction_name;
         $userAction->action_name = $registerTransactionAccess->action_name;

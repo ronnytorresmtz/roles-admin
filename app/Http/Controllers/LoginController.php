@@ -32,12 +32,14 @@ class LoginController extends Controller {
     }
 
 
-    public function getLogIn(){
+    public function getLogIn()
+	{
 		return View::make ('vueroute');
     }
    
 
-	public function postLogIn(Request $request){
+	public function postLogIn(Request $request)
+	{
 		//Verify if the user has access to the application
 		if ($this->loginService->verifyUserLogin($request)){
 			Event::fire(new RegisterTransactionAccessEvent('login.login.login'));
@@ -46,7 +48,9 @@ class LoginController extends Controller {
 		return response()->json('The username and password are not correct', 401);
 	}
 
-	public function getUserAuthenticated(){
+	
+	public function getUserAuthenticated()
+	{
 
 		if (Auth::check()){
 			return response()->json('OK', 200);
@@ -56,18 +60,20 @@ class LoginController extends Controller {
 
 	}
 
-	public function getLogOut(){
+	
+	public function getLogOut()
+	{
 		// check if the user is loggeded 
 		if (Auth::check()){
-				Event::fire(new RegisterTransactionAccessEvent('login.login.logout'));
-				Auth::logout();
+			Event::fire(new RegisterTransactionAccessEvent('login.login.logout'));
+			Auth::logout();
 		}
 		return redirect()->route('/');
 	}
 
 
-	public function postSendYourPassword(Request $request){	
-		//Mail::pretend(true);
+	public function postSendYourPassword(Request $request)
+	{	
 		$result=[];
 		// send a email to the user with a token 
 		$result = $this->userRepository->sendTokenToUserViaMail($request);
@@ -87,35 +93,28 @@ class LoginController extends Controller {
 	}
 
 
+	public function postResetYourPassword(Request $request)
+	{
 
-	// public function getPasswordReset($token){
+		$result=[];
 
-	// 	return View::make('login.reset_your_password')->with('token', $token);
+		$result = $this->userRepository->resetUserPassowrd($request);
 
-	// }
+		if (! $result['error']){
 
+		//	Event::fire(new RegisterTransactionAccessEvent('login.login.resetUserPassword'));
 
-	public function postResetYourPassword(Request $request){
-
-		// validate the fields base on the rules and messages define in the Model, messages define in the Languages Files (Lang Directory)
-		$validator=$this->validationService->validateInputs($this->userRepository, $request->all(), 'ResetPasswordForm','validation.login');
-		
-		if ($validator->fails()) {
-		
-			// return back with input data and error messages
-			return redirect()->back()->withInput()->withErrors($validator);
+			return response()->json($result, 200);
 		}
 
-		// reset the password for the user
-		if ($this->userRepository->resetUserPassowrd($request->all())){
+		return response()->json($result, 200);
+	}
 
-			Event::fire(new RegisterTransactionAccessEvent('login.login.resetUserPassword'));
 
-			return redirect()->route('login');
+	public function getTokenExist(Request $request)
+	{
 
-		}
-		// return back with input data
-		return redirect()->back()->withInput();
+		return response()->json($this->userRepository->findToken($request), 200);
 	}
 
 }

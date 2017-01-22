@@ -58,9 +58,6 @@
 
 						icon-info='{	}'
 						icon-actions='{		}'
-
-						top-message= 'dfadfdsfasdfsdfadsfasdfasdfasdfasdfsdf'
-
 						>
 				
 						<mycrudbuttons
@@ -152,8 +149,6 @@
 	</div>
  </div>
 
- 
-
 </template>
 
 <script 
@@ -162,33 +157,3 @@ src="../parent.js" type="text/javascript">
 
 </script>
 
-<!-- "2": {
-	"type": "select",
-	"name": "module_name",
-	"value": "", 
-	"label": "Module Name", 
-	"required": "true",	
-	"url": "security/modules/getAllModulesActive",
-	"table": "modules"
- },
-
- "3": {
-	"type": "select",
-	"name": "transaction_name",
-	"value": "", 
-	"label": "Transaction Name", 
-	"required": "true",	
-	"url": "security/roles_transactions/moduleSelected",
-	"table": "transactions",
-	"selectFather": "module_name",
-	"selectFatherId": "1"
- },
-
-
-"4": {
-	"type": "text",
-	"name": "transaction_description",
-	"value": "", 
-	"label": "Transaction Description", 
-	"readonly": "readonly"	
-}  -->

@@ -20,6 +20,7 @@
 			</div>
 			<div class="col-sm-10" >
 				<mymessage 
+					slot="message"
 					message="This option allows to follow up how the users use the system and how many times they logged."
 					color="info"
 					align="center"

@@ -28,13 +28,11 @@ class UserRepository extends MyAbstractEloquentRepository implements UserReposit
 		$this->graphService = $graphService;
 	}
 
-
 	public function getInputRules($form, $request)
 	{
 		//get the input rules for the validation class
 		return $this->model->getInputRules($form, $request);
 	}
-
 
 	public function getInputMessages($langFileAttributes)
 	{
@@ -42,13 +40,14 @@ class UserRepository extends MyAbstractEloquentRepository implements UserReposit
 		return $this->model->getInputMessages($langFileAttributes);
 	}
 
-	//send a mail to the user with a token and security code to reset his password
+
 	public function sendTokenToUserViaMail($request)
 	{
 		try 
 		{
 			DB::beginTransaction();
 		
+			//get the first user with the email
 			$user= $this->model->where('email','=', $request['email'])->first();
 			//email was not found redirect to same view
 			if (!isset($user)){
@@ -92,12 +91,14 @@ class UserRepository extends MyAbstractEloquentRepository implements UserReposit
 	{
 		try
 		{
-			$user= $this->model->where('remember_security_number','=', $request['remember_security_number'])->first();
+			//get the first user with the token and security number
+			$user= $this->model
+					->where('remember_security_number','=', $request['security_number'])
+					->where('remember_token','=', $request['token'])
+					->first();
 			//verity if the security code does not exsit in the database to display a message error
 			if (!isset($user)){
-				Session::flash('error', Lang::get('messages.error_remember_security_number_noexist'));
-
-				return false;
+				return array('error' => true, 'message' => Lang::get('messages.error_remember_security_number_noexist'));
 			}		
 			//reset the user password in the database
 			$user->password							= Hash::make($request['new_password']);
@@ -105,28 +106,29 @@ class UserRepository extends MyAbstractEloquentRepository implements UserReposit
 			$user->remember_token 					='';
 			//save the reset ot the user password in the user table
 			if (! $user->save()){
-
 				//set the error message for the user
-				Session::flash('error', Lang::get('messages.error_password_wasnot_reset'));
-
-				return false;
-				
+				return array('error' => true, 'message' => Lang::get('messages.error_password_wasnot_reset'));
 			}
-
 			//set the info message for the user
-			Session::flash('info', Lang::get('messages.success_password_was_reset'));
+			return array('error' => false, 'message' => Lang::get('messages.success_password_was_reset'));
 
-			Event::fire(new RegisterTransactionAccessEvent('transactions.users.resetPassword'));
-
-			return true;
-			
-			
 		} catch (Exception $e) {
 			//set the error message for the user
-			Session::flash('error', Lang::get('messages.error_caught_exception') .'&nbsp;' . str_replace("'"," ", $e->getMessage()));
+			return array('error' => true, 'message' =>  Lang::get('messages.error_caught_exception') .'&nbsp;' . str_replace("'"," ", $e->getMessage()));
+		}
+	}
 
+
+	public function findToken($request){
+		///get the token of the first user find with a request->token
+		$token = $this->model->select('remember_token')->where('remember_token','=', $request['token'])->first();
+		//ckeck if the token was not found
+		if (!isset($token['remember_token'])){
+			//token was not found
 			return false;
 		}
+		//token was found
+		return true;
 	}
 
 
@@ -140,6 +142,7 @@ class UserRepository extends MyAbstractEloquentRepository implements UserReposit
 	public function getAllUsersByPage($itemsByPage)
 	{
 
+		//get all user information and his role
 		$users=$this->model->withTrashed()->select(
 			'users.id', 
 			'users.username',
@@ -161,6 +164,7 @@ class UserRepository extends MyAbstractEloquentRepository implements UserReposit
 
 	public function getAllUsers()
 	{
+		//get all user information and his role
 		$users=$this->model->withTrashed()->select(
 			'users.id', 
 			'users.username',
@@ -199,24 +203,19 @@ class UserRepository extends MyAbstractEloquentRepository implements UserReposit
 
 			//send a email to the user with a token to change password as he wish
 			$result= $this->sendTokenToUserViaMail($request);
-
+			//ckeck if the send mail get an error
 			if ($result['error']){
-
 				DB::rollBack();
-
 				return $result;
 			}
-
 			DB::commit();
 
 			return $result;
 
-
 		} catch (Exception $e){
-
 			DB::rollBack();
 
-			 return array('error' => true, 'message' => Lang::get('messages.error_caught_exception') .'&nbsp;' . str_replace("'"," ", $e->getMessage()));
+			return array('error' => true, 'message' => Lang::get('messages.error_caught_exception') .'&nbsp;' . str_replace("'"," ", $e->getMessage()));
 		}
 		
 
@@ -234,18 +233,14 @@ class UserRepository extends MyAbstractEloquentRepository implements UserReposit
 			$model->email         = $request->input('email');
 			$model->role_id       = $request->input('role_name');
 			$model->deleted_at    = null;
-			
 			$model->touch();
-
+			//check if the update fail
 			if (! $model->update()){
-
 				return array('error' => true, 'message' => Lang::get('messages.error'));
 			}
-
 			return array('error' => false, 'message' => Lang::get('messages.success'));
 
 		} catch (Exception $e){
-
 			return  array('error' => true, 'message' =>  Lang::get('messages.error_caught_exception') .'&nbsp;' . str_replace("'"," ", $e->getMessage()));
 			
 		}
@@ -260,16 +255,13 @@ class UserRepository extends MyAbstractEloquentRepository implements UserReposit
 		try
 		{
 			$model = $this->model->withTrashed()->find($id);
-			
+			//check if the delete fail
 			if (! $model->delete()){
-
-					return array('error' => true, 'message' => Lang::get('messages.error'));
+				return array('error' => true, 'message' => Lang::get('messages.error'));
 			}
-
 			return array('error' => false, 'message' => Lang::get('messages.success'));
 
 		} catch (Exception $e){
-
 			return  array('error' => true, 'message' =>  Lang::get('messages.error_caught_exception') .'&nbsp;' . str_replace("'"," ", $e->getMessage()));
 		}
 	}
@@ -307,12 +299,6 @@ class UserRepository extends MyAbstractEloquentRepository implements UserReposit
 
 	public function import($modelRepository, $file)
 	{
-
-
-		/// 
-		/// FALTA CORREFIR Y CAMBIAR A QUE SE PARA USER Y NO PARA MODULE.
-		/// 
-
 		/*=====================	RULES TO IMPORt FILES ========================================
 		1) The first row must be the fields hearder .
 		2) if the row has a value in the ID Field it will be update if not will be added.
@@ -403,15 +389,15 @@ class UserRepository extends MyAbstractEloquentRepository implements UserReposit
     public function getUsersLoggedbyDay($request)
     {
 		$usersByMonthDay = DB::select('
-		Select month, day, count(*) users 
-		From
-			(Select 
-				month(created_at) as month, day(created_at) as day, username  
-				From users_actions_log
-			Where month(created_at) = ' . $request->month . ' and year(created_at) =' . $request->year . ' and action_name=\'login\'' .
-			' group by month, day, username) as UserbyMonth
+			Select month, day, count(*) users 
+			From
+				(Select 
+					month(created_at) as month, day(created_at) as day, username  
+					From users_actions_log
+				Where month(created_at) = ' . $request->month . ' and year(created_at) =' . $request->year . ' and action_name=\'login\'' .
+				' group by month, day, username) as UserbyMonth
 
-			Group By month, day'
+				Group By month, day'
 		);
 
 		$daysArray=[];
@@ -522,7 +508,6 @@ class UserRepository extends MyAbstractEloquentRepository implements UserReposit
     }
 
 }
-
 
 //How to use of cal_info
 // $userByDay['labels'] = cal_info(0)['months'];
