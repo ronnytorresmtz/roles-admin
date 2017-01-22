@@ -167,10 +167,6 @@
 
   module.exports = {
 
-    ready: function(){
-    // this.isUserAuthenticated();
-    },
-
     data: function() {
       return {
         username:'',
@@ -184,21 +180,6 @@
 
 
     methods: {
-
-      // isUserAuthenticated: function(){
-      //   this.$http.get('login/userAuthenticated').then(function(response){
-      //     console.log(response.status);
-      //   }).then(function (response) {
-      //     if (response.status!=200){
-      //       this.$route.router.go('/login');
-      //      }
-      //   });
-      //   }).catch(function (response) {
-      //     this.displayPopUpMessage(response);
-      //   });
-      // },
-
-
 
       showEmailToSend: function(){
         this.forgotYourPassword = !this.forgotYourPassword;
