@@ -158,7 +158,7 @@
         </div>	
 				
       </div>       
-    //</div> 
+    </div> 
   </div>
 
 </template>
@@ -204,7 +204,9 @@
       },
 
       btnLoginDemo: function(){
-        this.checkLogIn("demo_user","demo123", '/dashboard');
+        this.username = "demo_user";
+        this.password = "demo123"
+        this.checkLogIn(this.username, this.password, '/dashboard');
       },
 
       btnSendEmail: function(){
