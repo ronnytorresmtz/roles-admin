@@ -37,6 +37,7 @@ class RedirectIfAuthenticated {
 		// {
 		// 	return new RedirectResponse(url('/home'));
 		// }
+		\Debugbar::info( \Request::fullUrl());
 
 		return $next($request);
 	}

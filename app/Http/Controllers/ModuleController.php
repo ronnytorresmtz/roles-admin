@@ -42,7 +42,7 @@ class ModuleController extends Controller {
 								ValidationServiceInterface $validationService,
 								DocumentServiceInterface $documentService)
 	{
-		$this->moduleRepository    = $moduleRepository;
+		$this->moduleRepository  = $moduleRepository;
 		$this->urlService        = $urlService;
 		$this->validationService = $validationService;
 		$this->documentService   = $documentService;
