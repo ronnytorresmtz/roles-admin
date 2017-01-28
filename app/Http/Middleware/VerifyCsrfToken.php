@@ -14,8 +14,7 @@ class VerifyCsrfToken extends BaseVerifier {
 	 */
 	public function handle($request, Closure $next)
 	{
-			\Debugbar::info( \Request::fullUrl());
-			
+		
 		return parent::handle($request, $next);
 	}
 
