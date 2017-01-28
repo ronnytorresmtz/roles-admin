@@ -75,7 +75,7 @@ class ModuleRepository extends MyAbstractEloquentRepository implements ModuleRep
 			
 			$model->module_name        = $request->input('module_name');
 			$model->module_description = $request->input('module_description');
-			$model->module_order			 = $request->input('module_order');
+			$model->module_order		= $request->input('module_order');
 			
 			if (! $model->save()){
 
@@ -98,10 +98,10 @@ class ModuleRepository extends MyAbstractEloquentRepository implements ModuleRep
 			// store the data to the database
 			$model = $this->model->withTrashed()->find($id);
 
-			$model->module_name        = $request->input('module_name');
-			$model->module_description = $request->input('module_description');
-			$model->module_order			 = $request->input('module_order');
-			$model->deleted_at      	 = null;
+			$model->module_name        	= $request->input('module_name');
+			$model->module_description 	= $request->input('module_description');
+			$model->module_order	 	= $request->input('module_order');
+			$model->deleted_at      	= null;
 
 			$model->touch();
 			
@@ -176,10 +176,10 @@ class ModuleRepository extends MyAbstractEloquentRepository implements ModuleRep
 		
 					$rowId = $this->model->find($file[$i]['id']);
 					
-					$rowId->module_name        = $file[$i]['module_name'];
-					$rowId->module_description = $file[$i]['module_description'];
-					$rowId->module_order			 = $file[$i]['module_order'];
-					$rowId->deleted_at       	 = null;
+					$rowId->module_name        	= $file[$i]['module_name'];
+					$rowId->module_description 	= $file[$i]['module_description'];
+					$rowId->module_order		= $file[$i]['module_order'];
+					$rowId->deleted_at       	= null;
 					$rowId->touch();  			//touch: update timestamps
 					$rowId->save();
 					$updateRecords++;
@@ -190,7 +190,7 @@ class ModuleRepository extends MyAbstractEloquentRepository implements ModuleRep
 					$rowId->module_name        = $file[$i]['module_name'];
 					$rowId->module_description = $file[$i]['module_description'];
 					$rowId->module_description = $file[$i]['module_order'];
-					$rowId->deleted_at          = null;
+					$rowId->deleted_at         = null;
 					$rowId->save();
 					$addedRecords++;
 				}
