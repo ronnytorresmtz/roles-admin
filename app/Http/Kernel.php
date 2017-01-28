@@ -19,7 +19,6 @@ class Kernel extends HttpKernel {
 
 		//Clockwork third party tool
 		'Clockwork\Support\Laravel\ClockworkMiddleware',
-		
 	];
 
 	/**
