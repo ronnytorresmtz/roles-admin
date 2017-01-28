@@ -11,19 +11,15 @@
 |
 */
 
-Route::group(array('before' => 'setStartTime'), function(){
 
+// Get the split routes files that are in the app/Http/Routes 
+$allFiles = File::allFiles(__DIR__ . '\Routes');
 
-	// Get the split routes files that are in the app/Http/Routes 
-	$allFiles = File::allFiles(__DIR__ . '\Routes');
+foreach ($allFiles as $file) {
 
-	foreach ($allFiles as $file) {
+	require_once ($file->getPathname());
+}
 
-		require_once ($file->getPathname());
-	}
-
-
-});
 
 
 Route::get('/vue', function (){
