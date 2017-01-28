@@ -3,9 +3,9 @@
 
 use Illuminate\Http\Request;
 use App\Events\RegisterTransactionAccessEvent;
-use Megacampus\Services\Login\LoginServiceInterface;
-use Megacampus\Repositories\User\UserRepositoryInterface;
-use Megacampus\Services\Validation\ValidationServiceInterface;
+use MyCode\Services\Login\LoginServiceInterface;
+use MyCode\Repositories\User\UserRepositoryInterface;
+use MyCode\Services\Validation\ValidationServiceInterface;
 
 /*use App\Http\Requests\ForgotPasswordRequest;
 use App\Http\Requests\PasswordResetRequest;*/

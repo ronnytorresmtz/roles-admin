@@ -1,6 +1,6 @@
-<?php namespace Megacampus\Repositories\ucfirstModelTemplate;
+<?php namespace MyCode\Repositories\ucfirstModelTemplate;
 
-use Megacampus\Repositories\Eloquent\MyEloquentRepositoryInterface;
+use MyCode\Repositories\Eloquent\MyEloquentRepositoryInterface;
  
 interface ucfirstModelTemplateRepositoryInterface extends MyEloquentRepositoryInterface
 {

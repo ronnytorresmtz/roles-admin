@@ -92,7 +92,7 @@ class RollbackCrudVue extends Command
 
 	public function deleteModel($argument)
 	{
-		$file = app_path() . '\Megacampus\Models\\' . $argument['s'] . '.php';
+		$file = app_path() . '\MyCode\Models\\' . $argument['s'] . '.php';
 		
 		$this->deleteFile($file, $dir=null, 'Model');		
 
@@ -124,7 +124,7 @@ class RollbackCrudVue extends Command
 
 	public function deleteRepository($argument)
 	{
-		$file = app_path()  . '\Megacampus\Repositories\\' . ucfirst($argument['s']) . '\\' . ucfirst($argument['s']) . 'Repository.php';
+		$file = app_path()  . '\MyCode\Repositories\\' . ucfirst($argument['s']) . '\\' . ucfirst($argument['s']) . 'Repository.php';
 
 		$this->deleteFile($file, $dir=null, 'Repository');				
 
@@ -134,7 +134,7 @@ class RollbackCrudVue extends Command
 
 	public function deleteRepositoryInterface($argument)
 	{
-		$dir = app_path()  . '\Megacampus\Repositories\\' . ucfirst($argument['s']);
+		$dir = app_path()  . '\MyCode\Repositories\\' . ucfirst($argument['s']);
 
 		$file = $dir . '\\' . ucfirst($argument['s']) . 'RepositoryInterface.php';
 

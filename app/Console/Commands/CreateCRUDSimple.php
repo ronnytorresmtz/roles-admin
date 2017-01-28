@@ -165,7 +165,7 @@ class CreateCRUDSimple extends Command {
 		$this->replaceFileContent(	
 			$argument, 
 			base_path() . '\templates\Models\Model_Template.php', 
-			app_path() . '\Megacampus\Models\\' . ucfirst($argument['s']) . '.php');
+			app_path() . '\MyCode\Models\\' . ucfirst($argument['s']) . '.php');
 		//Display a user message
 		$this->displayConsoleMessage('Model');
 
@@ -217,7 +217,7 @@ class CreateCRUDSimple extends Command {
 
 	public function createRepository($argument){
 		// Check if directory exist for the Model in the Repositories
-		$this->createDirectoryIfNotExist(app_path()  . '\Megacampus\Repositories\\' . ucfirst($argument['s']));
+		$this->createDirectoryIfNotExist(app_path()  . '\MyCode\Repositories\\' . ucfirst($argument['s']));
 
 		if (strcmp($argument['o'],'simple')==0){
 			$templateFile=base_path() . '\templates\Repositories\Repository_Template.php';
@@ -228,7 +228,7 @@ class CreateCRUDSimple extends Command {
 		$this->replaceFileContent(
 			$argument,
 			$templateFile,
-			app_path()  . '\Megacampus\Repositories\\' . ucfirst($argument['s']) . '\\' . ucfirst($argument['s']) . 'Repository.php');
+			app_path()  . '\MyCode\Repositories\\' . ucfirst($argument['s']) . '\\' . ucfirst($argument['s']) . 'Repository.php');
 		//Display a user message
 		$this->displayConsoleMessage('Repository');
 
@@ -248,7 +248,7 @@ class CreateCRUDSimple extends Command {
 		$this->replaceFileContent(
 			$argument,
 			$templateFile,
-			app_path()  . '\Megacampus\Repositories\\' . ucfirst($argument['s']) . '\\' . ucfirst($argument['s']) . 'RepositoryInterface.php');
+			app_path()  . '\MyCode\Repositories\\' . ucfirst($argument['s']) . '\\' . ucfirst($argument['s']) . 'RepositoryInterface.php');
 		//Display a user message
 		$this->displayConsoleMessage('RepositoryInterface');
 

@@ -1,4 +1,4 @@
-$this->app->bind('Megacampus\Repositories\ucfirstModelTemplate\ucfirstModelTemplateRepositoryInterface', function($app) 
+$this->app->bind('MyCode\Repositories\ucfirstModelTemplate\ucfirstModelTemplateRepositoryInterface', function($app) 
 		{
 			return new ucfirstModelTemplateRepository(new ucfirstModelTemplate, new GraphService);
 		});

@@ -1,5 +1,5 @@
 	
-MEGACAMPUS TODO LIST
+roles-admin TODO LIST
 =====================
 
 1) Integrate in the Session Objet the Loading Start Time and Display in the Page
@@ -217,7 +217,7 @@ seed
 
 31) Change the comments to Laravel Style
 
-32) Change the Models from Namespace App to Namespace Megacampus
+32) Change the Models from Namespace App to namespace MyCode
 
 35) The pop message in the programa for add and edit is not displaying.
 

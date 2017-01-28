@@ -12,13 +12,13 @@
 use Illuminate\Http\Request;
 
 use App\Events\RegisterTransactionAccessEvent;
-use Megacampus\Repositories\RoleTransaction\RoleTransactionRepositoryInterface;
-use Megacampus\Repositories\Role\RoleRepositoryInterface;
-use Megacampus\Repositories\Transaction\TransactionRepositoryInterface;
-use Megacampus\Repositories\TransactionAction\TransactionActionRepositoryInterface;
-use Megacampus\Repositories\Module\ModuleRepositoryInterface;
-use Megacampus\Services\Validation\ValidationServiceInterface;
-use Megacampus\Services\Document\DocumentServiceInterface;
+use MyCode\Repositories\RoleTransaction\RoleTransactionRepositoryInterface;
+use MyCode\Repositories\Role\RoleRepositoryInterface;
+use MyCode\Repositories\Transaction\TransactionRepositoryInterface;
+use MyCode\Repositories\TransactionAction\TransactionActionRepositoryInterface;
+use MyCode\Repositories\Module\ModuleRepositoryInterface;
+use MyCode\Services\Validation\ValidationServiceInterface;
+use MyCode\Services\Document\DocumentServiceInterface;
 
 
 

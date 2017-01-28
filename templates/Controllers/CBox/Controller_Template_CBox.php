@@ -16,12 +16,12 @@
 use Illuminate\Http\Request;
 
 use App\Events\RegisterTransactionAccessEvent;
-use Megacampus\Repositories\ucfirstModelTemplate\ucfirstModelTemplateRepositoryInterface;
-use Megacampus\Repositories\ucfirstSelectTemplate\ucfirstSelectTemplateRepositoryInterface;
-use Megacampus\Services\Url\UrlServiceInterface;
-use Megacampus\Services\Validation\ValidationServiceInterface;
-use Megacampus\Services\Document\DocumentServiceInterface;
-use Megacampus\Services\General\GeneralServiceInterface;
+use MyCode\Repositories\ucfirstModelTemplate\ucfirstModelTemplateRepositoryInterface;
+use MyCode\Repositories\ucfirstSelectTemplate\ucfirstSelectTemplateRepositoryInterface;
+use MyCode\Services\Url\UrlServiceInterface;
+use MyCode\Services\Validation\ValidationServiceInterface;
+use MyCode\Services\Document\DocumentServiceInterface;
+use MyCode\Services\General\GeneralServiceInterface;
 
 
 class ucfirstModelTemplateController extends Controller {
