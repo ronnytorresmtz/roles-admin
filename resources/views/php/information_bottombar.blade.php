@@ -12,11 +12,11 @@
 		<div class="col-sm-2" align="left">
 			<p class="bottombrand"> {!!Lang::get('labels.user_name')!!}: {!!Auth::user()->username!!}  </p>
 		</div>
-		<div class="col-sm-2" align="left">
+		{{-- <div class="col-sm-2" align="left">
 			<p id="LoadingTime" class="bottombrand"> 
 				{!!Lang::get('labels.loading_time')!!}: {!!round(microtime(true)-Session::get('loadingStartTime'),2)!!} seconds
 			</p>
-		</div>
+		</div> --}}
 		<div class="col-sm-2" align="right">
 			<p class="bottomcodeby">{!!Lang::get('labels.codeby')!!} TMTechnologies &reg; </p>
 		</div>
