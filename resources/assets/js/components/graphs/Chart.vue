@@ -115,17 +115,18 @@ module.exports = {
       },
 
       displayGraph: function(year, month){
-        this.loading = true;
-        this.$http.post(this.url, {"year": year, "month": month}).then((responde) => {
-          this.labels = responde.data.labels;
-          this.label = responde.data.legend;
-          this.series = responde.data.series;
-        }).then(function (responde) {
-          $('#' + this.id).highcharts(this.setOptions(this.series));
-          this.loading = false;
-        }).catch(function (responde) {
-          this.displayPopUpMessage(response);
-          this.loading = false;
+        var self=this;
+        self.loading = true;
+        self.$http.post(self.url, {"year": year, "month": month}).then((response) => {
+          self.labels = response.data.labels;
+          self.label = response.data.legend;
+          self.series = response.data.series;
+        }).then(function (response) {
+          $('#' + self.id).highcharts(self.setOptions(self.series));
+          self.loading = false;
+        }).catch(function (response) {
+          self.displayPopUpMessage(response);
+          self.loading = false;
         });
       },
 

@@ -114,39 +114,39 @@ module.exports = {
       },
 
       displayGraph: function(year, month){
+        var self=this;
+        self.loading = true;
 
-        this.loading = true;
-
-        this.$http.post(this.url, {"year": year, "month": month}).then((responde) => {
+        self.$http.post(self.url, {"year": year, "month": month}).then((responde) => {
 
           console.log(responde);
 
-          this.years = responde.data.years;
-          this.months = responde.data.months;
-          this.labels = responde.data.labels;
-          this.label = responde.data.legend;
-          this.series = responde.data.series;
+          self.years = responde.data.years;
+          self.months = responde.data.months;
+          self.labels = responde.data.labels;
+          self.label = responde.data.legend;
+          self.series = responde.data.series;
 
         }).then(function (responde) {
 
           var chartData = {
-            type: this.type,
-            data: this.setData(this.labels, this.label, this.series),
-            options: this.setOptions(this.series),
-            width: 'width:' + this.width //width in porcentage (ex. 50%)
+            type: self.type,
+            data: self.setData(self.labels, self.label, self.series),
+            options: self.setOptions(self.series),
+            width: 'width:' + self.width //width in porcentage (ex. 50%)
           }
           
-          var canvas = document.getElementById(this.id);
+          var canvas = document.getElementById(self.id);
           var myChart = new Chart(canvas, chartData); 
 
           timeout(function() {
             myChart.destroy();
           }, 200);
 
-          this.loading = false;
+          self.loading = false;
 
         }).catch(function (responde) {
-          this.loading = false;
+          self.loading = false;
           alert(responde.status);
         });
       },

@@ -239,17 +239,18 @@
       },
 
       readPageData: function(url, displayMsg){
-        this.NoMorePages=false;
-        this.loading= true;
-        this.$http.get(url).then(function (response){
-          this.setDataResponse(response.data);
-          this.routesFirstPrevNextLast(response.data);
-          $('#' + this.id + ' td').remove(); 
+        var self=this;
+        self.NoMorePages=false;
+        self.loading= true;
+        self.$http.get(url).then(function (response){
+          self.setDataResponse(response.data);
+          self.routesFirstPrevNextLast(response.data);
+          $('#' + self.id + ' td').remove(); 
         }).then(function (response) {
-          this.loading= false;
+          self.loading= false;
         }).catch(function (response) {
-          this.displayPopUpMessage(response);
-          this.loading= false;
+          self.displayPopUpMessage(response);
+          self.loading= false;
         });
       },
 

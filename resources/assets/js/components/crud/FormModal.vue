@@ -240,9 +240,10 @@
       },
       
       getOptionsForSelect: function(field){
+         var self=this;
          var id=(field.selectFatherId!==undefined) ? field.selectFatherId : '';
          var option = [];
-         this.$http({url: field.url + '/' + id, method: 'GET'}).then(function(response){
+         self.$http({url: field.url + '/' + id, method: 'GET'}).then(function(response){
             var info = {};
             for (var j = 0; j < response.data.length; j++) {
               info={};
@@ -252,9 +253,9 @@
               option.push(info);
             } 
           }).catch(function (response) {
-            this.displayPopUpMessage(response);
+            self.displayPopUpMessage(response);
           }); 
-          this.$set(field.table, option);
+          self.$set(field.table, option);
       },
 
       countFieldsRequired: function(){
@@ -328,20 +329,16 @@
       },
 
       sendDataToDB: function(url, method, data){
-        this.processing = true; 
-        this.$http({url: url, method: method, data: data}).then(function(response){
-          (method=='PUT') ? this.itemStatus="ok" : this.itemStatus="remove";
-          this.reloadAfterAction();
-          this.displayPopUpMessage(response);
+        var self=this;
+        self.$http({url: url, method: method, data: data}).then(function(response){
+          (method=='PUT') ? self.itemStatus="ok" : self.itemStatus="remove";
+          self.reloadAfterAction();
+          self.displayPopUpMessage(response);
           if (method=='POST'){
-            this.initFieldsValues();
+            self.initFieldsValues();
           }
-        }).finally(function (response) {
-           this.processing = false;
-
         }).catch(function (response) {
-          this.displayPopUpMessage(response);
-           this.processing = false;
+          self.displayPopUpMessage(response);
         });    
       },
 
@@ -393,9 +390,10 @@
       },
 
       loadSelectDependOfOtherSelect: function(field){
-        var id=this.$get(field.selectFather);
+        var self=this;
+        var id=self.$get(field.selectFather);
         var option = [];
-        this.$http({url: field.url + '/' + id, method: 'GET'}).then(function(response){
+        self.$http({url: field.url + '/' + id, method: 'GET'}).then(function(response){
             var info = {};
             for (var j = 0; j < response.data.length; j++) {
               info={};
@@ -404,14 +402,13 @@
               info.selected='';
               option.push(info);
             } 
+          }).then(function (response) {
+            self.setValueInSelect(field);
+            self.setFirstSelectValue(option, field);
           }).catch(function (response) {
-            this.displayPopUpMessage(response);
-          }).finally(function (response) {
-            this.setValueInSelect(field);
-            this.setFirstSelectValue(option, field);
-            
+            self.displayPopUpMessage(response);
           }); 
-          this.$set(field.table, option);
+          self.$set(field.table, option);
       },
 
 

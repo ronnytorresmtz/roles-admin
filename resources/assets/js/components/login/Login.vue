@@ -210,38 +210,40 @@
       },
 
       btnSendEmail: function(){
-        if (this.isValidEmail(this.email)){
-          this.loading = true;
-          this.$http.post('login/sendYourPassword', {email: this.email}).then(function(response){
-            this.displayPopUpMessage(response);
+        var self=this;
+        if (self.isValidEmail(self.email)){
+          self.loading = true;
+          self.$http.post('login/sendYourPassword', {email: self.email}).then(function(response){
+            self.displayPopUpMessage(response);
           }).then(function (response) {
-              this.loading = false;
-              this.forgotYourPassword = false;
+              self.loading = false;
+              self.forgotYourPassword = false;
           }).catch(function (response) {
-            this.displayPopUpMessage(response);
-            this.loading = false;
+            self.displayPopUpMessage(response);
+            self.loading = false;
           });
         }
 
       },
 
       checkLogIn: function(username, password, url){
-        this.loading= true;
+        var self = this;
         var rememberMe = this.rememberMe;
         var username =  this.username;
-        this.$http.post('login/logIn', {username: username, password: password}).then(function(response){
+        self.loading= true;
+        self.$http.post('login/logIn', {username: username, password: password}).then(function(response){
             if (response.status==200){
                 localStorage.setItem("rememberUserName",  rememberMe ?  username : '');
-                this.$route.router.go(url);
+                self.$route.router.go(url);
             }else{
-              this.displayPopUpMessage(response);
+              self.displayPopUpMessage(response);
             }
         }).then(function (response) {
-            this.loading= false;
+            self.loading= false;
         }).catch(function (response) {
-          this.displayPopUpMessage(response);
-          this.loading= false;
-        }).bind(this);
+          self.displayPopUpMessage(response);
+          self.loading= false;
+        });//.bind(this);
 
       },
 

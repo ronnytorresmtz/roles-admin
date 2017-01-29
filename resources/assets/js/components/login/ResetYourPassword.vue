@@ -107,17 +107,18 @@
   module.exports = {
 
     beforeCompile: function(){
-      this.$http.get('login/tokenExist', {token: this.$route.query.token}).then(function(response){
+      var self=this;
+      self.$http.get('login/tokenExist', {token: self.$route.query.token}).then(function(response){
           if (response.data==true){
-            this.showView = true;
-            this.token = this.$route.query.token;
+            self.showView = true;
+            self.token = self.$route.query.token;
           }else{
-            this.showView = false;
-            this.$dispatch('displayAlert', 'danger', 'Not Authorized (401)');
+            self.showView = false;
+            self.$dispatch('displayAlert', 'danger', 'Not Authorized (401)');
           }
       }).catch(function (response) {
-          this.showView = false;
-          this.displayPopUpMessage(response);
+          self.showView = false;
+          self.displayPopUpMessage(response);
       });
 
     },
@@ -142,24 +143,25 @@
     methods: {
 
       resetPassword: function(){
-        this.loading = true;
-        this.$http.post(
+        var self=this;
+        self.loading = true;
+        self.$http.post(
           'login/resetYourPassword', 
           {
-            token: this.token,
-            security_number: this.securityNumber, 
-            new_password: this.password
+            token: self.token,
+            security_number: self.securityNumber, 
+            new_password: self.password
           }
         ).then(function(response){
           if (!response.data.error){
-            this.$route.router.go('/login');
+            self.$route.router.go('/login');
           }else{
-            this.loading = false;
-            this.$dispatch('displayAlert',  'danger', response.data.message);
+            self.loading = false;
+            self.$dispatch('displayAlert',  'danger', response.data.message);
           }
         }).catch(function (response) {
-          this.loading = false;
-          this.displayPopUpMessage(response);
+          self.loading = false;
+          self.displayPopUpMessage(response);
         });
       },
 
