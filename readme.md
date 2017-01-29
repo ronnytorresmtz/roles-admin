@@ -68,7 +68,7 @@ Used to Open and Close Modal Windows.
 - ~~Replace vue-resource for axios~~.
 - An API to used by the Main Business Applications to know the access right (modules-transaction-security action level) of a user.
 - Learn and Choose the Testing Tools to make the functional test files.
-- Migrate vue to vue 2.0 and decide to used Vuex or Events to handle the compoments communicatione instead Bradcast method.
-- Migrate to Laravel 5.3
+- Migrate vue to vue 2 and decide to used Vuex or Events to handle the compoments communicatione instead Bradcast method.
+- Migrate to Laravel 5.4
 - New functionalities to Support Multiple Business Applications for One Roles Admin Database.
 
