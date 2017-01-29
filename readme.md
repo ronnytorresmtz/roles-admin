@@ -63,9 +63,9 @@ Used to Open and Close Modal Windows.
 ```
 ##What are the next development tasks?
 
-- ~~Eliminate files that were used for testing vue and laravel functionalities~~.
-- ~~Integrate a Login Form to access the Role Admin Application with an admin user account~~.
-- ~~Replace vue-resource for axios~~.
+- ~~Eliminate files that were used for testing vue and laravel functionalities~~ DONE.
+- ~~Integrate a Login Form to access the Role Admin Application with an admin user account~~ DONE.
+- ~~Replace vue-resource for axios~~ DONE.
 - An API to used by the Main Business Applications to know the access right (modules-transaction-security action level) of a user.
 - Learn and Choose the Testing Tools to make the functional test files.
 - Migrate vue to vue 2 and decide to used Vuex or Events to handle the compoments communicatione instead Bradcast method.
