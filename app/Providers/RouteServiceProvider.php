@@ -30,12 +30,7 @@ class RouteServiceProvider extends ServiceProvider {
 
 		//
 
-		// set the stat time for measure the loading page time
-		Route::filter('setStartTime', function() {
-
-			Session::flash('loadingStartTime', microtime(true));
-
-		});
+		
 
 	}
 

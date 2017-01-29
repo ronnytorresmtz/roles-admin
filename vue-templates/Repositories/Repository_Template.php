@@ -1,9 +1,9 @@
-<?php namespace Megacampus\Repositories\ucfirstModelTemplate;
+<?php namespace MyCode\Repositories\ucfirstModelTemplate;
  
 //use Maatwebsite\Excel\Excel as Excel;
 
-use Megacampus\Repositories\Eloquent\MyAbstractEloquentRepository;
-use Megacampus\Repositories\ucfirstModelTemplate\ucfirstModelTemplateRepositoryInterface;
+use MyCode\Repositories\Eloquent\MyAbstractEloquentRepository;
+use MyCode\Repositories\ucfirstModelTemplate\ucfirstModelTemplateRepositoryInterface;
 
 use  DB, Exception, Lang, ucfirstModelTemplate, Session;
  

@@ -1,10 +1,1401 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+module.exports = require('./lib/axios');
+},{"./lib/axios":3}],2:[function(require,module,exports){
+(function (process){
+'use strict';
+
+var utils = require('./../utils');
+var settle = require('./../core/settle');
+var buildURL = require('./../helpers/buildURL');
+var parseHeaders = require('./../helpers/parseHeaders');
+var isURLSameOrigin = require('./../helpers/isURLSameOrigin');
+var createError = require('../core/createError');
+var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || require('./../helpers/btoa');
+
+module.exports = function xhrAdapter(config) {
+  return new Promise(function dispatchXhrRequest(resolve, reject) {
+    var requestData = config.data;
+    var requestHeaders = config.headers;
+
+    if (utils.isFormData(requestData)) {
+      delete requestHeaders['Content-Type']; // Let the browser set it
+    }
+
+    var request = new XMLHttpRequest();
+    var loadEvent = 'onreadystatechange';
+    var xDomain = false;
+
+    // For IE 8/9 CORS support
+    // Only supports POST and GET calls and doesn't returns the response headers.
+    // DON'T do this for testing b/c XMLHttpRequest is mocked, not XDomainRequest.
+    if (process.env.NODE_ENV !== 'test' &&
+        typeof window !== 'undefined' &&
+        window.XDomainRequest && !('withCredentials' in request) &&
+        !isURLSameOrigin(config.url)) {
+      request = new window.XDomainRequest();
+      loadEvent = 'onload';
+      xDomain = true;
+      request.onprogress = function handleProgress() {};
+      request.ontimeout = function handleTimeout() {};
+    }
+
+    // HTTP basic authentication
+    if (config.auth) {
+      var username = config.auth.username || '';
+      var password = config.auth.password || '';
+      requestHeaders.Authorization = 'Basic ' + btoa(username + ':' + password);
+    }
+
+    request.open(config.method.toUpperCase(), buildURL(config.url, config.params, config.paramsSerializer), true);
+
+    // Set the request timeout in MS
+    request.timeout = config.timeout;
+
+    // Listen for ready state
+    request[loadEvent] = function handleLoad() {
+      if (!request || (request.readyState !== 4 && !xDomain)) {
+        return;
+      }
+
+      // The request errored out and we didn't get a response, this will be
+      // handled by onerror instead
+      // With one exception: request that using file: protocol, most browsers
+      // will return status as 0 even though it's a successful request
+      if (request.status === 0 && !(request.responseURL && request.responseURL.indexOf('file:') === 0)) {
+        return;
+      }
+
+      // Prepare the response
+      var responseHeaders = 'getAllResponseHeaders' in request ? parseHeaders(request.getAllResponseHeaders()) : null;
+      var responseData = !config.responseType || config.responseType === 'text' ? request.responseText : request.response;
+      var response = {
+        data: responseData,
+        // IE sends 1223 instead of 204 (https://github.com/mzabriskie/axios/issues/201)
+        status: request.status === 1223 ? 204 : request.status,
+        statusText: request.status === 1223 ? 'No Content' : request.statusText,
+        headers: responseHeaders,
+        config: config,
+        request: request
+      };
+
+      settle(resolve, reject, response);
+
+      // Clean up request
+      request = null;
+    };
+
+    // Handle low level network errors
+    request.onerror = function handleError() {
+      // Real errors are hidden from us by the browser
+      // onerror should only fire if it's a network error
+      reject(createError('Network Error', config));
+
+      // Clean up request
+      request = null;
+    };
+
+    // Handle timeout
+    request.ontimeout = function handleTimeout() {
+      reject(createError('timeout of ' + config.timeout + 'ms exceeded', config, 'ECONNABORTED'));
+
+      // Clean up request
+      request = null;
+    };
+
+    // Add xsrf header
+    // This is only done if running in a standard browser environment.
+    // Specifically not if we're in a web worker, or react-native.
+    if (utils.isStandardBrowserEnv()) {
+      var cookies = require('./../helpers/cookies');
+
+      // Add xsrf header
+      var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
+          cookies.read(config.xsrfCookieName) :
+          undefined;
+
+      if (xsrfValue) {
+        requestHeaders[config.xsrfHeaderName] = xsrfValue;
+      }
+    }
+
+    // Add headers to the request
+    if ('setRequestHeader' in request) {
+      utils.forEach(requestHeaders, function setRequestHeader(val, key) {
+        if (typeof requestData === 'undefined' && key.toLowerCase() === 'content-type') {
+          // Remove Content-Type if data is undefined
+          delete requestHeaders[key];
+        } else {
+          // Otherwise add header to the request
+          request.setRequestHeader(key, val);
+        }
+      });
+    }
+
+    // Add withCredentials to request if needed
+    if (config.withCredentials) {
+      request.withCredentials = true;
+    }
+
+    // Add responseType to request if needed
+    if (config.responseType) {
+      try {
+        request.responseType = config.responseType;
+      } catch (e) {
+        if (request.responseType !== 'json') {
+          throw e;
+        }
+      }
+    }
+
+    // Handle progress if needed
+    if (typeof config.onDownloadProgress === 'function') {
+      request.addEventListener('progress', config.onDownloadProgress);
+    }
+
+    // Not all browsers support upload events
+    if (typeof config.onUploadProgress === 'function' && request.upload) {
+      request.upload.addEventListener('progress', config.onUploadProgress);
+    }
+
+    if (config.cancelToken) {
+      // Handle cancellation
+      config.cancelToken.promise.then(function onCanceled(cancel) {
+        if (!request) {
+          return;
+        }
+
+        request.abort();
+        reject(cancel);
+        // Clean up request
+        request = null;
+      });
+    }
+
+    if (requestData === undefined) {
+      requestData = null;
+    }
+
+    // Send the request
+    request.send(requestData);
+  });
+};
+
+}).call(this,require('_process'))
+},{"../core/createError":9,"./../core/settle":12,"./../helpers/btoa":16,"./../helpers/buildURL":17,"./../helpers/cookies":19,"./../helpers/isURLSameOrigin":21,"./../helpers/parseHeaders":23,"./../utils":25,"_process":69}],3:[function(require,module,exports){
+'use strict';
+
+var utils = require('./utils');
+var bind = require('./helpers/bind');
+var Axios = require('./core/Axios');
+var defaults = require('./defaults');
+
+/**
+ * Create an instance of Axios
+ *
+ * @param {Object} defaultConfig The default config for the instance
+ * @return {Axios} A new instance of Axios
+ */
+function createInstance(defaultConfig) {
+  var context = new Axios(defaultConfig);
+  var instance = bind(Axios.prototype.request, context);
+
+  // Copy axios.prototype to instance
+  utils.extend(instance, Axios.prototype, context);
+
+  // Copy context to instance
+  utils.extend(instance, context);
+
+  return instance;
+}
+
+// Create the default instance to be exported
+var axios = createInstance(defaults);
+
+// Expose Axios class to allow class inheritance
+axios.Axios = Axios;
+
+// Factory for creating new instances
+axios.create = function create(instanceConfig) {
+  return createInstance(utils.merge(defaults, instanceConfig));
+};
+
+// Expose Cancel & CancelToken
+axios.Cancel = require('./cancel/Cancel');
+axios.CancelToken = require('./cancel/CancelToken');
+axios.isCancel = require('./cancel/isCancel');
+
+// Expose all/spread
+axios.all = function all(promises) {
+  return Promise.all(promises);
+};
+axios.spread = require('./helpers/spread');
+
+module.exports = axios;
+
+// Allow use of default import syntax in TypeScript
+module.exports.default = axios;
+
+},{"./cancel/Cancel":4,"./cancel/CancelToken":5,"./cancel/isCancel":6,"./core/Axios":7,"./defaults":14,"./helpers/bind":15,"./helpers/spread":24,"./utils":25}],4:[function(require,module,exports){
+'use strict';
+
+/**
+ * A `Cancel` is an object that is thrown when an operation is canceled.
+ *
+ * @class
+ * @param {string=} message The message.
+ */
+function Cancel(message) {
+  this.message = message;
+}
+
+Cancel.prototype.toString = function toString() {
+  return 'Cancel' + (this.message ? ': ' + this.message : '');
+};
+
+Cancel.prototype.__CANCEL__ = true;
+
+module.exports = Cancel;
+
+},{}],5:[function(require,module,exports){
+'use strict';
+
+var Cancel = require('./Cancel');
+
+/**
+ * A `CancelToken` is an object that can be used to request cancellation of an operation.
+ *
+ * @class
+ * @param {Function} executor The executor function.
+ */
+function CancelToken(executor) {
+  if (typeof executor !== 'function') {
+    throw new TypeError('executor must be a function.');
+  }
+
+  var resolvePromise;
+  this.promise = new Promise(function promiseExecutor(resolve) {
+    resolvePromise = resolve;
+  });
+
+  var token = this;
+  executor(function cancel(message) {
+    if (token.reason) {
+      // Cancellation has already been requested
+      return;
+    }
+
+    token.reason = new Cancel(message);
+    resolvePromise(token.reason);
+  });
+}
+
+/**
+ * Throws a `Cancel` if cancellation has been requested.
+ */
+CancelToken.prototype.throwIfRequested = function throwIfRequested() {
+  if (this.reason) {
+    throw this.reason;
+  }
+};
+
+/**
+ * Returns an object that contains a new `CancelToken` and a function that, when called,
+ * cancels the `CancelToken`.
+ */
+CancelToken.source = function source() {
+  var cancel;
+  var token = new CancelToken(function executor(c) {
+    cancel = c;
+  });
+  return {
+    token: token,
+    cancel: cancel
+  };
+};
+
+module.exports = CancelToken;
+
+},{"./Cancel":4}],6:[function(require,module,exports){
+'use strict';
+
+module.exports = function isCancel(value) {
+  return !!(value && value.__CANCEL__);
+};
+
+},{}],7:[function(require,module,exports){
+'use strict';
+
+var defaults = require('./../defaults');
+var utils = require('./../utils');
+var InterceptorManager = require('./InterceptorManager');
+var dispatchRequest = require('./dispatchRequest');
+var isAbsoluteURL = require('./../helpers/isAbsoluteURL');
+var combineURLs = require('./../helpers/combineURLs');
+
+/**
+ * Create a new instance of Axios
+ *
+ * @param {Object} instanceConfig The default config for the instance
+ */
+function Axios(instanceConfig) {
+  this.defaults = instanceConfig;
+  this.interceptors = {
+    request: new InterceptorManager(),
+    response: new InterceptorManager()
+  };
+}
+
+/**
+ * Dispatch a request
+ *
+ * @param {Object} config The config specific for this request (merged with this.defaults)
+ */
+Axios.prototype.request = function request(config) {
+  /*eslint no-param-reassign:0*/
+  // Allow for axios('example/url'[, config]) a la fetch API
+  if (typeof config === 'string') {
+    config = utils.merge({
+      url: arguments[0]
+    }, arguments[1]);
+  }
+
+  config = utils.merge(defaults, this.defaults, { method: 'get' }, config);
+
+  // Support baseURL config
+  if (config.baseURL && !isAbsoluteURL(config.url)) {
+    config.url = combineURLs(config.baseURL, config.url);
+  }
+
+  // Hook up interceptors middleware
+  var chain = [dispatchRequest, undefined];
+  var promise = Promise.resolve(config);
+
+  this.interceptors.request.forEach(function unshiftRequestInterceptors(interceptor) {
+    chain.unshift(interceptor.fulfilled, interceptor.rejected);
+  });
+
+  this.interceptors.response.forEach(function pushResponseInterceptors(interceptor) {
+    chain.push(interceptor.fulfilled, interceptor.rejected);
+  });
+
+  while (chain.length) {
+    promise = promise.then(chain.shift(), chain.shift());
+  }
+
+  return promise;
+};
+
+// Provide aliases for supported request methods
+utils.forEach(['delete', 'get', 'head'], function forEachMethodNoData(method) {
+  /*eslint func-names:0*/
+  Axios.prototype[method] = function(url, config) {
+    return this.request(utils.merge(config || {}, {
+      method: method,
+      url: url
+    }));
+  };
+});
+
+utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
+  /*eslint func-names:0*/
+  Axios.prototype[method] = function(url, data, config) {
+    return this.request(utils.merge(config || {}, {
+      method: method,
+      url: url,
+      data: data
+    }));
+  };
+});
+
+module.exports = Axios;
+
+},{"./../defaults":14,"./../helpers/combineURLs":18,"./../helpers/isAbsoluteURL":20,"./../utils":25,"./InterceptorManager":8,"./dispatchRequest":10}],8:[function(require,module,exports){
+'use strict';
+
+var utils = require('./../utils');
+
+function InterceptorManager() {
+  this.handlers = [];
+}
+
+/**
+ * Add a new interceptor to the stack
+ *
+ * @param {Function} fulfilled The function to handle `then` for a `Promise`
+ * @param {Function} rejected The function to handle `reject` for a `Promise`
+ *
+ * @return {Number} An ID used to remove interceptor later
+ */
+InterceptorManager.prototype.use = function use(fulfilled, rejected) {
+  this.handlers.push({
+    fulfilled: fulfilled,
+    rejected: rejected
+  });
+  return this.handlers.length - 1;
+};
+
+/**
+ * Remove an interceptor from the stack
+ *
+ * @param {Number} id The ID that was returned by `use`
+ */
+InterceptorManager.prototype.eject = function eject(id) {
+  if (this.handlers[id]) {
+    this.handlers[id] = null;
+  }
+};
+
+/**
+ * Iterate over all the registered interceptors
+ *
+ * This method is particularly useful for skipping over any
+ * interceptors that may have become `null` calling `eject`.
+ *
+ * @param {Function} fn The function to call for each interceptor
+ */
+InterceptorManager.prototype.forEach = function forEach(fn) {
+  utils.forEach(this.handlers, function forEachHandler(h) {
+    if (h !== null) {
+      fn(h);
+    }
+  });
+};
+
+module.exports = InterceptorManager;
+
+},{"./../utils":25}],9:[function(require,module,exports){
+'use strict';
+
+var enhanceError = require('./enhanceError');
+
+/**
+ * Create an Error with the specified message, config, error code, and response.
+ *
+ * @param {string} message The error message.
+ * @param {Object} config The config.
+ * @param {string} [code] The error code (for example, 'ECONNABORTED').
+ @ @param {Object} [response] The response.
+ * @returns {Error} The created error.
+ */
+module.exports = function createError(message, config, code, response) {
+  var error = new Error(message);
+  return enhanceError(error, config, code, response);
+};
+
+},{"./enhanceError":11}],10:[function(require,module,exports){
+'use strict';
+
+var utils = require('./../utils');
+var transformData = require('./transformData');
+var isCancel = require('../cancel/isCancel');
+var defaults = require('../defaults');
+
+/**
+ * Throws a `Cancel` if cancellation has been requested.
+ */
+function throwIfCancellationRequested(config) {
+  if (config.cancelToken) {
+    config.cancelToken.throwIfRequested();
+  }
+}
+
+/**
+ * Dispatch a request to the server using the configured adapter.
+ *
+ * @param {object} config The config that is to be used for the request
+ * @returns {Promise} The Promise to be fulfilled
+ */
+module.exports = function dispatchRequest(config) {
+  throwIfCancellationRequested(config);
+
+  // Ensure headers exist
+  config.headers = config.headers || {};
+
+  // Transform request data
+  config.data = transformData(
+    config.data,
+    config.headers,
+    config.transformRequest
+  );
+
+  // Flatten headers
+  config.headers = utils.merge(
+    config.headers.common || {},
+    config.headers[config.method] || {},
+    config.headers || {}
+  );
+
+  utils.forEach(
+    ['delete', 'get', 'head', 'post', 'put', 'patch', 'common'],
+    function cleanHeaderConfig(method) {
+      delete config.headers[method];
+    }
+  );
+
+  var adapter = config.adapter || defaults.adapter;
+
+  return adapter(config).then(function onAdapterResolution(response) {
+    throwIfCancellationRequested(config);
+
+    // Transform response data
+    response.data = transformData(
+      response.data,
+      response.headers,
+      config.transformResponse
+    );
+
+    return response;
+  }, function onAdapterRejection(reason) {
+    if (!isCancel(reason)) {
+      throwIfCancellationRequested(config);
+
+      // Transform response data
+      if (reason && reason.response) {
+        reason.response.data = transformData(
+          reason.response.data,
+          reason.response.headers,
+          config.transformResponse
+        );
+      }
+    }
+
+    return Promise.reject(reason);
+  });
+};
+
+},{"../cancel/isCancel":6,"../defaults":14,"./../utils":25,"./transformData":13}],11:[function(require,module,exports){
+'use strict';
+
+/**
+ * Update an Error with the specified config, error code, and response.
+ *
+ * @param {Error} error The error to update.
+ * @param {Object} config The config.
+ * @param {string} [code] The error code (for example, 'ECONNABORTED').
+ @ @param {Object} [response] The response.
+ * @returns {Error} The error.
+ */
+module.exports = function enhanceError(error, config, code, response) {
+  error.config = config;
+  if (code) {
+    error.code = code;
+  }
+  error.response = response;
+  return error;
+};
+
+},{}],12:[function(require,module,exports){
+'use strict';
+
+var createError = require('./createError');
+
+/**
+ * Resolve or reject a Promise based on response status.
+ *
+ * @param {Function} resolve A function that resolves the promise.
+ * @param {Function} reject A function that rejects the promise.
+ * @param {object} response The response.
+ */
+module.exports = function settle(resolve, reject, response) {
+  var validateStatus = response.config.validateStatus;
+  // Note: status is not exposed by XDomainRequest
+  if (!response.status || !validateStatus || validateStatus(response.status)) {
+    resolve(response);
+  } else {
+    reject(createError(
+      'Request failed with status code ' + response.status,
+      response.config,
+      null,
+      response
+    ));
+  }
+};
+
+},{"./createError":9}],13:[function(require,module,exports){
+'use strict';
+
+var utils = require('./../utils');
+
+/**
+ * Transform the data for a request or a response
+ *
+ * @param {Object|String} data The data to be transformed
+ * @param {Array} headers The headers for the request or response
+ * @param {Array|Function} fns A single function or Array of functions
+ * @returns {*} The resulting transformed data
+ */
+module.exports = function transformData(data, headers, fns) {
+  /*eslint no-param-reassign:0*/
+  utils.forEach(fns, function transform(fn) {
+    data = fn(data, headers);
+  });
+
+  return data;
+};
+
+},{"./../utils":25}],14:[function(require,module,exports){
+(function (process){
+'use strict';
+
+var utils = require('./utils');
+var normalizeHeaderName = require('./helpers/normalizeHeaderName');
+
+var PROTECTION_PREFIX = /^\)\]\}',?\n/;
+var DEFAULT_CONTENT_TYPE = {
+  'Content-Type': 'application/x-www-form-urlencoded'
+};
+
+function setContentTypeIfUnset(headers, value) {
+  if (!utils.isUndefined(headers) && utils.isUndefined(headers['Content-Type'])) {
+    headers['Content-Type'] = value;
+  }
+}
+
+function getDefaultAdapter() {
+  var adapter;
+  if (typeof XMLHttpRequest !== 'undefined') {
+    // For browsers use XHR adapter
+    adapter = require('./adapters/xhr');
+  } else if (typeof process !== 'undefined') {
+    // For node use HTTP adapter
+    adapter = require('./adapters/http');
+  }
+  return adapter;
+}
+
+var defaults = {
+  adapter: getDefaultAdapter(),
+
+  transformRequest: [function transformRequest(data, headers) {
+    normalizeHeaderName(headers, 'Content-Type');
+    if (utils.isFormData(data) ||
+      utils.isArrayBuffer(data) ||
+      utils.isStream(data) ||
+      utils.isFile(data) ||
+      utils.isBlob(data)
+    ) {
+      return data;
+    }
+    if (utils.isArrayBufferView(data)) {
+      return data.buffer;
+    }
+    if (utils.isURLSearchParams(data)) {
+      setContentTypeIfUnset(headers, 'application/x-www-form-urlencoded;charset=utf-8');
+      return data.toString();
+    }
+    if (utils.isObject(data)) {
+      setContentTypeIfUnset(headers, 'application/json;charset=utf-8');
+      return JSON.stringify(data);
+    }
+    return data;
+  }],
+
+  transformResponse: [function transformResponse(data) {
+    /*eslint no-param-reassign:0*/
+    if (typeof data === 'string') {
+      data = data.replace(PROTECTION_PREFIX, '');
+      try {
+        data = JSON.parse(data);
+      } catch (e) { /* Ignore */ }
+    }
+    return data;
+  }],
+
+  timeout: 0,
+
+  xsrfCookieName: 'XSRF-TOKEN',
+  xsrfHeaderName: 'X-XSRF-TOKEN',
+
+  maxContentLength: -1,
+
+  validateStatus: function validateStatus(status) {
+    return status >= 200 && status < 300;
+  }
+};
+
+defaults.headers = {
+  common: {
+    'Accept': 'application/json, text/plain, */*'
+  }
+};
+
+utils.forEach(['delete', 'get', 'head'], function forEachMehtodNoData(method) {
+  defaults.headers[method] = {};
+});
+
+utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
+  defaults.headers[method] = utils.merge(DEFAULT_CONTENT_TYPE);
+});
+
+module.exports = defaults;
+
+}).call(this,require('_process'))
+},{"./adapters/http":2,"./adapters/xhr":2,"./helpers/normalizeHeaderName":22,"./utils":25,"_process":69}],15:[function(require,module,exports){
+'use strict';
+
+module.exports = function bind(fn, thisArg) {
+  return function wrap() {
+    var args = new Array(arguments.length);
+    for (var i = 0; i < args.length; i++) {
+      args[i] = arguments[i];
+    }
+    return fn.apply(thisArg, args);
+  };
+};
+
+},{}],16:[function(require,module,exports){
+'use strict';
+
+// btoa polyfill for IE<10 courtesy https://github.com/davidchambers/Base64.js
+
+var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+
+function E() {
+  this.message = 'String contains an invalid character';
+}
+E.prototype = new Error;
+E.prototype.code = 5;
+E.prototype.name = 'InvalidCharacterError';
+
+function btoa(input) {
+  var str = String(input);
+  var output = '';
+  for (
+    // initialize result and counter
+    var block, charCode, idx = 0, map = chars;
+    // if the next str index does not exist:
+    //   change the mapping table to "="
+    //   check if d has no fractional digits
+    str.charAt(idx | 0) || (map = '=', idx % 1);
+    // "8 - idx % 1 * 8" generates the sequence 2, 4, 6, 8
+    output += map.charAt(63 & block >> 8 - idx % 1 * 8)
+  ) {
+    charCode = str.charCodeAt(idx += 3 / 4);
+    if (charCode > 0xFF) {
+      throw new E();
+    }
+    block = block << 8 | charCode;
+  }
+  return output;
+}
+
+module.exports = btoa;
+
+},{}],17:[function(require,module,exports){
+'use strict';
+
+var utils = require('./../utils');
+
+function encode(val) {
+  return encodeURIComponent(val).
+    replace(/%40/gi, '@').
+    replace(/%3A/gi, ':').
+    replace(/%24/g, '$').
+    replace(/%2C/gi, ',').
+    replace(/%20/g, '+').
+    replace(/%5B/gi, '[').
+    replace(/%5D/gi, ']');
+}
+
+/**
+ * Build a URL by appending params to the end
+ *
+ * @param {string} url The base of the url (e.g., http://www.google.com)
+ * @param {object} [params] The params to be appended
+ * @returns {string} The formatted url
+ */
+module.exports = function buildURL(url, params, paramsSerializer) {
+  /*eslint no-param-reassign:0*/
+  if (!params) {
+    return url;
+  }
+
+  var serializedParams;
+  if (paramsSerializer) {
+    serializedParams = paramsSerializer(params);
+  } else if (utils.isURLSearchParams(params)) {
+    serializedParams = params.toString();
+  } else {
+    var parts = [];
+
+    utils.forEach(params, function serialize(val, key) {
+      if (val === null || typeof val === 'undefined') {
+        return;
+      }
+
+      if (utils.isArray(val)) {
+        key = key + '[]';
+      }
+
+      if (!utils.isArray(val)) {
+        val = [val];
+      }
+
+      utils.forEach(val, function parseValue(v) {
+        if (utils.isDate(v)) {
+          v = v.toISOString();
+        } else if (utils.isObject(v)) {
+          v = JSON.stringify(v);
+        }
+        parts.push(encode(key) + '=' + encode(v));
+      });
+    });
+
+    serializedParams = parts.join('&');
+  }
+
+  if (serializedParams) {
+    url += (url.indexOf('?') === -1 ? '?' : '&') + serializedParams;
+  }
+
+  return url;
+};
+
+},{"./../utils":25}],18:[function(require,module,exports){
+'use strict';
+
+/**
+ * Creates a new URL by combining the specified URLs
+ *
+ * @param {string} baseURL The base URL
+ * @param {string} relativeURL The relative URL
+ * @returns {string} The combined URL
+ */
+module.exports = function combineURLs(baseURL, relativeURL) {
+  return baseURL.replace(/\/+$/, '') + '/' + relativeURL.replace(/^\/+/, '');
+};
+
+},{}],19:[function(require,module,exports){
+'use strict';
+
+var utils = require('./../utils');
+
+module.exports = (
+  utils.isStandardBrowserEnv() ?
+
+  // Standard browser envs support document.cookie
+  (function standardBrowserEnv() {
+    return {
+      write: function write(name, value, expires, path, domain, secure) {
+        var cookie = [];
+        cookie.push(name + '=' + encodeURIComponent(value));
+
+        if (utils.isNumber(expires)) {
+          cookie.push('expires=' + new Date(expires).toGMTString());
+        }
+
+        if (utils.isString(path)) {
+          cookie.push('path=' + path);
+        }
+
+        if (utils.isString(domain)) {
+          cookie.push('domain=' + domain);
+        }
+
+        if (secure === true) {
+          cookie.push('secure');
+        }
+
+        document.cookie = cookie.join('; ');
+      },
+
+      read: function read(name) {
+        var match = document.cookie.match(new RegExp('(^|;\\s*)(' + name + ')=([^;]*)'));
+        return (match ? decodeURIComponent(match[3]) : null);
+      },
+
+      remove: function remove(name) {
+        this.write(name, '', Date.now() - 86400000);
+      }
+    };
+  })() :
+
+  // Non standard browser env (web workers, react-native) lack needed support.
+  (function nonStandardBrowserEnv() {
+    return {
+      write: function write() {},
+      read: function read() { return null; },
+      remove: function remove() {}
+    };
+  })()
+);
+
+},{"./../utils":25}],20:[function(require,module,exports){
+'use strict';
+
+/**
+ * Determines whether the specified URL is absolute
+ *
+ * @param {string} url The URL to test
+ * @returns {boolean} True if the specified URL is absolute, otherwise false
+ */
+module.exports = function isAbsoluteURL(url) {
+  // A URL is considered absolute if it begins with "<scheme>://" or "//" (protocol-relative URL).
+  // RFC 3986 defines scheme name as a sequence of characters beginning with a letter and followed
+  // by any combination of letters, digits, plus, period, or hyphen.
+  return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url);
+};
+
+},{}],21:[function(require,module,exports){
+'use strict';
+
+var utils = require('./../utils');
+
+module.exports = (
+  utils.isStandardBrowserEnv() ?
+
+  // Standard browser envs have full support of the APIs needed to test
+  // whether the request URL is of the same origin as current location.
+  (function standardBrowserEnv() {
+    var msie = /(msie|trident)/i.test(navigator.userAgent);
+    var urlParsingNode = document.createElement('a');
+    var originURL;
+
+    /**
+    * Parse a URL to discover it's components
+    *
+    * @param {String} url The URL to be parsed
+    * @returns {Object}
+    */
+    function resolveURL(url) {
+      var href = url;
+
+      if (msie) {
+        // IE needs attribute set twice to normalize properties
+        urlParsingNode.setAttribute('href', href);
+        href = urlParsingNode.href;
+      }
+
+      urlParsingNode.setAttribute('href', href);
+
+      // urlParsingNode provides the UrlUtils interface - http://url.spec.whatwg.org/#urlutils
+      return {
+        href: urlParsingNode.href,
+        protocol: urlParsingNode.protocol ? urlParsingNode.protocol.replace(/:$/, '') : '',
+        host: urlParsingNode.host,
+        search: urlParsingNode.search ? urlParsingNode.search.replace(/^\?/, '') : '',
+        hash: urlParsingNode.hash ? urlParsingNode.hash.replace(/^#/, '') : '',
+        hostname: urlParsingNode.hostname,
+        port: urlParsingNode.port,
+        pathname: (urlParsingNode.pathname.charAt(0) === '/') ?
+                  urlParsingNode.pathname :
+                  '/' + urlParsingNode.pathname
+      };
+    }
+
+    originURL = resolveURL(window.location.href);
+
+    /**
+    * Determine if a URL shares the same origin as the current location
+    *
+    * @param {String} requestURL The URL to test
+    * @returns {boolean} True if URL shares the same origin, otherwise false
+    */
+    return function isURLSameOrigin(requestURL) {
+      var parsed = (utils.isString(requestURL)) ? resolveURL(requestURL) : requestURL;
+      return (parsed.protocol === originURL.protocol &&
+            parsed.host === originURL.host);
+    };
+  })() :
+
+  // Non standard browser envs (web workers, react-native) lack needed support.
+  (function nonStandardBrowserEnv() {
+    return function isURLSameOrigin() {
+      return true;
+    };
+  })()
+);
+
+},{"./../utils":25}],22:[function(require,module,exports){
+'use strict';
+
+var utils = require('../utils');
+
+module.exports = function normalizeHeaderName(headers, normalizedName) {
+  utils.forEach(headers, function processHeader(value, name) {
+    if (name !== normalizedName && name.toUpperCase() === normalizedName.toUpperCase()) {
+      headers[normalizedName] = value;
+      delete headers[name];
+    }
+  });
+};
+
+},{"../utils":25}],23:[function(require,module,exports){
+'use strict';
+
+var utils = require('./../utils');
+
+/**
+ * Parse headers into an object
+ *
+ * ```
+ * Date: Wed, 27 Aug 2014 08:58:49 GMT
+ * Content-Type: application/json
+ * Connection: keep-alive
+ * Transfer-Encoding: chunked
+ * ```
+ *
+ * @param {String} headers Headers needing to be parsed
+ * @returns {Object} Headers parsed into an object
+ */
+module.exports = function parseHeaders(headers) {
+  var parsed = {};
+  var key;
+  var val;
+  var i;
+
+  if (!headers) { return parsed; }
+
+  utils.forEach(headers.split('\n'), function parser(line) {
+    i = line.indexOf(':');
+    key = utils.trim(line.substr(0, i)).toLowerCase();
+    val = utils.trim(line.substr(i + 1));
+
+    if (key) {
+      parsed[key] = parsed[key] ? parsed[key] + ', ' + val : val;
+    }
+  });
+
+  return parsed;
+};
+
+},{"./../utils":25}],24:[function(require,module,exports){
+'use strict';
+
+/**
+ * Syntactic sugar for invoking a function and expanding an array for arguments.
+ *
+ * Common use case would be to use `Function.prototype.apply`.
+ *
+ *  ```js
+ *  function f(x, y, z) {}
+ *  var args = [1, 2, 3];
+ *  f.apply(null, args);
+ *  ```
+ *
+ * With `spread` this example can be re-written.
+ *
+ *  ```js
+ *  spread(function(x, y, z) {})([1, 2, 3]);
+ *  ```
+ *
+ * @param {Function} callback
+ * @returns {Function}
+ */
+module.exports = function spread(callback) {
+  return function wrap(arr) {
+    return callback.apply(null, arr);
+  };
+};
+
+},{}],25:[function(require,module,exports){
+'use strict';
+
+var bind = require('./helpers/bind');
+
+/*global toString:true*/
+
+// utils is a library of generic helper functions non-specific to axios
+
+var toString = Object.prototype.toString;
+
+/**
+ * Determine if a value is an Array
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is an Array, otherwise false
+ */
+function isArray(val) {
+  return toString.call(val) === '[object Array]';
+}
+
+/**
+ * Determine if a value is an ArrayBuffer
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is an ArrayBuffer, otherwise false
+ */
+function isArrayBuffer(val) {
+  return toString.call(val) === '[object ArrayBuffer]';
+}
+
+/**
+ * Determine if a value is a FormData
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is an FormData, otherwise false
+ */
+function isFormData(val) {
+  return (typeof FormData !== 'undefined') && (val instanceof FormData);
+}
+
+/**
+ * Determine if a value is a view on an ArrayBuffer
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a view on an ArrayBuffer, otherwise false
+ */
+function isArrayBufferView(val) {
+  var result;
+  if ((typeof ArrayBuffer !== 'undefined') && (ArrayBuffer.isView)) {
+    result = ArrayBuffer.isView(val);
+  } else {
+    result = (val) && (val.buffer) && (val.buffer instanceof ArrayBuffer);
+  }
+  return result;
+}
+
+/**
+ * Determine if a value is a String
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a String, otherwise false
+ */
+function isString(val) {
+  return typeof val === 'string';
+}
+
+/**
+ * Determine if a value is a Number
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Number, otherwise false
+ */
+function isNumber(val) {
+  return typeof val === 'number';
+}
+
+/**
+ * Determine if a value is undefined
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if the value is undefined, otherwise false
+ */
+function isUndefined(val) {
+  return typeof val === 'undefined';
+}
+
+/**
+ * Determine if a value is an Object
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is an Object, otherwise false
+ */
+function isObject(val) {
+  return val !== null && typeof val === 'object';
+}
+
+/**
+ * Determine if a value is a Date
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Date, otherwise false
+ */
+function isDate(val) {
+  return toString.call(val) === '[object Date]';
+}
+
+/**
+ * Determine if a value is a File
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a File, otherwise false
+ */
+function isFile(val) {
+  return toString.call(val) === '[object File]';
+}
+
+/**
+ * Determine if a value is a Blob
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Blob, otherwise false
+ */
+function isBlob(val) {
+  return toString.call(val) === '[object Blob]';
+}
+
+/**
+ * Determine if a value is a Function
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Function, otherwise false
+ */
+function isFunction(val) {
+  return toString.call(val) === '[object Function]';
+}
+
+/**
+ * Determine if a value is a Stream
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Stream, otherwise false
+ */
+function isStream(val) {
+  return isObject(val) && isFunction(val.pipe);
+}
+
+/**
+ * Determine if a value is a URLSearchParams object
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a URLSearchParams object, otherwise false
+ */
+function isURLSearchParams(val) {
+  return typeof URLSearchParams !== 'undefined' && val instanceof URLSearchParams;
+}
+
+/**
+ * Trim excess whitespace off the beginning and end of a string
+ *
+ * @param {String} str The String to trim
+ * @returns {String} The String freed of excess whitespace
+ */
+function trim(str) {
+  return str.replace(/^\s*/, '').replace(/\s*$/, '');
+}
+
+/**
+ * Determine if we're running in a standard browser environment
+ *
+ * This allows axios to run in a web worker, and react-native.
+ * Both environments support XMLHttpRequest, but not fully standard globals.
+ *
+ * web workers:
+ *  typeof window -> undefined
+ *  typeof document -> undefined
+ *
+ * react-native:
+ *  typeof document.createElement -> undefined
+ */
+function isStandardBrowserEnv() {
+  return (
+    typeof window !== 'undefined' &&
+    typeof document !== 'undefined' &&
+    typeof document.createElement === 'function'
+  );
+}
+
+/**
+ * Iterate over an Array or an Object invoking a function for each item.
+ *
+ * If `obj` is an Array callback will be called passing
+ * the value, index, and complete array for each item.
+ *
+ * If 'obj' is an Object callback will be called passing
+ * the value, key, and complete object for each property.
+ *
+ * @param {Object|Array} obj The object to iterate
+ * @param {Function} fn The callback to invoke for each item
+ */
+function forEach(obj, fn) {
+  // Don't bother if no value provided
+  if (obj === null || typeof obj === 'undefined') {
+    return;
+  }
+
+  // Force an array if not already something iterable
+  if (typeof obj !== 'object' && !isArray(obj)) {
+    /*eslint no-param-reassign:0*/
+    obj = [obj];
+  }
+
+  if (isArray(obj)) {
+    // Iterate over array values
+    for (var i = 0, l = obj.length; i < l; i++) {
+      fn.call(null, obj[i], i, obj);
+    }
+  } else {
+    // Iterate over object keys
+    for (var key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        fn.call(null, obj[key], key, obj);
+      }
+    }
+  }
+}
+
+/**
+ * Accepts varargs expecting each argument to be an object, then
+ * immutably merges the properties of each object and returns result.
+ *
+ * When multiple objects contain the same key the later object in
+ * the arguments list will take precedence.
+ *
+ * Example:
+ *
+ * ```js
+ * var result = merge({foo: 123}, {foo: 456});
+ * console.log(result.foo); // outputs 456
+ * ```
+ *
+ * @param {Object} obj1 Object to merge
+ * @returns {Object} Result of all merge properties
+ */
+function merge(/* obj1, obj2, obj3, ... */) {
+  var result = {};
+  function assignValue(val, key) {
+    if (typeof result[key] === 'object' && typeof val === 'object') {
+      result[key] = merge(result[key], val);
+    } else {
+      result[key] = val;
+    }
+  }
+
+  for (var i = 0, l = arguments.length; i < l; i++) {
+    forEach(arguments[i], assignValue);
+  }
+  return result;
+}
+
+/**
+ * Extends object a by mutably adding to it the properties of object b.
+ *
+ * @param {Object} a The object to be extended
+ * @param {Object} b The object to copy properties from
+ * @param {Object} thisArg The object to bind function to
+ * @return {Object} The resulting value of object a
+ */
+function extend(a, b, thisArg) {
+  forEach(b, function assignValue(val, key) {
+    if (thisArg && typeof val === 'function') {
+      a[key] = bind(val, thisArg);
+    } else {
+      a[key] = val;
+    }
+  });
+  return a;
+}
+
+module.exports = {
+  isArray: isArray,
+  isArrayBuffer: isArrayBuffer,
+  isFormData: isFormData,
+  isArrayBufferView: isArrayBufferView,
+  isString: isString,
+  isNumber: isNumber,
+  isObject: isObject,
+  isUndefined: isUndefined,
+  isDate: isDate,
+  isFile: isFile,
+  isBlob: isBlob,
+  isFunction: isFunction,
+  isStream: isStream,
+  isURLSearchParams: isURLSearchParams,
+  isStandardBrowserEnv: isStandardBrowserEnv,
+  forEach: forEach,
+  merge: merge,
+  extend: extend,
+  trim: trim
+};
+
+},{"./helpers/bind":15}],26:[function(require,module,exports){
 module.exports = { "default": require("core-js/library/fn/array/from"), __esModule: true };
-},{"core-js/library/fn/array/from":6}],2:[function(require,module,exports){
+},{"core-js/library/fn/array/from":31}],27:[function(require,module,exports){
 module.exports = { "default": require("core-js/library/fn/json/stringify"), __esModule: true };
-},{"core-js/library/fn/json/stringify":7}],3:[function(require,module,exports){
+},{"core-js/library/fn/json/stringify":32}],28:[function(require,module,exports){
 module.exports = { "default": require("core-js/library/fn/object/define-property"), __esModule: true };
-},{"core-js/library/fn/object/define-property":8}],4:[function(require,module,exports){
+},{"core-js/library/fn/object/define-property":33}],29:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -29,7 +1420,7 @@ exports.default = function (obj, key, value) {
 
   return obj;
 };
-},{"../core-js/object/define-property":3}],5:[function(require,module,exports){
+},{"../core-js/object/define-property":28}],30:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -51,32 +1442,32 @@ exports.default = function (arr) {
     return (0, _from2.default)(arr);
   }
 };
-},{"../core-js/array/from":1}],6:[function(require,module,exports){
+},{"../core-js/array/from":26}],31:[function(require,module,exports){
 require('../../modules/es6.string.iterator');
 require('../../modules/es6.array.from');
 module.exports = require('../../modules/$.core').Array.from;
-},{"../../modules/$.core":13,"../../modules/es6.array.from":42,"../../modules/es6.string.iterator":43}],7:[function(require,module,exports){
+},{"../../modules/$.core":38,"../../modules/es6.array.from":67,"../../modules/es6.string.iterator":68}],32:[function(require,module,exports){
 var core = require('../../modules/$.core');
 module.exports = function stringify(it){ // eslint-disable-line no-unused-vars
   return (core.JSON && core.JSON.stringify || JSON.stringify).apply(JSON, arguments);
 };
-},{"../../modules/$.core":13}],8:[function(require,module,exports){
+},{"../../modules/$.core":38}],33:[function(require,module,exports){
 var $ = require('../../modules/$');
 module.exports = function defineProperty(it, key, desc){
   return $.setDesc(it, key, desc);
 };
-},{"../../modules/$":29}],9:[function(require,module,exports){
+},{"../../modules/$":54}],34:[function(require,module,exports){
 module.exports = function(it){
   if(typeof it != 'function')throw TypeError(it + ' is not a function!');
   return it;
 };
-},{}],10:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 var isObject = require('./$.is-object');
 module.exports = function(it){
   if(!isObject(it))throw TypeError(it + ' is not an object!');
   return it;
 };
-},{"./$.is-object":23}],11:[function(require,module,exports){
+},{"./$.is-object":48}],36:[function(require,module,exports){
 // getting tag from 19.1.3.6 Object.prototype.toString()
 var cof = require('./$.cof')
   , TAG = require('./$.wks')('toStringTag')
@@ -93,16 +1484,16 @@ module.exports = function(it){
     // ES3 arguments fallback
     : (B = cof(O)) == 'Object' && typeof O.callee == 'function' ? 'Arguments' : B;
 };
-},{"./$.cof":12,"./$.wks":40}],12:[function(require,module,exports){
+},{"./$.cof":37,"./$.wks":65}],37:[function(require,module,exports){
 var toString = {}.toString;
 
 module.exports = function(it){
   return toString.call(it).slice(8, -1);
 };
-},{}],13:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 var core = module.exports = {version: '1.2.6'};
 if(typeof __e == 'number')__e = core; // eslint-disable-line no-undef
-},{}],14:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 // optional / simple context binding
 var aFunction = require('./$.a-function');
 module.exports = function(fn, that, length){
@@ -123,18 +1514,18 @@ module.exports = function(fn, that, length){
     return fn.apply(that, arguments);
   };
 };
-},{"./$.a-function":9}],15:[function(require,module,exports){
+},{"./$.a-function":34}],40:[function(require,module,exports){
 // 7.2.1 RequireObjectCoercible(argument)
 module.exports = function(it){
   if(it == undefined)throw TypeError("Can't call method on  " + it);
   return it;
 };
-},{}],16:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 // Thank's IE8 for his funny defineProperty
 module.exports = !require('./$.fails')(function(){
   return Object.defineProperty({}, 'a', {get: function(){ return 7; }}).a != 7;
 });
-},{"./$.fails":18}],17:[function(require,module,exports){
+},{"./$.fails":43}],42:[function(require,module,exports){
 var global    = require('./$.global')
   , core      = require('./$.core')
   , ctx       = require('./$.ctx')
@@ -181,7 +1572,7 @@ $export.P = 8;  // proto
 $export.B = 16; // bind
 $export.W = 32; // wrap
 module.exports = $export;
-},{"./$.core":13,"./$.ctx":14,"./$.global":19}],18:[function(require,module,exports){
+},{"./$.core":38,"./$.ctx":39,"./$.global":44}],43:[function(require,module,exports){
 module.exports = function(exec){
   try {
     return !!exec();
@@ -189,17 +1580,17 @@ module.exports = function(exec){
     return true;
   }
 };
-},{}],19:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 // https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
 var global = module.exports = typeof window != 'undefined' && window.Math == Math
   ? window : typeof self != 'undefined' && self.Math == Math ? self : Function('return this')();
 if(typeof __g == 'number')__g = global; // eslint-disable-line no-undef
-},{}],20:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 var hasOwnProperty = {}.hasOwnProperty;
 module.exports = function(it, key){
   return hasOwnProperty.call(it, key);
 };
-},{}],21:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 var $          = require('./$')
   , createDesc = require('./$.property-desc');
 module.exports = require('./$.descriptors') ? function(object, key, value){
@@ -208,7 +1599,7 @@ module.exports = require('./$.descriptors') ? function(object, key, value){
   object[key] = value;
   return object;
 };
-},{"./$":29,"./$.descriptors":16,"./$.property-desc":31}],22:[function(require,module,exports){
+},{"./$":54,"./$.descriptors":41,"./$.property-desc":56}],47:[function(require,module,exports){
 // check on default Array iterator
 var Iterators  = require('./$.iterators')
   , ITERATOR   = require('./$.wks')('iterator')
@@ -217,11 +1608,11 @@ var Iterators  = require('./$.iterators')
 module.exports = function(it){
   return it !== undefined && (Iterators.Array === it || ArrayProto[ITERATOR] === it);
 };
-},{"./$.iterators":28,"./$.wks":40}],23:[function(require,module,exports){
+},{"./$.iterators":53,"./$.wks":65}],48:[function(require,module,exports){
 module.exports = function(it){
   return typeof it === 'object' ? it !== null : typeof it === 'function';
 };
-},{}],24:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 // call something on iterator step with safe closing on error
 var anObject = require('./$.an-object');
 module.exports = function(iterator, fn, value, entries){
@@ -234,7 +1625,7 @@ module.exports = function(iterator, fn, value, entries){
     throw e;
   }
 };
-},{"./$.an-object":10}],25:[function(require,module,exports){
+},{"./$.an-object":35}],50:[function(require,module,exports){
 'use strict';
 var $              = require('./$')
   , descriptor     = require('./$.property-desc')
@@ -248,7 +1639,7 @@ module.exports = function(Constructor, NAME, next){
   Constructor.prototype = $.create(IteratorPrototype, {next: descriptor(1, next)});
   setToStringTag(Constructor, NAME + ' Iterator');
 };
-},{"./$":29,"./$.hide":21,"./$.property-desc":31,"./$.set-to-string-tag":33,"./$.wks":40}],26:[function(require,module,exports){
+},{"./$":54,"./$.hide":46,"./$.property-desc":56,"./$.set-to-string-tag":58,"./$.wks":65}],51:[function(require,module,exports){
 'use strict';
 var LIBRARY        = require('./$.library')
   , $export        = require('./$.export')
@@ -315,7 +1706,7 @@ module.exports = function(Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCED
   }
   return methods;
 };
-},{"./$":29,"./$.export":17,"./$.has":20,"./$.hide":21,"./$.iter-create":25,"./$.iterators":28,"./$.library":30,"./$.redefine":32,"./$.set-to-string-tag":33,"./$.wks":40}],27:[function(require,module,exports){
+},{"./$":54,"./$.export":42,"./$.has":45,"./$.hide":46,"./$.iter-create":50,"./$.iterators":53,"./$.library":55,"./$.redefine":57,"./$.set-to-string-tag":58,"./$.wks":65}],52:[function(require,module,exports){
 var ITERATOR     = require('./$.wks')('iterator')
   , SAFE_CLOSING = false;
 
@@ -337,9 +1728,9 @@ module.exports = function(exec, skipClosing){
   } catch(e){ /* empty */ }
   return safe;
 };
-},{"./$.wks":40}],28:[function(require,module,exports){
+},{"./$.wks":65}],53:[function(require,module,exports){
 module.exports = {};
-},{}],29:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 var $Object = Object;
 module.exports = {
   create:     $Object.create,
@@ -353,9 +1744,9 @@ module.exports = {
   getSymbols: $Object.getOwnPropertySymbols,
   each:       [].forEach
 };
-},{}],30:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 module.exports = true;
-},{}],31:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 module.exports = function(bitmap, value){
   return {
     enumerable  : !(bitmap & 1),
@@ -364,9 +1755,9 @@ module.exports = function(bitmap, value){
     value       : value
   };
 };
-},{}],32:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 module.exports = require('./$.hide');
-},{"./$.hide":21}],33:[function(require,module,exports){
+},{"./$.hide":46}],58:[function(require,module,exports){
 var def = require('./$').setDesc
   , has = require('./$.has')
   , TAG = require('./$.wks')('toStringTag');
@@ -374,14 +1765,14 @@ var def = require('./$').setDesc
 module.exports = function(it, tag, stat){
   if(it && !has(it = stat ? it : it.prototype, TAG))def(it, TAG, {configurable: true, value: tag});
 };
-},{"./$":29,"./$.has":20,"./$.wks":40}],34:[function(require,module,exports){
+},{"./$":54,"./$.has":45,"./$.wks":65}],59:[function(require,module,exports){
 var global = require('./$.global')
   , SHARED = '__core-js_shared__'
   , store  = global[SHARED] || (global[SHARED] = {});
 module.exports = function(key){
   return store[key] || (store[key] = {});
 };
-},{"./$.global":19}],35:[function(require,module,exports){
+},{"./$.global":44}],60:[function(require,module,exports){
 var toInteger = require('./$.to-integer')
   , defined   = require('./$.defined');
 // true  -> String#at
@@ -399,33 +1790,33 @@ module.exports = function(TO_STRING){
       : TO_STRING ? s.slice(i, i + 2) : (a - 0xd800 << 10) + (b - 0xdc00) + 0x10000;
   };
 };
-},{"./$.defined":15,"./$.to-integer":36}],36:[function(require,module,exports){
+},{"./$.defined":40,"./$.to-integer":61}],61:[function(require,module,exports){
 // 7.1.4 ToInteger
 var ceil  = Math.ceil
   , floor = Math.floor;
 module.exports = function(it){
   return isNaN(it = +it) ? 0 : (it > 0 ? floor : ceil)(it);
 };
-},{}],37:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 // 7.1.15 ToLength
 var toInteger = require('./$.to-integer')
   , min       = Math.min;
 module.exports = function(it){
   return it > 0 ? min(toInteger(it), 0x1fffffffffffff) : 0; // pow(2, 53) - 1 == 9007199254740991
 };
-},{"./$.to-integer":36}],38:[function(require,module,exports){
+},{"./$.to-integer":61}],63:[function(require,module,exports){
 // 7.1.13 ToObject(argument)
 var defined = require('./$.defined');
 module.exports = function(it){
   return Object(defined(it));
 };
-},{"./$.defined":15}],39:[function(require,module,exports){
+},{"./$.defined":40}],64:[function(require,module,exports){
 var id = 0
   , px = Math.random();
 module.exports = function(key){
   return 'Symbol('.concat(key === undefined ? '' : key, ')_', (++id + px).toString(36));
 };
-},{}],40:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 var store  = require('./$.shared')('wks')
   , uid    = require('./$.uid')
   , Symbol = require('./$.global').Symbol;
@@ -433,7 +1824,7 @@ module.exports = function(name){
   return store[name] || (store[name] =
     Symbol && Symbol[name] || (Symbol || uid)('Symbol.' + name));
 };
-},{"./$.global":19,"./$.shared":34,"./$.uid":39}],41:[function(require,module,exports){
+},{"./$.global":44,"./$.shared":59,"./$.uid":64}],66:[function(require,module,exports){
 var classof   = require('./$.classof')
   , ITERATOR  = require('./$.wks')('iterator')
   , Iterators = require('./$.iterators');
@@ -442,7 +1833,7 @@ module.exports = require('./$.core').getIteratorMethod = function(it){
     || it['@@iterator']
     || Iterators[classof(it)];
 };
-},{"./$.classof":11,"./$.core":13,"./$.iterators":28,"./$.wks":40}],42:[function(require,module,exports){
+},{"./$.classof":36,"./$.core":38,"./$.iterators":53,"./$.wks":65}],67:[function(require,module,exports){
 'use strict';
 var ctx         = require('./$.ctx')
   , $export     = require('./$.export')
@@ -480,7 +1871,7 @@ $export($export.S + $export.F * !require('./$.iter-detect')(function(iter){ Arra
   }
 });
 
-},{"./$.ctx":14,"./$.export":17,"./$.is-array-iter":22,"./$.iter-call":24,"./$.iter-detect":27,"./$.to-length":37,"./$.to-object":38,"./core.get-iterator-method":41}],43:[function(require,module,exports){
+},{"./$.ctx":39,"./$.export":42,"./$.is-array-iter":47,"./$.iter-call":49,"./$.iter-detect":52,"./$.to-length":62,"./$.to-object":63,"./core.get-iterator-method":66}],68:[function(require,module,exports){
 'use strict';
 var $at  = require('./$.string-at')(true);
 
@@ -498,7 +1889,7 @@ require('./$.iter-define')(String, 'String', function(iterated){
   this._i += point.length;
   return {value: point, done: false};
 });
-},{"./$.iter-define":26,"./$.string-at":35}],44:[function(require,module,exports){
+},{"./$.iter-define":51,"./$.string-at":60}],69:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -680,7 +2071,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],45:[function(require,module,exports){
+},{}],70:[function(require,module,exports){
 var Vue // late bind
 var map = Object.create(null)
 var shimmed = false
@@ -981,1384 +2372,7 @@ function format (id) {
   return match ? match[0] : id
 }
 
-},{}],46:[function(require,module,exports){
-/*!
- * vue-resource v0.7.4
- * https://github.com/vuejs/vue-resource
- * Released under the MIT License.
- */
-
-'use strict';
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-  return typeof obj;
-} : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
-};
-
-/**
- * Utility functions.
- */
-
-var util = {};
-var config = {};
-var array = [];
-var console = window.console;
-function Util (Vue) {
-    util = Vue.util;
-    config = Vue.config;
-}
-
-var isArray = Array.isArray;
-
-function warn(msg) {
-    if (console && util.warn && (!config.silent || config.debug)) {
-        console.warn('[VueResource warn]: ' + msg);
-    }
-}
-
-function error(msg) {
-    if (console) {
-        console.error(msg);
-    }
-}
-
-function nextTick(cb, ctx) {
-    return util.nextTick(cb, ctx);
-}
-
-function trim(str) {
-    return str.replace(/^\s*|\s*$/g, '');
-}
-
-function toLower(str) {
-    return str ? str.toLowerCase() : '';
-}
-
-function isString(val) {
-    return typeof val === 'string';
-}
-
-function isFunction(val) {
-    return typeof val === 'function';
-}
-
-function isObject(obj) {
-    return obj !== null && (typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object';
-}
-
-function isPlainObject(obj) {
-    return isObject(obj) && Object.getPrototypeOf(obj) == Object.prototype;
-}
-
-function options(fn, obj, opts) {
-
-    opts = opts || {};
-
-    if (isFunction(opts)) {
-        opts = opts.call(obj);
-    }
-
-    return merge(fn.bind({ $vm: obj, $options: opts }), fn, { $options: opts });
-}
-
-function each(obj, iterator) {
-
-    var i, key;
-
-    if (typeof obj.length == 'number') {
-        for (i = 0; i < obj.length; i++) {
-            iterator.call(obj[i], obj[i], i);
-        }
-    } else if (isObject(obj)) {
-        for (key in obj) {
-            if (obj.hasOwnProperty(key)) {
-                iterator.call(obj[key], obj[key], key);
-            }
-        }
-    }
-
-    return obj;
-}
-
-function extend(target) {
-
-    var args = array.slice.call(arguments, 1);
-
-    args.forEach(function (arg) {
-        _merge(target, arg);
-    });
-
-    return target;
-}
-
-function merge(target) {
-
-    var args = array.slice.call(arguments, 1);
-
-    args.forEach(function (arg) {
-        _merge(target, arg, true);
-    });
-
-    return target;
-}
-
-function _merge(target, source, deep) {
-    for (var key in source) {
-        if (deep && (isPlainObject(source[key]) || isArray(source[key]))) {
-            if (isPlainObject(source[key]) && !isPlainObject(target[key])) {
-                target[key] = {};
-            }
-            if (isArray(source[key]) && !isArray(target[key])) {
-                target[key] = [];
-            }
-            _merge(target[key], source[key], deep);
-        } else if (source[key] !== undefined) {
-            target[key] = source[key];
-        }
-    }
-}
-
-function root (options, next) {
-
-    var url = next(options);
-
-    if (isString(options.root) && !url.match(/^(https?:)?\//)) {
-        url = options.root + '/' + url;
-    }
-
-    return url;
-}
-
-function query (options, next) {
-
-    var urlParams = Object.keys(Url.options.params),
-        query = {},
-        url = next(options);
-
-    each(options.params, function (value, key) {
-        if (urlParams.indexOf(key) === -1) {
-            query[key] = value;
-        }
-    });
-
-    query = Url.params(query);
-
-    if (query) {
-        url += (url.indexOf('?') == -1 ? '?' : '&') + query;
-    }
-
-    return url;
-}
-
-function legacy (options, next) {
-
-    var variables = [],
-        url = next(options);
-
-    url = url.replace(/(\/?):([a-z]\w*)/gi, function (match, slash, name) {
-
-        warn('The `:' + name + '` parameter syntax has been deprecated. Use the `{' + name + '}` syntax instead.');
-
-        if (options.params[name]) {
-            variables.push(name);
-            return slash + encodeUriSegment(options.params[name]);
-        }
-
-        return '';
-    });
-
-    variables.forEach(function (key) {
-        delete options.params[key];
-    });
-
-    return url;
-}
-
-function encodeUriSegment(value) {
-
-    return encodeUriQuery(value, true).replace(/%26/gi, '&').replace(/%3D/gi, '=').replace(/%2B/gi, '+');
-}
-
-function encodeUriQuery(value, spaces) {
-
-    return encodeURIComponent(value).replace(/%40/gi, '@').replace(/%3A/gi, ':').replace(/%24/g, '$').replace(/%2C/gi, ',').replace(/%20/g, spaces ? '%20' : '+');
-}
-
-/**
- * URL Template v2.0.6 (https://github.com/bramstein/url-template)
- */
-
-function expand(url, params, variables) {
-
-    var tmpl = parse(url),
-        expanded = tmpl.expand(params);
-
-    if (variables) {
-        variables.push.apply(variables, tmpl.vars);
-    }
-
-    return expanded;
-}
-
-function parse(template) {
-
-    var operators = ['+', '#', '.', '/', ';', '?', '&'],
-        variables = [];
-
-    return {
-        vars: variables,
-        expand: function expand(context) {
-            return template.replace(/\{([^\{\}]+)\}|([^\{\}]+)/g, function (_, expression, literal) {
-                if (expression) {
-
-                    var operator = null,
-                        values = [];
-
-                    if (operators.indexOf(expression.charAt(0)) !== -1) {
-                        operator = expression.charAt(0);
-                        expression = expression.substr(1);
-                    }
-
-                    expression.split(/,/g).forEach(function (variable) {
-                        var tmp = /([^:\*]*)(?::(\d+)|(\*))?/.exec(variable);
-                        values.push.apply(values, getValues(context, operator, tmp[1], tmp[2] || tmp[3]));
-                        variables.push(tmp[1]);
-                    });
-
-                    if (operator && operator !== '+') {
-
-                        var separator = ',';
-
-                        if (operator === '?') {
-                            separator = '&';
-                        } else if (operator !== '#') {
-                            separator = operator;
-                        }
-
-                        return (values.length !== 0 ? operator : '') + values.join(separator);
-                    } else {
-                        return values.join(',');
-                    }
-                } else {
-                    return encodeReserved(literal);
-                }
-            });
-        }
-    };
-}
-
-function getValues(context, operator, key, modifier) {
-
-    var value = context[key],
-        result = [];
-
-    if (isDefined(value) && value !== '') {
-        if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
-            value = value.toString();
-
-            if (modifier && modifier !== '*') {
-                value = value.substring(0, parseInt(modifier, 10));
-            }
-
-            result.push(encodeValue(operator, value, isKeyOperator(operator) ? key : null));
-        } else {
-            if (modifier === '*') {
-                if (Array.isArray(value)) {
-                    value.filter(isDefined).forEach(function (value) {
-                        result.push(encodeValue(operator, value, isKeyOperator(operator) ? key : null));
-                    });
-                } else {
-                    Object.keys(value).forEach(function (k) {
-                        if (isDefined(value[k])) {
-                            result.push(encodeValue(operator, value[k], k));
-                        }
-                    });
-                }
-            } else {
-                var tmp = [];
-
-                if (Array.isArray(value)) {
-                    value.filter(isDefined).forEach(function (value) {
-                        tmp.push(encodeValue(operator, value));
-                    });
-                } else {
-                    Object.keys(value).forEach(function (k) {
-                        if (isDefined(value[k])) {
-                            tmp.push(encodeURIComponent(k));
-                            tmp.push(encodeValue(operator, value[k].toString()));
-                        }
-                    });
-                }
-
-                if (isKeyOperator(operator)) {
-                    result.push(encodeURIComponent(key) + '=' + tmp.join(','));
-                } else if (tmp.length !== 0) {
-                    result.push(tmp.join(','));
-                }
-            }
-        }
-    } else {
-        if (operator === ';') {
-            result.push(encodeURIComponent(key));
-        } else if (value === '' && (operator === '&' || operator === '?')) {
-            result.push(encodeURIComponent(key) + '=');
-        } else if (value === '') {
-            result.push('');
-        }
-    }
-
-    return result;
-}
-
-function isDefined(value) {
-    return value !== undefined && value !== null;
-}
-
-function isKeyOperator(operator) {
-    return operator === ';' || operator === '&' || operator === '?';
-}
-
-function encodeValue(operator, value, key) {
-
-    value = operator === '+' || operator === '#' ? encodeReserved(value) : encodeURIComponent(value);
-
-    if (key) {
-        return encodeURIComponent(key) + '=' + value;
-    } else {
-        return value;
-    }
-}
-
-function encodeReserved(str) {
-    return str.split(/(%[0-9A-Fa-f]{2})/g).map(function (part) {
-        if (!/%[0-9A-Fa-f]/.test(part)) {
-            part = encodeURI(part);
-        }
-        return part;
-    }).join('');
-}
-
-function template (options) {
-
-    var variables = [],
-        url = expand(options.url, options.params, variables);
-
-    variables.forEach(function (key) {
-        delete options.params[key];
-    });
-
-    return url;
-}
-
-/**
- * Service for URL templating.
- */
-
-var ie = document.documentMode;
-var el = document.createElement('a');
-
-function Url(url, params) {
-
-    var self = this || {},
-        options = url,
-        transform;
-
-    if (isString(url)) {
-        options = { url: url, params: params };
-    }
-
-    options = merge({}, Url.options, self.$options, options);
-
-    Url.transforms.forEach(function (handler) {
-        transform = factory(handler, transform, self.$vm);
-    });
-
-    return transform(options);
-}
-
-/**
- * Url options.
- */
-
-Url.options = {
-    url: '',
-    root: null,
-    params: {}
-};
-
-/**
- * Url transforms.
- */
-
-Url.transforms = [template, legacy, query, root];
-
-/**
- * Encodes a Url parameter string.
- *
- * @param {Object} obj
- */
-
-Url.params = function (obj) {
-
-    var params = [],
-        escape = encodeURIComponent;
-
-    params.add = function (key, value) {
-
-        if (isFunction(value)) {
-            value = value();
-        }
-
-        if (value === null) {
-            value = '';
-        }
-
-        this.push(escape(key) + '=' + escape(value));
-    };
-
-    serialize(params, obj);
-
-    return params.join('&').replace(/%20/g, '+');
-};
-
-/**
- * Parse a URL and return its components.
- *
- * @param {String} url
- */
-
-Url.parse = function (url) {
-
-    if (ie) {
-        el.href = url;
-        url = el.href;
-    }
-
-    el.href = url;
-
-    return {
-        href: el.href,
-        protocol: el.protocol ? el.protocol.replace(/:$/, '') : '',
-        port: el.port,
-        host: el.host,
-        hostname: el.hostname,
-        pathname: el.pathname.charAt(0) === '/' ? el.pathname : '/' + el.pathname,
-        search: el.search ? el.search.replace(/^\?/, '') : '',
-        hash: el.hash ? el.hash.replace(/^#/, '') : ''
-    };
-};
-
-function factory(handler, next, vm) {
-    return function (options) {
-        return handler.call(vm, options, next);
-    };
-}
-
-function serialize(params, obj, scope) {
-
-    var array = isArray(obj),
-        plain = isPlainObject(obj),
-        hash;
-
-    each(obj, function (value, key) {
-
-        hash = isObject(value) || isArray(value);
-
-        if (scope) {
-            key = scope + '[' + (plain || hash ? key : '') + ']';
-        }
-
-        if (!scope && array) {
-            params.add(value.name, value.value);
-        } else if (hash) {
-            serialize(params, value, key);
-        } else {
-            params.add(key, value);
-        }
-    });
-}
-
-/**
- * Promises/A+ polyfill v1.1.4 (https://github.com/bramstein/promis)
- */
-
-var RESOLVED = 0;
-var REJECTED = 1;
-var PENDING = 2;
-
-function Promise$2(executor) {
-
-    this.state = PENDING;
-    this.value = undefined;
-    this.deferred = [];
-
-    var promise = this;
-
-    try {
-        executor(function (x) {
-            promise.resolve(x);
-        }, function (r) {
-            promise.reject(r);
-        });
-    } catch (e) {
-        promise.reject(e);
-    }
-}
-
-Promise$2.reject = function (r) {
-    return new Promise$2(function (resolve, reject) {
-        reject(r);
-    });
-};
-
-Promise$2.resolve = function (x) {
-    return new Promise$2(function (resolve, reject) {
-        resolve(x);
-    });
-};
-
-Promise$2.all = function all(iterable) {
-    return new Promise$2(function (resolve, reject) {
-        var count = 0,
-            result = [];
-
-        if (iterable.length === 0) {
-            resolve(result);
-        }
-
-        function resolver(i) {
-            return function (x) {
-                result[i] = x;
-                count += 1;
-
-                if (count === iterable.length) {
-                    resolve(result);
-                }
-            };
-        }
-
-        for (var i = 0; i < iterable.length; i += 1) {
-            Promise$2.resolve(iterable[i]).then(resolver(i), reject);
-        }
-    });
-};
-
-Promise$2.race = function race(iterable) {
-    return new Promise$2(function (resolve, reject) {
-        for (var i = 0; i < iterable.length; i += 1) {
-            Promise$2.resolve(iterable[i]).then(resolve, reject);
-        }
-    });
-};
-
-var p$1 = Promise$2.prototype;
-
-p$1.resolve = function resolve(x) {
-    var promise = this;
-
-    if (promise.state === PENDING) {
-        if (x === promise) {
-            throw new TypeError('Promise settled with itself.');
-        }
-
-        var called = false;
-
-        try {
-            var then = x && x['then'];
-
-            if (x !== null && (typeof x === 'undefined' ? 'undefined' : _typeof(x)) === 'object' && typeof then === 'function') {
-                then.call(x, function (x) {
-                    if (!called) {
-                        promise.resolve(x);
-                    }
-                    called = true;
-                }, function (r) {
-                    if (!called) {
-                        promise.reject(r);
-                    }
-                    called = true;
-                });
-                return;
-            }
-        } catch (e) {
-            if (!called) {
-                promise.reject(e);
-            }
-            return;
-        }
-
-        promise.state = RESOLVED;
-        promise.value = x;
-        promise.notify();
-    }
-};
-
-p$1.reject = function reject(reason) {
-    var promise = this;
-
-    if (promise.state === PENDING) {
-        if (reason === promise) {
-            throw new TypeError('Promise settled with itself.');
-        }
-
-        promise.state = REJECTED;
-        promise.value = reason;
-        promise.notify();
-    }
-};
-
-p$1.notify = function notify() {
-    var promise = this;
-
-    nextTick(function () {
-        if (promise.state !== PENDING) {
-            while (promise.deferred.length) {
-                var deferred = promise.deferred.shift(),
-                    onResolved = deferred[0],
-                    onRejected = deferred[1],
-                    resolve = deferred[2],
-                    reject = deferred[3];
-
-                try {
-                    if (promise.state === RESOLVED) {
-                        if (typeof onResolved === 'function') {
-                            resolve(onResolved.call(undefined, promise.value));
-                        } else {
-                            resolve(promise.value);
-                        }
-                    } else if (promise.state === REJECTED) {
-                        if (typeof onRejected === 'function') {
-                            resolve(onRejected.call(undefined, promise.value));
-                        } else {
-                            reject(promise.value);
-                        }
-                    }
-                } catch (e) {
-                    reject(e);
-                }
-            }
-        }
-    });
-};
-
-p$1.then = function then(onResolved, onRejected) {
-    var promise = this;
-
-    return new Promise$2(function (resolve, reject) {
-        promise.deferred.push([onResolved, onRejected, resolve, reject]);
-        promise.notify();
-    });
-};
-
-p$1.catch = function (onRejected) {
-    return this.then(undefined, onRejected);
-};
-
-var PromiseObj = window.Promise || Promise$2;
-
-function Promise$1(executor, context) {
-
-    if (executor instanceof PromiseObj) {
-        this.promise = executor;
-    } else {
-        this.promise = new PromiseObj(executor.bind(context));
-    }
-
-    this.context = context;
-}
-
-Promise$1.all = function (iterable, context) {
-    return new Promise$1(PromiseObj.all(iterable), context);
-};
-
-Promise$1.resolve = function (value, context) {
-    return new Promise$1(PromiseObj.resolve(value), context);
-};
-
-Promise$1.reject = function (reason, context) {
-    return new Promise$1(PromiseObj.reject(reason), context);
-};
-
-Promise$1.race = function (iterable, context) {
-    return new Promise$1(PromiseObj.race(iterable), context);
-};
-
-var p = Promise$1.prototype;
-
-p.bind = function (context) {
-    this.context = context;
-    return this;
-};
-
-p.then = function (fulfilled, rejected) {
-
-    if (fulfilled && fulfilled.bind && this.context) {
-        fulfilled = fulfilled.bind(this.context);
-    }
-
-    if (rejected && rejected.bind && this.context) {
-        rejected = rejected.bind(this.context);
-    }
-
-    this.promise = this.promise.then(fulfilled, rejected);
-
-    return this;
-};
-
-p.catch = function (rejected) {
-
-    if (rejected && rejected.bind && this.context) {
-        rejected = rejected.bind(this.context);
-    }
-
-    this.promise = this.promise.catch(rejected);
-
-    return this;
-};
-
-p.finally = function (callback) {
-
-    return this.then(function (value) {
-        callback.call(this);
-        return value;
-    }, function (reason) {
-        callback.call(this);
-        return PromiseObj.reject(reason);
-    });
-};
-
-p.success = function (callback) {
-
-    warn('The `success` method has been deprecated. Use the `then` method instead.');
-
-    return this.then(function (response) {
-        return callback.call(this, response.data, response.status, response) || response;
-    });
-};
-
-p.error = function (callback) {
-
-    warn('The `error` method has been deprecated. Use the `catch` method instead.');
-
-    return this.catch(function (response) {
-        return callback.call(this, response.data, response.status, response) || response;
-    });
-};
-
-p.always = function (callback) {
-
-    warn('The `always` method has been deprecated. Use the `finally` method instead.');
-
-    var cb = function cb(response) {
-        return callback.call(this, response.data, response.status, response) || response;
-    };
-
-    return this.then(cb, cb);
-};
-
-function xdrClient (request) {
-    return new Promise$1(function (resolve) {
-
-        var xdr = new XDomainRequest(),
-            response = { request: request },
-            handler;
-
-        request.cancel = function () {
-            xdr.abort();
-        };
-
-        xdr.open(request.method, Url(request), true);
-
-        handler = function handler(event) {
-
-            response.data = xdr.responseText;
-            response.status = xdr.status;
-            response.statusText = xdr.statusText || '';
-
-            resolve(response);
-        };
-
-        xdr.timeout = 0;
-        xdr.onload = handler;
-        xdr.onabort = handler;
-        xdr.onerror = handler;
-        xdr.ontimeout = function () {};
-        xdr.onprogress = function () {};
-
-        xdr.send(request.data);
-    });
-}
-
-var originUrl = Url.parse(location.href);
-var supportCors = 'withCredentials' in new XMLHttpRequest();
-
-var exports$1 = {
-    request: function request(_request) {
-
-        if (_request.crossOrigin === null) {
-            _request.crossOrigin = crossOrigin(_request);
-        }
-
-        if (_request.crossOrigin) {
-
-            if (!supportCors) {
-                _request.client = xdrClient;
-            }
-
-            _request.emulateHTTP = false;
-        }
-
-        return _request;
-    }
-};
-
-function crossOrigin(request) {
-
-    var requestUrl = Url.parse(Url(request));
-
-    return requestUrl.protocol !== originUrl.protocol || requestUrl.host !== originUrl.host;
-}
-
-var exports$2 = {
-    request: function request(_request) {
-
-        if (_request.emulateJSON && isPlainObject(_request.data)) {
-            _request.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-            _request.data = Url.params(_request.data);
-        }
-
-        if (isObject(_request.data) && /FormData/i.test(_request.data.toString())) {
-            delete _request.headers['Content-Type'];
-        }
-
-        if (isPlainObject(_request.data)) {
-            _request.data = JSON.stringify(_request.data);
-        }
-
-        return _request;
-    },
-    response: function response(_response) {
-
-        try {
-            _response.data = JSON.parse(_response.data);
-        } catch (e) {}
-
-        return _response;
-    }
-};
-
-function jsonpClient (request) {
-    return new Promise$1(function (resolve) {
-
-        var callback = '_jsonp' + Math.random().toString(36).substr(2),
-            response = { request: request, data: null },
-            handler,
-            script;
-
-        request.params[request.jsonp] = callback;
-        request.cancel = function () {
-            handler({ type: 'cancel' });
-        };
-
-        script = document.createElement('script');
-        script.src = Url(request);
-        script.type = 'text/javascript';
-        script.async = true;
-
-        window[callback] = function (data) {
-            response.data = data;
-        };
-
-        handler = function handler(event) {
-
-            if (event.type === 'load' && response.data !== null) {
-                response.status = 200;
-            } else if (event.type === 'error') {
-                response.status = 404;
-            } else {
-                response.status = 0;
-            }
-
-            resolve(response);
-
-            delete window[callback];
-            document.body.removeChild(script);
-        };
-
-        script.onload = handler;
-        script.onerror = handler;
-
-        document.body.appendChild(script);
-    });
-}
-
-var exports$3 = {
-    request: function request(_request) {
-
-        if (_request.method == 'JSONP') {
-            _request.client = jsonpClient;
-        }
-
-        return _request;
-    }
-};
-
-var exports$4 = {
-    request: function request(_request) {
-
-        if (isFunction(_request.beforeSend)) {
-            _request.beforeSend.call(this, _request);
-        }
-
-        return _request;
-    }
-};
-
-/**
- * HTTP method override Interceptor.
- */
-
-var exports$5 = {
-    request: function request(_request) {
-
-        if (_request.emulateHTTP && /^(PUT|PATCH|DELETE)$/i.test(_request.method)) {
-            _request.headers['X-HTTP-Method-Override'] = _request.method;
-            _request.method = 'POST';
-        }
-
-        return _request;
-    }
-};
-
-var exports$6 = {
-    request: function request(_request) {
-
-        _request.method = _request.method.toUpperCase();
-        _request.headers = extend({}, Http.headers.common, !_request.crossOrigin ? Http.headers.custom : {}, Http.headers[_request.method.toLowerCase()], _request.headers);
-
-        if (isPlainObject(_request.data) && /^(GET|JSONP)$/i.test(_request.method)) {
-            extend(_request.params, _request.data);
-            delete _request.data;
-        }
-
-        return _request;
-    }
-};
-
-/**
- * Timeout Interceptor.
- */
-
-var exports$7 = function exports() {
-
-    var timeout;
-
-    return {
-        request: function request(_request) {
-
-            if (_request.timeout) {
-                timeout = setTimeout(function () {
-                    _request.cancel();
-                }, _request.timeout);
-            }
-
-            return _request;
-        },
-        response: function response(_response) {
-
-            clearTimeout(timeout);
-
-            return _response;
-        }
-    };
-};
-
-function interceptor (handler, vm) {
-
-    return function (client) {
-
-        if (isFunction(handler)) {
-            handler = handler.call(vm, Promise$1);
-        }
-
-        return function (request) {
-
-            if (isFunction(handler.request)) {
-                request = handler.request.call(vm, request);
-            }
-
-            return when(request, function (request) {
-                return when(client(request), function (response) {
-
-                    if (isFunction(handler.response)) {
-                        response = handler.response.call(vm, response);
-                    }
-
-                    return response;
-                });
-            });
-        };
-    };
-}
-
-function when(value, fulfilled, rejected) {
-
-    var promise = Promise$1.resolve(value);
-
-    if (arguments.length < 2) {
-        return promise;
-    }
-
-    return promise.then(fulfilled, rejected);
-}
-
-function xhrClient (request) {
-    return new Promise$1(function (resolve) {
-
-        var xhr = new XMLHttpRequest(),
-            response = { request: request },
-            handler;
-
-        request.cancel = function () {
-            xhr.abort();
-        };
-
-        xhr.open(request.method, Url(request), true);
-
-        handler = function handler(event) {
-
-            response.data = 'response' in xhr ? xhr.response : xhr.responseText;
-            response.status = xhr.status === 1223 ? 204 : xhr.status; // IE9 status bug
-            response.statusText = trim(xhr.statusText || '');
-            response.headers = xhr.getAllResponseHeaders();
-
-            resolve(response);
-        };
-
-        xhr.timeout = 0;
-        xhr.onload = handler;
-        xhr.onabort = handler;
-        xhr.onerror = handler;
-        xhr.ontimeout = function () {};
-        xhr.onprogress = function () {};
-
-        if (isPlainObject(request.xhr)) {
-            extend(xhr, request.xhr);
-        }
-
-        if (isPlainObject(request.upload)) {
-            extend(xhr.upload, request.upload);
-        }
-
-        each(request.headers || {}, function (value, header) {
-            xhr.setRequestHeader(header, value);
-        });
-
-        xhr.send(request.data);
-    });
-}
-
-function Client (request) {
-
-    var response = (request.client || xhrClient)(request);
-
-    return Promise$1.resolve(response).then(function (response) {
-
-        if (response.headers) {
-
-            var headers = parseHeaders(response.headers);
-
-            response.headers = function (name) {
-
-                if (name) {
-                    return headers[toLower(name)];
-                }
-
-                return headers;
-            };
-        }
-
-        response.ok = response.status >= 200 && response.status < 300;
-
-        return response;
-    });
-}
-
-function parseHeaders(str) {
-
-    var headers = {},
-        value,
-        name,
-        i;
-
-    if (isString(str)) {
-        each(str.split('\n'), function (row) {
-
-            i = row.indexOf(':');
-            name = trim(toLower(row.slice(0, i)));
-            value = trim(row.slice(i + 1));
-
-            if (headers[name]) {
-
-                if (isArray(headers[name])) {
-                    headers[name].push(value);
-                } else {
-                    headers[name] = [headers[name], value];
-                }
-            } else {
-
-                headers[name] = value;
-            }
-        });
-    }
-
-    return headers;
-}
-
-/**
- * Service for sending network requests.
- */
-
-var jsonType = { 'Content-Type': 'application/json' };
-
-function Http(url, options) {
-
-    var self = this || {},
-        client = Client,
-        request,
-        promise;
-
-    Http.interceptors.forEach(function (handler) {
-        client = interceptor(handler, self.$vm)(client);
-    });
-
-    options = isObject(url) ? url : extend({ url: url }, options);
-    request = merge({}, Http.options, self.$options, options);
-    promise = client(request).bind(self.$vm).then(function (response) {
-
-        return response.ok ? response : Promise$1.reject(response);
-    }, function (response) {
-
-        if (response instanceof Error) {
-            error(response);
-        }
-
-        return Promise$1.reject(response);
-    });
-
-    if (request.success) {
-        promise.success(request.success);
-    }
-
-    if (request.error) {
-        promise.error(request.error);
-    }
-
-    return promise;
-}
-
-Http.options = {
-    method: 'get',
-    data: '',
-    params: {},
-    headers: {},
-    xhr: null,
-    upload: null,
-    jsonp: 'callback',
-    beforeSend: null,
-    crossOrigin: null,
-    emulateHTTP: false,
-    emulateJSON: false,
-    timeout: 0
-};
-
-Http.headers = {
-    put: jsonType,
-    post: jsonType,
-    patch: jsonType,
-    delete: jsonType,
-    common: { 'Accept': 'application/json, text/plain, */*' },
-    custom: { 'X-Requested-With': 'XMLHttpRequest' }
-};
-
-Http.interceptors = [exports$4, exports$7, exports$3, exports$5, exports$2, exports$6, exports$1];
-
-['get', 'put', 'post', 'patch', 'delete', 'jsonp'].forEach(function (method) {
-
-    Http[method] = function (url, data, success, options) {
-
-        if (isFunction(data)) {
-            options = success;
-            success = data;
-            data = undefined;
-        }
-
-        if (isObject(success)) {
-            options = success;
-            success = undefined;
-        }
-
-        return this(url, extend({ method: method, data: data, success: success }, options));
-    };
-});
-
-function Resource(url, params, actions, options) {
-
-    var self = this || {},
-        resource = {};
-
-    actions = extend({}, Resource.actions, actions);
-
-    each(actions, function (action, name) {
-
-        action = merge({ url: url, params: params || {} }, options, action);
-
-        resource[name] = function () {
-            return (self.$http || Http)(opts(action, arguments));
-        };
-    });
-
-    return resource;
-}
-
-function opts(action, args) {
-
-    var options = extend({}, action),
-        params = {},
-        data,
-        success,
-        error;
-
-    switch (args.length) {
-
-        case 4:
-
-            error = args[3];
-            success = args[2];
-
-        case 3:
-        case 2:
-
-            if (isFunction(args[1])) {
-
-                if (isFunction(args[0])) {
-
-                    success = args[0];
-                    error = args[1];
-
-                    break;
-                }
-
-                success = args[1];
-                error = args[2];
-            } else {
-
-                params = args[0];
-                data = args[1];
-                success = args[2];
-
-                break;
-            }
-
-        case 1:
-
-            if (isFunction(args[0])) {
-                success = args[0];
-            } else if (/^(POST|PUT|PATCH)$/i.test(options.method)) {
-                data = args[0];
-            } else {
-                params = args[0];
-            }
-
-            break;
-
-        case 0:
-
-            break;
-
-        default:
-
-            throw 'Expected up to 4 arguments [params, data, success, error], got ' + args.length + ' arguments';
-    }
-
-    options.data = data;
-    options.params = extend({}, options.params, params);
-
-    if (success) {
-        options.success = success;
-    }
-
-    if (error) {
-        options.error = error;
-    }
-
-    return options;
-}
-
-Resource.actions = {
-
-    get: { method: 'GET' },
-    save: { method: 'POST' },
-    query: { method: 'GET' },
-    update: { method: 'PUT' },
-    remove: { method: 'DELETE' },
-    delete: { method: 'DELETE' }
-
-};
-
-function plugin(Vue) {
-
-    if (plugin.installed) {
-        return;
-    }
-
-    Util(Vue);
-
-    Vue.url = Url;
-    Vue.http = Http;
-    Vue.resource = Resource;
-    Vue.Promise = Promise$1;
-
-    Object.defineProperties(Vue.prototype, {
-
-        $url: {
-            get: function get() {
-                return options(Vue.url, this, this.$options.url);
-            }
-        },
-
-        $http: {
-            get: function get() {
-                return options(Vue.http, this, this.$options.http);
-            }
-        },
-
-        $resource: {
-            get: function get() {
-                return Vue.resource.bind(this);
-            }
-        },
-
-        $promise: {
-            get: function get() {
-                var _this = this;
-
-                return function (executor) {
-                    return new Vue.Promise(executor, _this);
-                };
-            }
-        }
-
-    });
-}
-
-if (typeof window !== 'undefined' && window.Vue) {
-    window.Vue.use(plugin);
-}
-
-module.exports = plugin;
-},{}],47:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 /*!
  * vue-router v0.7.13
  * (c) 2016 Evan You
@@ -5068,7 +5082,7 @@ module.exports = plugin;
   return Router;
 
 }));
-},{}],48:[function(require,module,exports){
+},{}],72:[function(require,module,exports){
 (function (process){
 /*!
  * Vue.js v1.0.28
@@ -15309,7 +15323,7 @@ setTimeout(function () {
 
 module.exports = Vue;
 }).call(this,require('_process'))
-},{"_process":44}],49:[function(require,module,exports){
+},{"_process":69}],73:[function(require,module,exports){
 var inserted = exports.cache = {}
 
 exports.insert = function (css) {
@@ -15329,7 +15343,7 @@ exports.insert = function (css) {
   return elem
 }
 
-},{}],50:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n.button-size[_v-ca716984]{\n  width:70px;\n  margin-left:2px;\n}\n")
 'use strict';
 
@@ -15399,7 +15413,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":48,"vue-hot-reload-api":45,"vueify-insert-css":49}],51:[function(require,module,exports){
+},{"vue":72,"vue-hot-reload-api":70,"vueify-insert-css":73}],75:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n.button-size[_v-196024d0]{\n  width:70px;\n  margin-left:10px;\n  margin-bottom:10px;\n}\n\n.body-height[_v-196024d0]{\n  height: auto;\n}\n\n.align-button[_v-196024d0]{\n  margin: auto;\n}\n\n.expand-botton[_v-196024d0]{\n  padding: 4px;\n}\n\n.lg-red[_v-196024d0]{\n  color: red;\n  font-size: large;\n}\n\ntextarea[_v-196024d0] {\n  resize: none;\n}\n\ninput[_v-196024d0], select[_v-196024d0], textarea[_v-196024d0], i[_v-196024d0] {\n  margin-bottom: 10px;\n}\n\n.processing[_v-196024d0]{\n  padding-left:10px;\n  padding-bottom:20px;\n  color: blue;\n}\n")
 'use strict';
 
@@ -15450,13 +15464,11 @@ module.exports = {
           break;
         }
       }
-
       var options = this.$get(field.table);
       for (key in options) {
         options[key].selected = '';
       }
       this.$set(field.table, options);
-
       this.getFieldValues();
     },
 
@@ -15475,9 +15487,10 @@ module.exports = {
     },
 
     getOptionsForSelect: function getOptionsForSelect(field) {
+      var self = this;
       var id = field.selectFatherId !== undefined ? field.selectFatherId : '';
       var option = [];
-      this.$http({ url: field.url + '/' + id, method: 'GET' }).then(function (response) {
+      self.$http({ url: field.url + '/' + id, method: 'GET' }).then(function (response) {
         var info = {};
         for (var j = 0; j < response.data.length; j++) {
           info = {};
@@ -15487,9 +15500,9 @@ module.exports = {
           option.push(info);
         }
       }).catch(function (response) {
-        this.displayPopUpMessage(response);
+        self.displayPopUpMessage(response);
       });
-      this.$set(field.table, option);
+      self.$set(field.table, option);
     },
 
     countFieldsRequired: function countFieldsRequired() {
@@ -15558,22 +15571,16 @@ module.exports = {
     },
 
     sendDataToDB: function sendDataToDB(url, method, data) {
-      this.processing = true;
-      this.$dispatch('progressBarStart');
-      this.$http({ url: url, method: method, data: data }).then(function (response) {
-        method == 'PUT' ? this.itemStatus = "ok" : this.itemStatus = "remove";
-        this.reloadAfterAction();
-        this.displayPopUpMessage(response);
+      var self = this;
+      self.$http({ url: url, method: method, data: data }).then(function (response) {
+        method == 'PUT' ? self.itemStatus = "ok" : self.itemStatus = "remove";
+        self.reloadAfterAction();
+        self.displayPopUpMessage(response);
         if (method == 'POST') {
-          this.initFieldsValues();
+          self.initFieldsValues();
         }
-      }).finally(function (response) {
-        this.processing = false;
-        this.$dispatch('progressBarFinish');
       }).catch(function (response) {
-        this.displayPopUpMessage(response);
-        this.processing = false;
-        this.$dispatch('progressBarFinish');
+        self.displayPopUpMessage(response);
       });
     },
 
@@ -15635,9 +15642,10 @@ module.exports = {
     },
 
     loadSelectDependOfOtherSelect: function loadSelectDependOfOtherSelect(field) {
-      var id = this.$get(field.selectFather);
+      var self = this;
+      var id = self.$get(field.selectFather);
       var option = [];
-      this.$http({ url: field.url + '/' + id, method: 'GET' }).then(function (response) {
+      self.$http({ url: field.url + '/' + id, method: 'GET' }).then(function (response) {
         var info = {};
         for (var j = 0; j < response.data.length; j++) {
           info = {};
@@ -15646,13 +15654,13 @@ module.exports = {
           info.selected = '';
           option.push(info);
         }
+      }).then(function (response) {
+        self.setValueInSelect(field);
+        self.setFirstSelectValue(option, field);
       }).catch(function (response) {
-        this.displayPopUpMessage(response);
-      }).finally(function (response) {
-        this.setValueInSelect(field);
-        this.setFirstSelectValue(option, field);
+        self.displayPopUpMessage(response);
       });
-      this.$set(field.table, option);
+      self.$set(field.table, option);
     },
 
     setFirstSelectValue: function setFirstSelectValue(option, field) {
@@ -15761,7 +15769,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":48,"vue-hot-reload-api":45,"vueify-insert-css":49}],52:[function(require,module,exports){
+},{"vue":72,"vue-hot-reload-api":70,"vueify-insert-css":73}],76:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n.processing[_v-04152631]{\n  color:blue;\n  padding-left: 5px;\n}\n\n")
 'use strict';
 
@@ -15826,20 +15834,6 @@ module.exports = {
           self.displayErrorMessage(response);
         }
       });
-
-      /*
-              this.$http({url: this.urlImport, method: 'POST', data: data}).then(function(response){
-                this.reloadAfterAction();
-              }).finally(function (response) {
-                 this.processing = false;
-                  $('#myModal').modal('hide');
-                 // this.displayPopUpMessage(response);
-              }).catch(function (response) {
-                $('#myModal').modal('hide');
-                this.processing = false;
-               // this.displayPopUpMessage(response);
-      
-              });   */
     },
 
     //convert rows/fields to json
@@ -15905,7 +15899,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":48,"vue-hot-reload-api":45,"vueify-insert-css":49}],53:[function(require,module,exports){
+},{"vue":72,"vue-hot-reload-api":70,"vueify-insert-css":73}],77:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n")
 'use strict';
 
@@ -15944,7 +15938,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":48,"vue-hot-reload-api":45,"vueify-insert-css":49}],54:[function(require,module,exports){
+},{"vue":72,"vue-hot-reload-api":70,"vueify-insert-css":73}],78:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n.button-size[_v-32dfde72]{\n  width: 50px;\n}\n\n.header[_v-32dfde72] {\n  font-weight: bold;\n}\n\ntr[_v-32dfde72]{\n  cursor: pointer;\n}\n\n.table-hscroll[_v-32dfde72]{\n   white-space:nowrap;\n   overflow-x:auto; \n   overflow-y:auto; \n   width:auto; \n}\n\n.table-height[_v-32dfde72]{\n  height:auto;\n}\n\n.select-margin[_v-32dfde72]{\n  margin-bottom:10px;\n}\n\n .expand-botton[_v-32dfde72]{\n  padding: 4px;\n}\n\n.filter-applied[_v-32dfde72]{\n  position: absolute;\n  margin-right: 10px;\n  right: 0;\n  top: 0;\n  cursor: pointer;\n  font-size: x-large;\n\n}\n\n.loadinggif[_v-32dfde72] \n{\n   background:\n     url('/assets/icons/loading_image.gif')\n     no-repeat\n     left center;\n}\n\n.loading-spin[_v-32dfde72] \n{\n  margin: 0px; \n  padding: 0px; \n  position: fixed; \n  right: 0px; \n  top: 0px; \n  width: 100%; \n  height: 100%; \n  background-color: rgb(102, 102, 102); \n  z-index: 30001; \n  opacity: 0.6;\n}\n\n\n")
 'use strict';
 
@@ -16055,17 +16049,18 @@ module.exports = {
     },
 
     readPageData: function readPageData(url, displayMsg) {
-      this.NoMorePages = false;
-      this.loading = true;
-      this.$http.get(url).then(function (response) {
-        this.setDataResponse(response.data);
-        this.routesFirstPrevNextLast(response.data);
-        $("#" + this.id + " td").remove();
+      var self = this;
+      self.NoMorePages = false;
+      self.loading = true;
+      self.$http.get(url).then(function (response) {
+        self.setDataResponse(response.data);
+        self.routesFirstPrevNextLast(response.data);
+        $("#" + self.id + " td").remove();
       }).then(function (response) {
-        this.loading = false;
+        self.loading = false;
       }).catch(function (response) {
-        this.displayPopUpMessage(response);
-        this.loading = false;
+        self.displayPopUpMessage(response);
+        self.loading = false;
       });
     },
 
@@ -16132,9 +16127,10 @@ module.exports = {
     },
 
     getOptionsForSelect: function getOptionsForSelect(select) {
+      var self = this;
       var option = [];
-      this.loading = true;
-      this.$http({ url: select.url, method: 'GET' }).then(function (response) {
+      self.loading = true;
+      self.$http({ url: select.url, method: 'GET' }).then(function (response) {
         var info = {};
         for (var j = 0; j < response.data.data.length; j++) {
           info = {};
@@ -16144,10 +16140,10 @@ module.exports = {
           option.push(info);
         }
       }).then(function (response) {
-        this.loading = false;
+        self.loading = false;
       }).catch(function (response) {
-        this.displayPopUpMessage(response);
-        this.loading = false;
+        self.displayPopUpMessage(response);
+        self.loading = false;
       });
 
       this.$set(select.table, option);
@@ -16228,7 +16224,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/languages/Languages.vue":56,"vue":48,"vue-hot-reload-api":45,"vueify-insert-css":49}],55:[function(require,module,exports){
+},{"../../components/languages/Languages.vue":80,"vue":72,"vue-hot-reload-api":70,"vueify-insert-css":73}],79:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n.selectwidth[_v-9712de2e]{\n    position: relative;\n    min-width:80px;\n    margin-right: 5px;\n}\n  \n")
 'use strict';
 
@@ -16291,19 +16287,18 @@ module.exports = {
     },
 
     displayGraph: function displayGraph(year, month) {
-      var _this = this;
-
-      this.loading = true;
-      this.$http.post(this.url, { "year": year, "month": month }).then(function (responde) {
-        _this.labels = responde.data.labels;
-        _this.label = responde.data.legend;
-        _this.series = responde.data.series;
-      }).then(function (responde) {
-        $('#' + this.id).highcharts(this.setOptions(this.series));
-        this.loading = false;
-      }).catch(function (responde) {
-        this.displayPopUpMessage(response);
-        this.loading = false;
+      var self = this;
+      self.loading = true;
+      self.$http.post(self.url, { "year": year, "month": month }).then(function (response) {
+        self.labels = response.data.labels;
+        self.label = response.data.legend;
+        self.series = response.data.series;
+      }).then(function (response) {
+        $('#' + self.id).highcharts(self.setOptions(self.series));
+        self.loading = false;
+      }).catch(function (response) {
+        self.displayPopUpMessage(response);
+        self.loading = false;
       });
     },
 
@@ -16369,7 +16364,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/languages/Languages.vue":56,"babel-runtime/helpers/defineProperty":4,"babel-runtime/helpers/toConsumableArray":5,"vue":48,"vue-hot-reload-api":45,"vueify-insert-css":49}],56:[function(require,module,exports){
+},{"../../components/languages/Languages.vue":80,"babel-runtime/helpers/defineProperty":29,"babel-runtime/helpers/toConsumableArray":30,"vue":72,"vue-hot-reload-api":70,"vueify-insert-css":73}],80:[function(require,module,exports){
 'use strict';
 
 var _Traslations = require('../languages/Traslations.vue');
@@ -16417,7 +16412,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../languages/Traslations.vue":57,"vue":48,"vue-hot-reload-api":45}],57:[function(require,module,exports){
+},{"../languages/Traslations.vue":81,"vue":72,"vue-hot-reload-api":70}],81:[function(require,module,exports){
 'use strict';
 
 var _defineProperty2 = require('babel-runtime/helpers/defineProperty');
@@ -16521,11 +16516,16 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"babel-runtime/helpers/defineProperty":4,"vue":48,"vue-hot-reload-api":45}],58:[function(require,module,exports){
+},{"babel-runtime/helpers/defineProperty":29,"vue":72,"vue-hot-reload-api":70}],82:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\na[_v-0072dba4]{\n   cursor: pointer;\n }\n .error-email[_v-0072dba4]{\n   color:red;\n   font-size: 12px;\n   font-style:italic;\n }\n .component-center[_v-0072dba4]{\n     display: block;\n      margin-top: 50px;\n }\n\n")
 'use strict';
 
 module.exports = {
+
+  ready: function ready() {
+    this.username = localStorage.getItem("rememberUserName");
+    this.rememberMe = this.username ? true : false;
+  },
 
   data: function data() {
     return {
@@ -16534,11 +16534,20 @@ module.exports = {
       email: '',
       loading: false,
       forgotYourPassword: false,
-      emailErrMessage: true
+      emailErrMessage: true,
+      rememberMe: false
     };
   },
 
   methods: {
+
+    rememberMe: function rememberMe() {
+      if (typeof Storage !== "undefined") {
+        localStorage.setItem("rememberUserName", this.rememberMe ? this.username : '');
+      } else {
+        this.$dispatch('displayAlert', 'danger', 'This funcionality is not support for your browser');
+      }
+    },
 
     showEmailToSend: function showEmailToSend() {
       this.forgotYourPassword = !this.forgotYourPassword;
@@ -16549,38 +16558,45 @@ module.exports = {
     },
 
     btnLoginDemo: function btnLoginDemo() {
-      this.checkLogIn("demo_user", "demo123", '/dashboard');
+      this.username = "demo_user";
+      this.password = "demo123";
+      this.checkLogIn(this.username, this.password, '/dashboard');
     },
 
     btnSendEmail: function btnSendEmail() {
-      if (this.isValidEmail(this.email)) {
-        this.loading = true;
-        this.$http.post('login/sendYourPassword', { email: this.email }).then(function (response) {
-          this.displayPopUpMessage(response);
+      var self = this;
+      if (self.isValidEmail(self.email)) {
+        self.loading = true;
+        self.$http.post('login/sendYourPassword', { email: self.email }).then(function (response) {
+          self.displayPopUpMessage(response);
         }).then(function (response) {
-          this.loading = false;
-          this.forgotYourPassword = false;
+          self.loading = false;
+          self.forgotYourPassword = false;
         }).catch(function (response) {
-          this.displayPopUpMessage(response);
-          this.loading = false;
+          self.displayPopUpMessage(response);
+          self.loading = false;
         });
       }
     },
 
     checkLogIn: function checkLogIn(username, password, url) {
-      this.loading = true;
-      this.$http.post('login/logIn', { username: username, password: password }).then(function (response) {
+      var self = this;
+      var rememberMe = this.rememberMe;
+      var username = this.username;
+      self.loading = true;
+      self.$http.post('login/logIn', { username: username, password: password }).then(function (response) {
         if (response.status == 200) {
-          this.$route.router.go(url);
+          localStorage.setItem("rememberUserName", rememberMe ? username : '');
+          self.$route.router.go(url);
         } else {
-          this.displayPopUpMessage(response);
+          self.displayPopUpMessage(response);
         }
       }).then(function (response) {
-        this.loading = false;
+        self.loading = false;
       }).catch(function (response) {
-        this.displayPopUpMessage(response);
-        this.loading = false;
-      }).bind(this);
+        self.displayPopUpMessage(response);
+        self.loading = false;
+      }); //.bind(this);
     },
 
     displayPopUpMessage: function displayPopUpMessage(response) {
@@ -16612,7 +16628,7 @@ module.exports = {
 
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div _v-0072dba4=\"\">\n    <slot name=\"message\" _v-0072dba4=\"\"></slot>\n    <div class=\"panel panel-default component-center\" _v-0072dba4=\"\"> \n      <div class=\"panel-heading\" _v-0072dba4=\"\">\n        <h3 class=\"panel-title\" _v-0072dba4=\"\">Sign In\n          <span style=\"color:blue; padding-top:10px; padding-right:20px\" align=\"left\" v-if=\"loading\" _v-0072dba4=\"\">\n              <img src=\"/assets/icons/loading_image.gif\" _v-0072dba4=\"\">   \n            </span>\n        </h3>\n      </div>  \n      <div class=\"panel-body body-height\" _v-0072dba4=\"\"> \n        <div class=\"row\" _v-0072dba4=\"\">\n\t\t\t\t\t\t<div class=\"col-sm-12 text-left\" _v-0072dba4=\"\">\n\t\t\t\t\t\t\t\t<div class=\"input-group\" _v-0072dba4=\"\">\n\t\t\t\t\t\t\t\t\t<span class=\"input-group-addon\" id=\"basic-addon1\" _v-0072dba4=\"\">\n\t\t\t\t\t\t\t\t\t\t<i class=\"glyphicon glyphicon-user\" _v-0072dba4=\"\"></i>\n\t\t\t\t\t\t\t\t\t</span>\t\t\t\n\t\t\t\t\t\t\t\t\t<input type=\"text\" v-model=\"username\" name=\"username\" id=\"username\" class=\"form-control\" ,=\"\" placeholder=\"Type the user name\" value=\"\" _v-0072dba4=\"\">\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t<br _v-0072dba4=\"\">\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\n\t\t\t\t\t<div class=\"row\" _v-0072dba4=\"\">\n\t\t\t\t\t\t<div class=\"col-sm-12 text-left\" _v-0072dba4=\"\">\n\t\t\t\t\t\t\t\t<div class=\"input-group\" _v-0072dba4=\"\">\n\t\t\t\t\t\t\t\t\t<span class=\"input-group-addon\" id=\"basic-addon1\" _v-0072dba4=\"\">\n\t\t\t\t\t\t\t\t\t\t<i class=\"glyphicon glyphicon-lock\" _v-0072dba4=\"\"></i>\n\t\t\t\t\t\t\t\t\t</span>\t\n\n\t\t\t\t\t\t\t\t\t<input type=\"password\" v-model=\"password\" name=\"password\" id=\"password\" class=\"form-control\" ,=\"\" placeholder=\"Type the password\" _v-0072dba4=\"\">\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\n\t\t\t\t\t<br _v-0072dba4=\"\">\n\t\t\t\t\t\n          <div class=\"row\" _v-0072dba4=\"\">\n            <div class=\"col-sm-6 text-left\" _v-0072dba4=\"\">\n              <div class=\"control-group\" _v-0072dba4=\"\">\n                <input type=\"checkbox\" _v-0072dba4=\"\">\n                Remember Me\n              </div>\t\n            </div>\t\n\t\t\t\t\t\t\t\t\t\t\t\n            <div class=\"col-sm-6 text-right\" _v-0072dba4=\"\">\n              <div class=\"control-group\" _v-0072dba4=\"\">\n                <a @click=\"showEmailToSend\" _v-0072dba4=\"\">\n                Forgot your Password \n                </a>\t\n              </div>\n            </div>\t\n          </div>\n          \n          <hr _v-0072dba4=\"\">\n\n\n          <div v-show=\"forgotYourPassword\" _v-0072dba4=\"\">\n            <div class=\"row\" _v-0072dba4=\"\">\n              <div class=\"col-sm-12 text-left\" _v-0072dba4=\"\">\n\n                  <div class=\"alert alert-info\" _v-0072dba4=\"\">\n                    <p _v-0072dba4=\"\"><strong _v-0072dba4=\"\">Get Your Password</strong></p>\n                    Enter the email address associated with your account, then click Send. You will recieve an email with instrucctions to set a new password.'\n\t\t\t\t\t\t\t    </div>\n                  <div class=\"input-group\" _v-0072dba4=\"\">\n                    <span class=\"input-group-addon\" id=\"basic-addon1\" _v-0072dba4=\"\">\n                      <i class=\"glyphicon glyphicon-envelope\" _v-0072dba4=\"\"></i>\n                    </span>\t\t\t\n                    <input type=\"email\" v-model=\"email\" name=\"email\" id=\"email\" class=\"form-control\" ,=\"\" placeholder=\"Type an email address\" value=\"\" _v-0072dba4=\"\">\n                    \n                  </div>\n                  <span v-show=\"emailErrMessage\" class=\"error-email\" _v-0072dba4=\"\">Please type a valid email address</span>\n                  <hr _v-0072dba4=\"\">\n\n                    <div class=\"control-group\" _v-0072dba4=\"\">\n                        <div class=\"row\" _v-0072dba4=\"\">\n                          <div class=\"col-sm-6\" _v-0072dba4=\"\"></div>\n                          <div class=\"col-sm-6\" align=\"right\" _v-0072dba4=\"\">\n                            <button class=\"btn btn-sm btn-primary\" style=\"width: 100px\" :disabled=\"(email) ? false : true\" @click=\"btnSendEmail\" _v-0072dba4=\"\">\n                              Send\n                            </button>\n                          </div>\t\t\t\n                        </div>\t\n                    </div>\t\n\n              </div>\n            </div>\n          </div>\n          \n          <div class=\"control-group\" v-show=\"!forgotYourPassword\" _v-0072dba4=\"\">\n            <div class=\"row\" _v-0072dba4=\"\">\n              <div class=\"col-sm-6\" align=\"left\" _v-0072dba4=\"\">\n                <button class=\"btn btn-sm btn-success\" @click=\"btnLoginDemo\" _v-0072dba4=\"\"> \n                 Login User Demo \n                </button>\n              </div>\n\n              <div class=\"col-sm-6\" align=\"right\" _v-0072dba4=\"\">\n                 <button class=\"btn btn-sm btn-primary\" style=\"width: 100px\" :disabled=\"(username &amp;&amp; password) ? false : true\" @click=\"btnLogin\" _v-0072dba4=\"\">\n                  Sign in \n                 </button>\n              </div>\t\t\t\n            </div>\t\n        </div>\t\n\t\t\t\t\n      </div>       \n    </div> \n  </div>\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div _v-0072dba4=\"\">\n    <slot name=\"message\" _v-0072dba4=\"\"></slot>\n    <div class=\"panel panel-default component-center\" _v-0072dba4=\"\"> \n      <div class=\"panel-heading\" _v-0072dba4=\"\">\n        <h3 class=\"panel-title\" _v-0072dba4=\"\">Sign In\n          <span style=\"color:blue; padding-top:10px; padding-right:20px\" align=\"left\" v-if=\"loading\" _v-0072dba4=\"\">\n              <img src=\"/assets/icons/loading_image.gif\" _v-0072dba4=\"\">   \n            </span>\n        </h3>\n      </div>  \n      <div class=\"panel-body body-height\" _v-0072dba4=\"\"> \n        <div class=\"row\" _v-0072dba4=\"\">\n\t\t\t\t\t\t<div class=\"col-sm-12 text-left\" _v-0072dba4=\"\">\n\t\t\t\t\t\t\t\t<div class=\"input-group\" _v-0072dba4=\"\">\n\t\t\t\t\t\t\t\t\t<span class=\"input-group-addon\" id=\"basic-addon1\" _v-0072dba4=\"\">\n\t\t\t\t\t\t\t\t\t\t<i class=\"glyphicon glyphicon-user\" _v-0072dba4=\"\"></i>\n\t\t\t\t\t\t\t\t\t</span>\t\t\t\n\t\t\t\t\t\t\t\t\t<input type=\"text\" v-model=\"username\" name=\"username\" id=\"username\" class=\"form-control\" ,=\"\" placeholder=\"Type the user name\" value=\"\" _v-0072dba4=\"\">\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t<br _v-0072dba4=\"\">\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\n\t\t\t\t\t<div class=\"row\" _v-0072dba4=\"\">\n\t\t\t\t\t\t<div class=\"col-sm-12 text-left\" _v-0072dba4=\"\">\n\t\t\t\t\t\t\t\t<div class=\"input-group\" _v-0072dba4=\"\">\n\t\t\t\t\t\t\t\t\t<span class=\"input-group-addon\" id=\"basic-addon1\" _v-0072dba4=\"\">\n\t\t\t\t\t\t\t\t\t\t<i class=\"glyphicon glyphicon-lock\" _v-0072dba4=\"\"></i>\n\t\t\t\t\t\t\t\t\t</span>\t\n\n\t\t\t\t\t\t\t\t\t<input type=\"password\" v-model=\"password\" name=\"password\" id=\"password\" class=\"form-control\" ,=\"\" placeholder=\"Type the password\" _v-0072dba4=\"\">\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\n\t\t\t\t\t<br _v-0072dba4=\"\">\n\t\t\t\t\t\n          <div class=\"row\" _v-0072dba4=\"\">\n            <div class=\"col-sm-6 text-left\" _v-0072dba4=\"\">\n              <div class=\"control-group\" _v-0072dba4=\"\">\n                <input type=\"checkbox\" v-model=\"rememberMe\" _v-0072dba4=\"\">\n                Remember Me\n              </div>\t\n            </div>\t\n\t\t\t\t\t\t\t\t\t\t\t\n            <div class=\"col-sm-6 text-right\" _v-0072dba4=\"\">\n              <div class=\"control-group\" _v-0072dba4=\"\">\n                <a @click=\"showEmailToSend\" _v-0072dba4=\"\">\n                Forgot your Password \n                </a>\t\n              </div>\n            </div>\t\n          </div>\n          \n          <hr _v-0072dba4=\"\">\n\n\n          <div v-show=\"forgotYourPassword\" _v-0072dba4=\"\">\n            <div class=\"row\" _v-0072dba4=\"\">\n              <div class=\"col-sm-12 text-left\" _v-0072dba4=\"\">\n\n                  <div class=\"alert alert-info\" _v-0072dba4=\"\">\n                    <p _v-0072dba4=\"\"><strong _v-0072dba4=\"\">Get Your Password</strong></p>\n                    Enter the email address associated with your account, then click Send. You will recieve an email with instrucctions to set a new password.'\n\t\t\t\t\t\t\t    </div>\n                  <div class=\"input-group\" _v-0072dba4=\"\">\n                    <span class=\"input-group-addon\" id=\"basic-addon1\" _v-0072dba4=\"\">\n                      <i class=\"glyphicon glyphicon-envelope\" _v-0072dba4=\"\"></i>\n                    </span>\t\t\t\n                    <input type=\"email\" v-model=\"email\" name=\"email\" id=\"email\" class=\"form-control\" ,=\"\" placeholder=\"Type an email address\" value=\"\" _v-0072dba4=\"\">\n                    \n                  </div>\n                  <span v-show=\"emailErrMessage\" class=\"error-email\" _v-0072dba4=\"\">Please type a valid email address</span>\n                  <hr _v-0072dba4=\"\">\n\n                    <div class=\"control-group\" _v-0072dba4=\"\">\n                        <div class=\"row\" _v-0072dba4=\"\">\n                          <div class=\"col-sm-6\" _v-0072dba4=\"\"></div>\n                          <div class=\"col-sm-6\" align=\"right\" _v-0072dba4=\"\">\n                            <button class=\"btn btn-sm btn-primary\" style=\"width: 100px\" :disabled=\"(email) ? false : true\" @click=\"btnSendEmail\" _v-0072dba4=\"\">\n                              Send\n                            </button>\n                          </div>\t\t\t\n                        </div>\t\n                    </div>\t\n\n              </div>\n            </div>\n          </div>\n          \n          <div class=\"control-group\" v-show=\"!forgotYourPassword\" _v-0072dba4=\"\">\n            <div class=\"row\" _v-0072dba4=\"\">\n              <div class=\"col-sm-6\" align=\"left\" _v-0072dba4=\"\">\n                <button class=\"btn btn-sm btn-success\" @click=\"btnLoginDemo\" _v-0072dba4=\"\"> \n                 Login User Demo \n                </button>\n              </div>\n\n              <div class=\"col-sm-6\" align=\"right\" _v-0072dba4=\"\">\n                 <button class=\"btn btn-sm btn-primary\" style=\"width: 100px\" :disabled=\"(username &amp;&amp; password) ? false : true\" @click=\"btnLogin\" _v-0072dba4=\"\">\n                  Sign in \n                 </button>\n              </div>\t\t\t\n            </div>\t\n        </div>\t\n\t\t\t\t\n      </div>       \n    </div> \n  </div>\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -16628,24 +16644,25 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":48,"vue-hot-reload-api":45,"vueify-insert-css":49}],59:[function(require,module,exports){
+},{"vue":72,"vue-hot-reload-api":70,"vueify-insert-css":73}],83:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\na[_v-3394d498]{\n   cursor: pointer;\n }\n .confirm-password[_v-3394d498]{\n   color:red;\n   font-size: 12px;\n   font-style:italic;\n }\n .component-center[_v-3394d498]{\n     display: block;\n     margin-top: 50px;\n }\n\n")
 'use strict';
 
 module.exports = {
 
   beforeCompile: function beforeCompile() {
-    this.$http.get('login/tokenExist', { token: this.$route.query.token }).then(function (response) {
+    var self = this;
+    self.$http.get('login/tokenExist', { token: self.$route.query.token }).then(function (response) {
       if (response.data == true) {
-        this.showView = true;
-        this.token = this.$route.query.token;
+        self.showView = true;
+        self.token = self.$route.query.token;
       } else {
-        this.showView = false;
-        this.$dispatch('displayAlert', 'danger', 'Not Authorized (401)');
+        self.showView = false;
+        self.$dispatch('displayAlert', 'danger', 'Not Authorized (401)');
       }
     }).catch(function (response) {
-      this.showView = false;
-      this.displayPopUpMessage(response);
+      self.showView = false;
+      self.displayPopUpMessage(response);
     });
   },
 
@@ -16667,21 +16684,22 @@ module.exports = {
   methods: {
 
     resetPassword: function resetPassword() {
-      this.loading = true;
-      this.$http.post('login/resetYourPassword', {
-        token: this.token,
-        security_number: this.securityNumber,
-        new_password: this.password
+      var self = this;
+      self.loading = true;
+      self.$http.post('login/resetYourPassword', {
+        token: self.token,
+        security_number: self.securityNumber,
+        new_password: self.password
       }).then(function (response) {
         if (!response.data.error) {
-          this.$route.router.go('/login');
+          self.$route.router.go('/login');
         } else {
-          this.loading = false;
-          this.$dispatch('displayAlert', 'danger', response.data.message);
+          self.loading = false;
+          self.$dispatch('displayAlert', 'danger', response.data.message);
         }
       }).catch(function (response) {
-        this.loading = false;
-        this.displayPopUpMessage(response);
+        self.loading = false;
+        self.displayPopUpMessage(response);
       });
     },
 
@@ -16721,7 +16739,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":48,"vue-hot-reload-api":45,"vueify-insert-css":49}],60:[function(require,module,exports){
+},{"vue":72,"vue-hot-reload-api":70,"vueify-insert-css":73}],84:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n.links[_v-0993f47b]{\n  display: inline;\n  padding-right: 40px;\n}\n\n")
 'use strict';
 
@@ -16756,7 +16774,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":48,"vue-hot-reload-api":45,"vueify-insert-css":49}],61:[function(require,module,exports){
+},{"vue":72,"vue-hot-reload-api":70,"vueify-insert-css":73}],85:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n\t.cursor-hand{\n\t\tcursor: pointer;\n\t}\n  \n  .left-panel-border{\n    border-top:none;\n    border-left:none;\n    border-right:none;\n\n  }\n\n")
 "use strict";
 
@@ -16813,23 +16831,24 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"babel-runtime/core-js/json/stringify":2,"vue":48,"vue-hot-reload-api":45,"vueify-insert-css":49}],62:[function(require,module,exports){
+},{"babel-runtime/core-js/json/stringify":27,"vue":72,"vue-hot-reload-api":70,"vueify-insert-css":73}],86:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n.logout[_v-141a6d4c]{\n  position: relative;\n  padding-left: 53  0px;\n}\n\na[_v-141a6d4c]{\n    cursor: pointer;\n  }\n \n")
 'use strict';
 
 module.exports = {
 
+  props: ['showMenu'],
+
   data: function data() {
     return {
-      menus: []
+      menus: [],
+      displayMenu: this.showMenu == "false" ? false : true
     };
   },
 
   ready: function ready() {
 
     this.menus = [{ 'title': 'Dashboard', 'initialURL': '/dashboard' }, { 'title': 'Modules', 'initialURL': '/modules' }, { 'title': 'Transactions', 'initialURL': '/transactions' }, { 'title': 'Roles', 'initialURL': '/roles' }, { 'title': 'Users', 'initialURL': '/users' }, { 'title': 'Access Rights', 'initialURL': '/accessrights' }, { 'title': 'Help', 'initialURL': '/help' }];
-
-    // this.$route.router.go('/login');
   },
 
   methods: {
@@ -16846,7 +16865,7 @@ module.exports = {
 
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n\n   <link rel=\"icon\" type=\"image/png\" href=\"/assets/icons/loading_image.gif\" _v-141a6d4c=\"\">\n   \n <div _v-141a6d4c=\"\">\n   <nav class=\"navbar navbar-default\" _v-141a6d4c=\"\">\n     <div class=\"container-fluid\" _v-141a6d4c=\"\">\n       <a class=\"navbar-brand\" href=\"#\" _v-141a6d4c=\"\">Roles Admin</a>\n           <ul class=\"nav navbar-nav\" _v-141a6d4c=\"\"> \n             <li v-for=\"menu in menus\" _v-141a6d4c=\"\">\n               <a v-link=\"menu.initialURL\" _v-141a6d4c=\"\">{{menu.title}}</a>\n             </li>\n           </ul>\n           <ul class=\"nav navbar-nav navbar-right\" _v-141a6d4c=\"\">\n             <li _v-141a6d4c=\"\"> \n               <a class=\"logout\" @click=\"logout\" style=\"margin-right:10px\" _v-141a6d4c=\"\"> Logout </a> \n             </li> \n           </ul> \n     </div>\n   </nav>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n\n   <link rel=\"icon\" type=\"image/png\" href=\"/assets/icons/loading_image.gif\" _v-141a6d4c=\"\">\n   \n <div _v-141a6d4c=\"\">\n   <nav class=\"navbar navbar-default\" _v-141a6d4c=\"\">\n     <div class=\"container-fluid\" _v-141a6d4c=\"\">\n       <a class=\"navbar-brand\" href=\"#\" _v-141a6d4c=\"\">Roles Admin</a>\n           <ul class=\"nav navbar-nav\" v-show=\"displayMenu\" _v-141a6d4c=\"\"> \n             <li v-for=\"menu in menus\" _v-141a6d4c=\"\">\n               <a v-link=\"menu.initialURL\" _v-141a6d4c=\"\">{{menu.title}}</a>\n             </li>\n           </ul>\n           <ul class=\"nav navbar-nav navbar-right\" v-show=\"displayMenu\" _v-141a6d4c=\"\">\n             <li _v-141a6d4c=\"\"> \n               <a class=\"logout\" @click=\"logout\" style=\"margin-right:10px\" _v-141a6d4c=\"\"> Logout </a> \n             </li> \n           </ul> \n     </div>\n   </nav>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -16862,7 +16881,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":48,"vue-hot-reload-api":45,"vueify-insert-css":49}],63:[function(require,module,exports){
+},{"vue":72,"vue-hot-reload-api":70,"vueify-insert-css":73}],87:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n.message-padding{\n\n  padding-top: 20px;\n  padding-bottom: 20px;\n\n}\n")
 'use strict';
 
@@ -16896,7 +16915,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":48,"vue-hot-reload-api":45,"vueify-insert-css":49}],64:[function(require,module,exports){
+},{"vue":72,"vue-hot-reload-api":70,"vueify-insert-css":73}],88:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n.popup {\n  position: relative;\n}\n\n.popup-position {\n  padding: 15px;\n  position: absolute;\n  border: 1px solid transparent;\n  border-radius: 4px;\n  width: 500px;\n  margin: 50px auto; \n  left:0px;\n  right: 0px;\n  top: -30px;    \n  text-align: center;\n  z-index: 1;\n  padding: 20px;\n}\n\n.popup-info{\n  color: #31708f;\n  background-color: #d9edf7;\n  border-color: #bce8f1;\n}\n\n.popup-success {\n  color: #3c763d;\n  background-color: #dff0d8;\n  border-color: #d6e9c6;\n}\n\n.popup-warning {\n  color: #8a6d3b;\n  background-color: #fcf8e3;\n  border-color: #faebcc;\n}\n\n.popup-danger {\n  color: #a94442;\n  background-color: #f2dede;\n  border-color: #ebccd1;\n}\n\n.popup-close{\n  position: absolute;\n  margin-right: 10px;\n  right: 0;\n  top: 0;\n  cursor: pointer;\n  font-size: x-large;\n\n}\n\n")
 'use strict';
 
@@ -16957,7 +16976,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":48,"vue-hot-reload-api":45,"vueify-insert-css":49}],65:[function(require,module,exports){
+},{"vue":72,"vue-hot-reload-api":70,"vueify-insert-css":73}],89:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n.button-size[_v-72ce7614]{\n  width: 50px;\n}\n\n.header[_v-72ce7614] {\n  font-weight: bold;\n}\n\n.table-hscroll[_v-72ce7614]{\n   white-space:nowrap;\n   overflow-x:auto; \n   overflow-y:auto; \n   width:auto; \n}\n\n.table-height[_v-72ce7614]{\n  height:auto;\n}\n\n.selectwidth[_v-72ce7614]{\n  width:80px;\n}\n\n")
 'use strict';
 
@@ -17051,17 +17070,18 @@ module.exports = {
     },
 
     readPageData: function readPageData(url, displayMsg) {
-      this.NoMorePages = false;
-      this.loading = true;
-      this.$http.get(url).then(function (response) {
-        this.setDataResponse(response.data);
-        this.routesFirstPrevNextLast(response.data);
-        $('#' + this.id + ' td').remove();
+      var self = this;
+      self.NoMorePages = false;
+      self.loading = true;
+      self.$http.get(url).then(function (response) {
+        self.setDataResponse(response.data);
+        self.routesFirstPrevNextLast(response.data);
+        $('#' + self.id + ' td').remove();
       }).then(function (response) {
-        this.loading = false;
+        self.loading = false;
       }).catch(function (response) {
-        this.displayPopUpMessage(response);
-        this.loading = false;
+        self.displayPopUpMessage(response);
+        self.loading = false;
       });
     },
 
@@ -17147,7 +17167,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/languages/Languages.vue":56,"vue":48,"vue-hot-reload-api":45,"vueify-insert-css":49}],66:[function(require,module,exports){
+},{"../../components/languages/Languages.vue":80,"vue":72,"vue-hot-reload-api":70,"vueify-insert-css":73}],90:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n.button-size[_v-5cbfc636]{\n  width: 50px;\n}\n\ntr[_v-5cbfc636]{\n  cursor: pointer;\n}\n\n.table-hscroll[_v-5cbfc636]{\n   white-space:nowrap;\n   overflow-x:auto; \n   overflow-y:auto; \n   width:auto; \n}\n\n.table-height[_v-5cbfc636]{\n  height:auto;\n}\n\n.selectwidth[_v-5cbfc636]{\n  position: relative;\n  min-width:80px;\n  margin-right: 5px;\n}\n\n")
 'use strict';
 
@@ -17246,17 +17266,18 @@ module.exports = {
     },
 
     readPageData: function readPageData(url, year, month, displayMsg) {
-      this.NoMorePages = false;
-      this.loading = true;
-      this.$http.get(url, { "year": year, "month": month }).then(function (response) {
-        this.setDataResponse(response.data);
-        this.routesFirstPrevNextLast(response.data);
-        $('#' + this.id + ' td').remove();
+      var self = this;
+      self.NoMorePages = false;
+      self.loading = true;
+      self.$http.get(url, { params: { "year": year, "month": month } }).then(function (response) {
+        self.setDataResponse(response.data);
+        self.routesFirstPrevNextLast(response.data);
+        $('#' + self.id + ' td').remove();
       }).then(function (response) {
-        this.loading = false;
+        self.loading = false;
       }).catch(function (response) {
-        this.displayPopUpMessage(response);
-        this.loading = false;
+        self.displayPopUpMessage(response);
+        self.loading = false;
       });
     },
 
@@ -17349,7 +17370,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/languages/Languages.vue":56,"vue":48,"vue-hot-reload-api":45,"vueify-insert-css":49}],67:[function(require,module,exports){
+},{"../../components/languages/Languages.vue":80,"vue":72,"vue-hot-reload-api":70,"vueify-insert-css":73}],91:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n\n")
 'use strict';
 
@@ -17467,7 +17488,7 @@ module.exports = {
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div _v-df8ed76e=\"\">\n    <mypopup slot=\"message\" _v-df8ed76e=\"\"></mypopup>\n\t<div class=\"container-fluid\" _v-df8ed76e=\"\">\n\t\t<div class=\"row\" _v-df8ed76e=\"\">\n            <div class=\"col-sm-4\" _v-df8ed76e=\"\"></div>\n\t\t\t<div class=\"col-sm-4\" _v-df8ed76e=\"\">\n               <mylogin _v-df8ed76e=\"\"></mylogin>\n\t\t\t<div _v-df8ed76e=\"\">\n            <div class=\"col-sm-4\" _v-df8ed76e=\"\"></div>\n\t\t</div>\n\t</div>\n </div>\n</div></div>"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div _v-df8ed76e=\"\">\n\t<mytopmenu show-menu=\"false\" _v-df8ed76e=\"\"></mytopmenu>\t\n\t<mypopup slot=\"message\" _v-df8ed76e=\"\"></mypopup>\n\t<div class=\"container-fluid\" _v-df8ed76e=\"\">\n\t\t<div class=\"row\" _v-df8ed76e=\"\">\n\t\t\t<div class=\"col-sm-4\" _v-df8ed76e=\"\"></div>\n\t\t\t<div class=\"col-sm-4\" _v-df8ed76e=\"\">\n\t\t\t\t<mylogin _v-df8ed76e=\"\"></mylogin>\n\t\t\t<div _v-df8ed76e=\"\">\n\t\t\t<div class=\"col-sm-4\" _v-df8ed76e=\"\"></div>\n\t\t</div>\n\t</div>\n\t</div>\n</div>\n</div>"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -17483,7 +17504,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/crud/Button.vue":50,"../../components/crud/Form.vue":51,"../../components/crud/Import.vue":52,"../../components/crud/Link.vue":53,"../../components/crud/Table.vue":54,"../../components/graphs/Chart.vue":55,"../../components/login/Login.vue":58,"../../components/login/ResetYourPassword.vue":59,"../../components/menus/HorizontalLinks.vue":60,"../../components/menus/SubMenu.vue":61,"../../components/menus/TopMenu.vue":62,"../../components/messages/Message.vue":63,"../../components/messages/PopUp.vue":64,"../../components/table/TableSearch.vue":65,"../../components/table/TableYearMonth.vue":66,"vue":48,"vue-hot-reload-api":45,"vueify-insert-css":49}],68:[function(require,module,exports){
+},{"../../components/crud/Button.vue":74,"../../components/crud/Form.vue":75,"../../components/crud/Import.vue":76,"../../components/crud/Link.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify-insert-css":73}],92:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n\n")
 'use strict';
 
@@ -17617,7 +17638,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/crud/Button.vue":50,"../../components/crud/Form.vue":51,"../../components/crud/Import.vue":52,"../../components/crud/Link.vue":53,"../../components/crud/Table.vue":54,"../../components/graphs/Chart.vue":55,"../../components/login/Login.vue":58,"../../components/login/ResetYourPassword.vue":59,"../../components/menus/HorizontalLinks.vue":60,"../../components/menus/SubMenu.vue":61,"../../components/menus/TopMenu.vue":62,"../../components/messages/Message.vue":63,"../../components/messages/PopUp.vue":64,"../../components/table/TableSearch.vue":65,"../../components/table/TableYearMonth.vue":66,"vue":48,"vue-hot-reload-api":45,"vueify-insert-css":49}],69:[function(require,module,exports){
+},{"../../components/crud/Button.vue":74,"../../components/crud/Form.vue":75,"../../components/crud/Import.vue":76,"../../components/crud/Link.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify-insert-css":73}],93:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n")
 'use strict';
 
@@ -17735,7 +17756,7 @@ module.exports = {
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div _v-3a3fb885=\"\">\n  <mypopup slot=\"message\" _v-3a3fb885=\"\"></mypopup>\n\t<myimport slot=\"modal-import\" url-import=\"secutiry/roles_transactions/import\" _v-3a3fb885=\"\"></myimport>\n\t<mytopmenu _v-3a3fb885=\"\"></mytopmenu> \n\t<div class=\"container-fluid\" _v-3a3fb885=\"\">\n\t\t<div class=\"row\" _v-3a3fb885=\"\">\n\t\t\t<div class=\"col-sm-2\" _v-3a3fb885=\"\">\n\t\t\t\t<mysubmenu submenu=\"security\" _v-3a3fb885=\"\"></mysubmenu>\n\t\t\t</div>\n\t\t\n\t\t\t<div class=\"col-sm-10\" _v-3a3fb885=\"\">\n\n\t\t\t\t<mymessage message=\"This options allows to set the access rights for each role at transaction level for each module.\" color=\"info\" align=\"center\" _v-3a3fb885=\"\">\n\t\t\t\t</mymessage>\n\n\t\t\t\t<mycrudtable table-id=\"table1\" table-title=\"Access Rights List\" select-fields=\"{\n\n\t\t\t\t\t\t\t&quot;0&quot;: {\n\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;select&quot;,\n\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;role_name&quot;,\n\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Role Name&quot;, \n\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t&quot;url&quot;: &quot;security/roles/getAllRolesActivebyPage&quot;,\n\t\t\t\t\t\t\t\t&quot;table&quot;: &quot;roles&quot;\n\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t}\" columns-names=\"{\n\t\t\t\t\t\t\t\t&quot;0&quot;: { &quot;name&quot;: &quot;id&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;1&quot;: { &quot;name&quot;: &quot;roleName&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;2&quot;: { &quot;name&quot;: &quot;moduleName&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;3&quot;: { &quot;name&quot;: &quot;transactionName&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;4&quot;: { &quot;name&quot;: &quot;transactionDescription&quot; , &quot;width&quot;:&quot;30%&quot;},\n\t\t\t\t\t\t\t\t&quot;5&quot;: { &quot;name&quot;: &quot;transactionActionName&quot; , &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;6&quot;: { &quot;name&quot;: &quot;createdBy&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;7&quot;: { &quot;name&quot;: &quot;updatedBy&quot;, &quot;width&quot;:&quot;10%&quot;}\n\t\t\t\t\t\t}\" url=\"security/roles_transactions\" icon-info=\"{\t}\" icon-actions=\"{\t\t}\" _v-3a3fb885=\"\">\n\t\t\t\t\n\t\t\t\t\t\t<mycrudbuttons slot=\"crud\" url-export=\"security/roles_transactions/export\" btn-actions=\"{\n         \t\t\t\t\t\t&quot;0&quot;: {&quot;title&quot;: &quot;Add&quot;,    &quot;method&quot;: &quot;Add&quot;,    &quot;disabled&quot;: false},\n          \t\t\t\t\t\t&quot;1&quot;: {&quot;title&quot;: &quot;Export&quot;, &quot;method&quot;: &quot;Export&quot;, &quot;disabled&quot;: false}, \n          \t\t\t\t\t\t&quot;2&quot;: {&quot;title&quot;: &quot;Import&quot;, &quot;method&quot;: &quot;Import&quot;, &quot;disabled&quot;: false}\n        \t\t\t\t\t}\" _v-3a3fb885=\"\">\n\t\t\t\t\t\t</mycrudbuttons>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<mycrudform slot=\"forma\" url=\"security/roles_transactions\" form-title=\"Access Rights\" input-fields=\"{\n\t\t\t\t\t\t\t\t\t&quot;0&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;id&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Id&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;readonly&quot;:&quot;true&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;\n\t\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\t&quot;1&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;select&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;role_name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Role Name&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;url&quot;: &quot;security/roles/getAllRolesActive&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;table&quot;: &quot;roles&quot;\n\t\t\t\t\t\t\t\t\t },\n\n\t\t\t\t\t\t\t\t\t&quot;2&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;select&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;module_name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Module Name&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;url&quot;: &quot;security/modules/getAllModulesActive&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;table&quot;: &quot;modules&quot;\n\t\t\t\t\t\t\t\t\t },\n\n\t\t\t\t\t\t\t\t\t &quot;3&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;select&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;transaction_name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Transaction Name&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;url&quot;: &quot;security/roles_transactions/moduleSelected&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;table&quot;: &quot;transactions&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;selectFather&quot;: &quot;module_name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;selectFatherId&quot;: &quot;1&quot;\n\t\t\t\t\t\t\t\t\t }, \n\n\t\t\t\t\t\t\t\t\t &quot;4&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;hidden&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;transaction_description&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Transaction Description&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;readonly&quot;:&quot;true&quot;\t\n\t\t\t\t\t\t\t\t\t }, \n\n\n\t\t\t\t\t\t\t\t\t &quot;5&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;select&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;transaction_action_name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Transaction Action&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;url&quot;: &quot;security/roles_transactions/transactionActions&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;table&quot;: &quot;transactions_actions&quot;\n\t\t\t\t\t\t\t\t\t }\n\n\t\t\t\t\t\t\t\t}\" _v-3a3fb885=\"\">\n\t\t\t\t\t\t</mycrudform>\n\t\t\t\t</mycrudtable>\n\t\t\t<div _v-3a3fb885=\"\">\n\t\t</div>\n\t</div>\n </div>\n\n</div></div>"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div _v-3a3fb885=\"\">\n  <mypopup slot=\"message\" _v-3a3fb885=\"\"></mypopup>\n\t<myimport slot=\"modal-import\" url-import=\"secutiry/roles_transactions/import\" _v-3a3fb885=\"\"></myimport>\n\t<mytopmenu show-menu=\"true\" _v-3a3fb885=\"\"></mytopmenu> \n\t<div class=\"container-fluid\" _v-3a3fb885=\"\">\n\t\t<div class=\"row\" _v-3a3fb885=\"\">\n\t\t\t<div class=\"col-sm-2\" _v-3a3fb885=\"\">\n\t\t\t\t<mysubmenu submenu=\"security\" _v-3a3fb885=\"\"></mysubmenu>\n\t\t\t</div>\n\t\t\n\t\t\t<div class=\"col-sm-10\" _v-3a3fb885=\"\">\n\n\t\t\t\t<mymessage message=\"This options allows to set the access rights for each role at transaction level for each module.\" color=\"info\" align=\"center\" _v-3a3fb885=\"\">\n\t\t\t\t</mymessage>\n\n\t\t\t\t<mycrudtable table-id=\"table1\" table-title=\"Access Rights List\" select-fields=\"{\n\n\t\t\t\t\t\t\t&quot;0&quot;: {\n\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;select&quot;,\n\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;role_name&quot;,\n\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Role Name&quot;, \n\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t&quot;url&quot;: &quot;security/roles/getAllRolesActivebyPage&quot;,\n\t\t\t\t\t\t\t\t&quot;table&quot;: &quot;roles&quot;\n\t\t\t\t\t\t\t}\n\n\t\t\t\t\t\t}\" columns-names=\"{\n\t\t\t\t\t\t\t\t&quot;0&quot;: { &quot;name&quot;: &quot;id&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;1&quot;: { &quot;name&quot;: &quot;roleName&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;2&quot;: { &quot;name&quot;: &quot;moduleName&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;3&quot;: { &quot;name&quot;: &quot;transactionName&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;4&quot;: { &quot;name&quot;: &quot;transactionDescription&quot; , &quot;width&quot;:&quot;30%&quot;},\n\t\t\t\t\t\t\t\t&quot;5&quot;: { &quot;name&quot;: &quot;transactionActionName&quot; , &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;6&quot;: { &quot;name&quot;: &quot;createdBy&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;7&quot;: { &quot;name&quot;: &quot;updatedBy&quot;, &quot;width&quot;:&quot;10%&quot;}\n\t\t\t\t\t\t}\" url=\"security/roles_transactions\" icon-info=\"{\t}\" icon-actions=\"{\t\t}\" _v-3a3fb885=\"\">\n\t\t\t\t\n\t\t\t\t\t\t<mycrudbuttons slot=\"crud\" url-export=\"security/roles_transactions/export\" btn-actions=\"{\n         \t\t\t\t\t\t&quot;0&quot;: {&quot;title&quot;: &quot;Add&quot;,    &quot;method&quot;: &quot;Add&quot;,    &quot;disabled&quot;: false},\n          \t\t\t\t\t\t&quot;1&quot;: {&quot;title&quot;: &quot;Export&quot;, &quot;method&quot;: &quot;Export&quot;, &quot;disabled&quot;: false}, \n          \t\t\t\t\t\t&quot;2&quot;: {&quot;title&quot;: &quot;Import&quot;, &quot;method&quot;: &quot;Import&quot;, &quot;disabled&quot;: false}\n        \t\t\t\t\t}\" _v-3a3fb885=\"\">\n\t\t\t\t\t\t</mycrudbuttons>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<mycrudform slot=\"forma\" url=\"security/roles_transactions\" form-title=\"Access Rights\" input-fields=\"{\n\t\t\t\t\t\t\t\t\t&quot;0&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;id&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Id&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;readonly&quot;:&quot;true&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;\n\t\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\t&quot;1&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;select&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;role_name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Role Name&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;url&quot;: &quot;security/roles/getAllRolesActive&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;table&quot;: &quot;roles&quot;\n\t\t\t\t\t\t\t\t\t },\n\n\t\t\t\t\t\t\t\t\t&quot;2&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;select&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;module_name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Module Name&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;url&quot;: &quot;security/modules/getAllModulesActive&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;table&quot;: &quot;modules&quot;\n\t\t\t\t\t\t\t\t\t },\n\n\t\t\t\t\t\t\t\t\t &quot;3&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;select&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;transaction_name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Transaction Name&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;url&quot;: &quot;security/roles_transactions/moduleSelected&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;table&quot;: &quot;transactions&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;selectFather&quot;: &quot;module_name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;selectFatherId&quot;: &quot;1&quot;\n\t\t\t\t\t\t\t\t\t }, \n\n\t\t\t\t\t\t\t\t\t &quot;4&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;hidden&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;transaction_description&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Transaction Description&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;readonly&quot;:&quot;true&quot;\t\n\t\t\t\t\t\t\t\t\t }, \n\n\n\t\t\t\t\t\t\t\t\t &quot;5&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;select&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;transaction_action_name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Transaction Action&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;url&quot;: &quot;security/roles_transactions/transactionActions&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;table&quot;: &quot;transactions_actions&quot;\n\t\t\t\t\t\t\t\t\t }\n\n\t\t\t\t\t\t\t\t}\" _v-3a3fb885=\"\">\n\t\t\t\t\t\t</mycrudform>\n\t\t\t\t</mycrudtable>\n\t\t\t<div _v-3a3fb885=\"\">\n\t\t</div>\n\t</div>\n </div>\n\n</div></div>"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -17751,7 +17772,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/crud/Button.vue":50,"../../components/crud/Form.vue":51,"../../components/crud/Import.vue":52,"../../components/crud/Link.vue":53,"../../components/crud/Table.vue":54,"../../components/graphs/Chart.vue":55,"../../components/login/Login.vue":58,"../../components/login/ResetYourPassword.vue":59,"../../components/menus/HorizontalLinks.vue":60,"../../components/menus/SubMenu.vue":61,"../../components/menus/TopMenu.vue":62,"../../components/messages/Message.vue":63,"../../components/messages/PopUp.vue":64,"../../components/table/TableSearch.vue":65,"../../components/table/TableYearMonth.vue":66,"vue":48,"vue-hot-reload-api":45,"vueify-insert-css":49}],70:[function(require,module,exports){
+},{"../../components/crud/Button.vue":74,"../../components/crud/Form.vue":75,"../../components/crud/Import.vue":76,"../../components/crud/Link.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify-insert-css":73}],94:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n.link-space[_v-4792ea36] {\n\tpadding-right: 40px;\n}\n\n")
 'use strict';
 
@@ -17869,7 +17890,7 @@ module.exports = {
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div _v-4792ea36=\"\">\n \t<mypopup slot=\"message\" _v-4792ea36=\"\"></mypopup>\n\t<myimport slot=\"modal-import\" url-import=\"security/modules/import\" _v-4792ea36=\"\"></myimport>\n\t<mytopmenu _v-4792ea36=\"\"></mytopmenu> \n\t<div class=\"container-fluid\" _v-4792ea36=\"\">\n\t\t<div class=\"row\" _v-4792ea36=\"\">\n\t\t\t<div class=\"col-sm-2\" _v-4792ea36=\"\">\n\t\t\t\t<mysubmenu submenu=\"security\" _v-4792ea36=\"\"></mysubmenu>\n\t\t\t</div>\n\t\t\t<div class=\"col-sm-10\" _v-4792ea36=\"\">\n\t\t\t\t<mymessage slot=\"message\" message=\"This option allows to follow up how the users use the system and how many times they logged.\" color=\"info\" align=\"center\" _v-4792ea36=\"\">\n\t\t\t\t</mymessage>\n\n\t\t\t\t<myhorizontallinks name=\"horizontal-links\" _v-4792ea36=\"\"></myhorizontallinks>\n\n\t\t\t\t<div class=\"row\" style=\"padding:0px\" _v-4792ea36=\"\">\n\t\t\t\t\t<div class=\"col-sm-12\" style=\"padding:0px\" _v-4792ea36=\"\">\n\t\t\t\t\t \n\t\t\t\t\t  <div style=\"padding-left:10px;padding-right:20px\" _v-4792ea36=\"\">\n\t\t\t\t\t  \n\t\t\t\t\t  \t<mychart id=\"Chart1\" type=\"spline\" width=\"500\" height=\"250\" url=\"/security/dashboard/transactionsActionsUsedByDay\" title=\"Actions by Day\" x-title=\"Days\" y-title=\"Actions\" legend-position=\"bottom\" legend-display=\"false\" show-year=\"true\" show-month=\"true\" _v-4792ea36=\"\">\n\n\t\t\t\t\t  \t</mychart>\n\n\t\t\t\t\t \t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t<div class=\"row\" style=\"padding:0px\" _v-4792ea36=\"\">\n\t\t\t\t\t<div class=\"col-sm-12\" _v-4792ea36=\"\">\n\t\t\t\t\t \n\t\t\t\t\t\t<mytableyearmonth table-id=\"table1\" table-title=\"Actions Used\" columns-names=\"{\n\t\t\t\t\t\t\t\t&quot;0&quot;: { &quot;name&quot;: &quot;moduleName&quot;, &quot;width&quot;:&quot;25%&quot;},\n\t\t\t\t\t\t\t\t&quot;1&quot;: { &quot;name&quot;: &quot;transactionName&quot; , &quot;width&quot;:&quot;25%&quot;},\n\t\t\t\t\t\t\t\t&quot;2&quot;: { &quot;name&quot;: &quot;transactionActionName&quot; , &quot;width&quot;:&quot;25%&quot;},\n\t\t\t\t\t\t\t\t&quot;3&quot;: { &quot;name&quot;: &quot;clicks&quot; , &quot;width&quot;:&quot;25%&quot;}\n\t\t\t\t\t\t\t}\" url=\"security/dashboard/transactionsActionsUsed\" icon-info=\"{ }\" icon-actions=\"{ }\" show-year=\"true\" show-month=\"true\" _v-4792ea36=\"\">\n\n\t\t\t\t\t\t\t</mytableyearmonth>\n\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\n\t\t\t\t</div>\n\n\t\t\t\t<div class=\"row\" style=\"padding:0px\" _v-4792ea36=\"\">\n\t\t\t\t\t<div class=\"col-sm-12\" style=\"padding:0px\" _v-4792ea36=\"\">\n\t\t\t\t\t \n\t\t\t\t\t  <div style=\"padding-left:10px;padding-right:20px\" _v-4792ea36=\"\">\n\t\t\t\t\t  \n\t\t\t\t\t  \t<mychart id=\"Chart2\" type=\"column\" width=\"500\" height=\"250\" url=\"/security/dashboard/transactionsActionsUsedByMonth\" title=\"Actions by Month\" x-title=\"Days\" y-title=\"Actions\" legend-position=\"top\" legend-display=\"false\" show-year=\"true\" show-month=\"false\" _v-4792ea36=\"\">\n\t\t\t\t\t  \t</mychart>\n\n\t\t\t\t\t \t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\n\t\t\t</div>\t\t\n\t\t</div>\t\t\n\t</div>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div _v-4792ea36=\"\">\n \t<mypopup slot=\"message\" _v-4792ea36=\"\"></mypopup>\n\t<myimport slot=\"modal-import\" url-import=\"security/modules/import\" _v-4792ea36=\"\"></myimport>\n\t<mytopmenu show-menu=\"true\" _v-4792ea36=\"\"></mytopmenu> \n\t<div class=\"container-fluid\" _v-4792ea36=\"\">\n\t\t<div class=\"row\" _v-4792ea36=\"\">\n\t\t\t<div class=\"col-sm-2\" _v-4792ea36=\"\">\n\t\t\t\t<mysubmenu submenu=\"security\" _v-4792ea36=\"\"></mysubmenu>\n\t\t\t</div>\n\t\t\t<div class=\"col-sm-10\" _v-4792ea36=\"\">\n\t\t\t\t<mymessage slot=\"message\" message=\"This option allows to follow up how the users use the system and how many times they logged.\" color=\"info\" align=\"center\" _v-4792ea36=\"\">\n\t\t\t\t</mymessage>\n\n\t\t\t\t<myhorizontallinks name=\"horizontal-links\" _v-4792ea36=\"\"></myhorizontallinks>\n\n\t\t\t\t<div class=\"row\" style=\"padding:0px\" _v-4792ea36=\"\">\n\t\t\t\t\t<div class=\"col-sm-12\" style=\"padding:0px\" _v-4792ea36=\"\">\n\t\t\t\t\t \n\t\t\t\t\t  <div style=\"padding-left:10px;padding-right:20px\" _v-4792ea36=\"\">\n\t\t\t\t\t  \n\t\t\t\t\t  \t<mychart id=\"Chart1\" type=\"spline\" width=\"500\" height=\"250\" url=\"/security/dashboard/transactionsActionsUsedByDay\" title=\"Actions by Day\" x-title=\"Days\" y-title=\"Actions\" legend-position=\"bottom\" legend-display=\"false\" show-year=\"true\" show-month=\"true\" _v-4792ea36=\"\">\n\n\t\t\t\t\t  \t</mychart>\n\n\t\t\t\t\t \t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t<div class=\"row\" style=\"padding:0px\" _v-4792ea36=\"\">\n\t\t\t\t\t<div class=\"col-sm-12\" _v-4792ea36=\"\">\n\t\t\t\t\t \n\t\t\t\t\t\t<mytableyearmonth table-id=\"table1\" table-title=\"Actions Used\" columns-names=\"{\n\t\t\t\t\t\t\t\t&quot;0&quot;: { &quot;name&quot;: &quot;moduleName&quot;, &quot;width&quot;:&quot;25%&quot;},\n\t\t\t\t\t\t\t\t&quot;1&quot;: { &quot;name&quot;: &quot;transactionName&quot; , &quot;width&quot;:&quot;25%&quot;},\n\t\t\t\t\t\t\t\t&quot;2&quot;: { &quot;name&quot;: &quot;transactionActionName&quot; , &quot;width&quot;:&quot;25%&quot;},\n\t\t\t\t\t\t\t\t&quot;3&quot;: { &quot;name&quot;: &quot;clicks&quot; , &quot;width&quot;:&quot;25%&quot;}\n\t\t\t\t\t\t\t}\" url=\"security/dashboard/transactionsActionsUsed\" icon-info=\"{ }\" icon-actions=\"{ }\" show-year=\"true\" show-month=\"true\" _v-4792ea36=\"\">\n\n\t\t\t\t\t\t\t</mytableyearmonth>\n\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\n\t\t\t\t</div>\n\n\t\t\t\t<div class=\"row\" style=\"padding:0px\" _v-4792ea36=\"\">\n\t\t\t\t\t<div class=\"col-sm-12\" style=\"padding:0px\" _v-4792ea36=\"\">\n\t\t\t\t\t \n\t\t\t\t\t  <div style=\"padding-left:10px;padding-right:20px\" _v-4792ea36=\"\">\n\t\t\t\t\t  \n\t\t\t\t\t  \t<mychart id=\"Chart2\" type=\"column\" width=\"500\" height=\"250\" url=\"/security/dashboard/transactionsActionsUsedByMonth\" title=\"Actions by Month\" x-title=\"Days\" y-title=\"Actions\" legend-position=\"top\" legend-display=\"false\" show-year=\"true\" show-month=\"false\" _v-4792ea36=\"\">\n\t\t\t\t\t  \t</mychart>\n\n\t\t\t\t\t \t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\n\t\t\t</div>\t\t\n\t\t</div>\t\t\n\t</div>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -17885,7 +17906,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/crud/Button.vue":50,"../../components/crud/Form.vue":51,"../../components/crud/Import.vue":52,"../../components/crud/Link.vue":53,"../../components/crud/Table.vue":54,"../../components/graphs/Chart.vue":55,"../../components/login/Login.vue":58,"../../components/login/ResetYourPassword.vue":59,"../../components/menus/HorizontalLinks.vue":60,"../../components/menus/SubMenu.vue":61,"../../components/menus/TopMenu.vue":62,"../../components/messages/Message.vue":63,"../../components/messages/PopUp.vue":64,"../../components/table/TableSearch.vue":65,"../../components/table/TableYearMonth.vue":66,"vue":48,"vue-hot-reload-api":45,"vueify-insert-css":49}],71:[function(require,module,exports){
+},{"../../components/crud/Button.vue":74,"../../components/crud/Form.vue":75,"../../components/crud/Import.vue":76,"../../components/crud/Link.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify-insert-css":73}],95:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n\n")
 'use strict';
 
@@ -18003,7 +18024,7 @@ module.exports = {
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div _v-58a10f66=\"\">\n <mypopup slot=\"message\" _v-58a10f66=\"\"></mypopup>\n <myimport slot=\"modal-import\" url-import=\"security/modules/import\" _v-58a10f66=\"\"></myimport>\n <mytopmenu _v-58a10f66=\"\"></mytopmenu> \n\t<div class=\"container-fluid\" _v-58a10f66=\"\">\n\t\t<div class=\"row\" _v-58a10f66=\"\">\n\t\t\t<div class=\"col-sm-2\" _v-58a10f66=\"\">\n\t\t\t\t<mysubmenu submenu=\"security\" _v-58a10f66=\"\"></mysubmenu>\n\t\t\t</div>\n\t\t\n\t\t\t<div class=\"col-sm-10\" _v-58a10f66=\"\">\n\n\t\t\t\t<mymessage message=\"This option allows to add, update, active, inactive, import and export the modules of the application.\" color=\"info\" align=\"center\" _v-58a10f66=\"\">\n\n\t\t\t\t</mymessage>\n\t\t\t\t\n\t\t\t\t<mycrudtable table-id=\"table1\" table-title=\"Module List\" select-fields=\"{\t}\" columns-names=\"{\n\t\t\t\t\t\t\t\t&quot;0&quot;: { &quot;name&quot;: &quot;id&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;1&quot;: { &quot;name&quot;: &quot;moduleName&quot;, &quot;width&quot;:&quot;25%&quot;},\n\t\t\t\t\t\t\t\t&quot;2&quot;: { &quot;name&quot;: &quot;moduleDescription&quot; , &quot;width&quot;:&quot;50%&quot;},\n\t\t\t\t\t\t\t\t&quot;3&quot;: { &quot;name&quot;: &quot;moduleOrder&quot; , &quot;width&quot;:&quot;50%&quot;},\n\t\t\t\t\t\t\t\t&quot;4&quot;: { &quot;name&quot;: &quot;status&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;5&quot;: { &quot;name&quot;: &quot;createdBy&quot;, &quot;width&quot;:&quot;15%&quot;},\n\t\t\t\t\t\t\t\t&quot;6&quot;: { &quot;name&quot;: &quot;updatedBy&quot;, &quot;width&quot;:&quot;25%&quot;}\n\t\t\t\t\t\t}\" url=\"security/modules\" icon-info=\"{\t}\" icon-actions=\"{\t\t}\" _v-58a10f66=\"\">\n\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t<mycrudbuttons slot=\"crud\" url-export=\"security/modules/export\" btn-actions=\"{\n         \t\t\t\t\t\t&quot;0&quot;: {&quot;title&quot;: &quot;Add&quot;,    &quot;method&quot;: &quot;Add&quot;,    &quot;disabled&quot;: false},\n        \t\t\t\t\t\t&quot;1&quot;: {&quot;title&quot;: &quot;Export&quot;, &quot;method&quot;: &quot;Export&quot;, &quot;disabled&quot;: false}, \n        \t\t\t\t\t\t&quot;2&quot;: {&quot;title&quot;: &quot;Import&quot;, &quot;method&quot;: &quot;Import&quot;, &quot;disabled&quot;: false}        \t\t\t\t\n        \t\t\t}\" _v-58a10f66=\"\">\n\t\t\t\t\t\t</mycrudbuttons>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<mycrudform slot=\"forma\" url=\"security/modules\" form-title=\"Module\" input-fields=\"{\n\t\t\t\t\t\t\t\t\t&quot;0&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;id&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Id&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;readonly&quot;:&quot;true&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\t&quot;1&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;module_name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Module Name&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;Type the Module Name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\t&quot;2&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;textarea&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;module_description&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Module Description&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;Type the Module Description&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t },\n\n\t\t\t\t\t\t\t\t\t&quot;3&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;module_order&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Module order&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;Type the Module Order&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\t&quot;4&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;status&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;deleted_at&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Status&quot;\n\t\t\t\t\t\t\t\t\t }\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t}\" _v-58a10f66=\"\">\n\t\t\t\t\t\t</mycrudform>\n\t\t\t\t</mycrudtable>\n\t\t\t<div _v-58a10f66=\"\">\n\t\t</div>\n\t</div>\n </div>\n</div></div>"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div _v-58a10f66=\"\">\n <mypopup slot=\"message\" _v-58a10f66=\"\"></mypopup>\n <myimport slot=\"modal-import\" url-import=\"security/modules/import\" _v-58a10f66=\"\"></myimport>\n <mytopmenu show-menu=\"true\" _v-58a10f66=\"\"></mytopmenu> \n\t<div class=\"container-fluid\" _v-58a10f66=\"\">\n\t\t<div class=\"row\" _v-58a10f66=\"\">\n\t\t\t<div class=\"col-sm-2\" _v-58a10f66=\"\">\n\t\t\t\t<mysubmenu submenu=\"security\" _v-58a10f66=\"\"></mysubmenu>\n\t\t\t</div>\n\t\t\n\t\t\t<div class=\"col-sm-10\" _v-58a10f66=\"\">\n\n\t\t\t\t<mymessage message=\"This option allows to add, update, active, inactive, import and export the modules of the application.\" color=\"info\" align=\"center\" _v-58a10f66=\"\">\n\n\t\t\t\t</mymessage>\n\t\t\t\t\n\t\t\t\t<mycrudtable table-id=\"table1\" table-title=\"Module List\" select-fields=\"{\t}\" columns-names=\"{\n\t\t\t\t\t\t\t\t&quot;0&quot;: { &quot;name&quot;: &quot;id&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;1&quot;: { &quot;name&quot;: &quot;moduleName&quot;, &quot;width&quot;:&quot;25%&quot;},\n\t\t\t\t\t\t\t\t&quot;2&quot;: { &quot;name&quot;: &quot;moduleDescription&quot; , &quot;width&quot;:&quot;50%&quot;},\n\t\t\t\t\t\t\t\t&quot;3&quot;: { &quot;name&quot;: &quot;moduleOrder&quot; , &quot;width&quot;:&quot;50%&quot;},\n\t\t\t\t\t\t\t\t&quot;4&quot;: { &quot;name&quot;: &quot;status&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;5&quot;: { &quot;name&quot;: &quot;createdBy&quot;, &quot;width&quot;:&quot;15%&quot;},\n\t\t\t\t\t\t\t\t&quot;6&quot;: { &quot;name&quot;: &quot;updatedBy&quot;, &quot;width&quot;:&quot;25%&quot;}\n\t\t\t\t\t\t}\" url=\"security/modules\" icon-info=\"{\t}\" icon-actions=\"{\t\t}\" _v-58a10f66=\"\">\n\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t<mycrudbuttons slot=\"crud\" url-export=\"security/modules/export\" btn-actions=\"{\n         \t\t\t\t\t\t&quot;0&quot;: {&quot;title&quot;: &quot;Add&quot;,    &quot;method&quot;: &quot;Add&quot;,    &quot;disabled&quot;: false},\n        \t\t\t\t\t\t&quot;1&quot;: {&quot;title&quot;: &quot;Export&quot;, &quot;method&quot;: &quot;Export&quot;, &quot;disabled&quot;: false}, \n        \t\t\t\t\t\t&quot;2&quot;: {&quot;title&quot;: &quot;Import&quot;, &quot;method&quot;: &quot;Import&quot;, &quot;disabled&quot;: false}        \t\t\t\t\n        \t\t\t}\" _v-58a10f66=\"\">\n\t\t\t\t\t\t</mycrudbuttons>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<mycrudform slot=\"forma\" url=\"security/modules\" form-title=\"Module\" input-fields=\"{\n\t\t\t\t\t\t\t\t\t&quot;0&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;id&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Id&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;readonly&quot;:&quot;true&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\t&quot;1&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;module_name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Module Name&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;Type the Module Name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\t&quot;2&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;textarea&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;module_description&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Module Description&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;Type the Module Description&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t },\n\n\t\t\t\t\t\t\t\t\t&quot;3&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;module_order&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Module order&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;Type the Module Order&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\t&quot;4&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;status&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;deleted_at&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Status&quot;\n\t\t\t\t\t\t\t\t\t }\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t}\" _v-58a10f66=\"\">\n\t\t\t\t\t\t</mycrudform>\n\t\t\t\t</mycrudtable>\n\t\t\t<div _v-58a10f66=\"\">\n\t\t</div>\n\t</div>\n </div>\n</div></div>"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -18019,7 +18040,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/crud/Button.vue":50,"../../components/crud/Form.vue":51,"../../components/crud/Import.vue":52,"../../components/crud/Link.vue":53,"../../components/crud/Table.vue":54,"../../components/graphs/Chart.vue":55,"../../components/login/Login.vue":58,"../../components/login/ResetYourPassword.vue":59,"../../components/menus/HorizontalLinks.vue":60,"../../components/menus/SubMenu.vue":61,"../../components/menus/TopMenu.vue":62,"../../components/messages/Message.vue":63,"../../components/messages/PopUp.vue":64,"../../components/table/TableSearch.vue":65,"../../components/table/TableYearMonth.vue":66,"vue":48,"vue-hot-reload-api":45,"vueify-insert-css":49}],72:[function(require,module,exports){
+},{"../../components/crud/Button.vue":74,"../../components/crud/Form.vue":75,"../../components/crud/Import.vue":76,"../../components/crud/Link.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify-insert-css":73}],96:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n.link-space[_v-40e3ea6f] {\n\tpadding-right: 40px;\n}\n\n")
 'use strict';
 
@@ -18137,7 +18158,7 @@ module.exports = {
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div _v-40e3ea6f=\"\">\n \t<mypopup slot=\"message\" _v-40e3ea6f=\"\"></mypopup>\n\t<myimport slot=\"modal-import\" url-import=\"security/modules/import\" _v-40e3ea6f=\"\"></myimport>\n\t<mytopmenu _v-40e3ea6f=\"\"></mytopmenu> \n\t<div class=\"container-fluid\" _v-40e3ea6f=\"\">\n\t\t<div class=\"row\" _v-40e3ea6f=\"\">\n\t\t\t<div class=\"col-sm-2\" _v-40e3ea6f=\"\">\n\t\t\t\t<mysubmenu submenu=\"security\" _v-40e3ea6f=\"\"></mysubmenu>\n\t\t\t</div>\n\t\t\t<div class=\"col-sm-10\" _v-40e3ea6f=\"\">\n\t\t\t\t<mymessage message=\"This option allows to follow up how the users use the system and how many times they logged.\" color=\"info\" align=\"center\" _v-40e3ea6f=\"\">\n\t\t\t\t</mymessage>\n\n\t\t\t\t<myhorizontallinks name=\"horizontal-links\" _v-40e3ea6f=\"\"></myhorizontallinks>\n\n\t\t\t\t<div class=\"row\" style=\"padding:0px\" _v-40e3ea6f=\"\">\n\t\t\t\t\t<div class=\"col-sm-12\" style=\"padding:0px\" _v-40e3ea6f=\"\">\n\t\t\t\t\t \n\t\t\t\t\t  <div style=\"padding-left:10px;padding-right:20px\" _v-40e3ea6f=\"\">\n\t\t\t\t\t  \n\t\t\t\t\t  \t<mychart id=\"Chart1\" type=\"spline\" width=\"500\" height=\"250\" url=\"/security/dashboard/modulesUsedByDay\" title=\"Modules Used by Day\" x-title=\"Days\" y-title=\"Modules Used\" legend-position=\"bottom\" legend-display=\"false\" show-year=\"true\" show-month=\"true\" _v-40e3ea6f=\"\">\n\n\t\t\t\t\t  \t</mychart>\n\n\t\t\t\t\t \t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t<div class=\"row\" style=\"padding:0px\" _v-40e3ea6f=\"\">\n\t\t\t\t\t<div class=\"col-sm-12\" _v-40e3ea6f=\"\">\n\t\t\t\t\t \n\t\t\t\t\t\t<mytableyearmonth table-id=\"table1\" table-title=\"Modules Used\" columns-names=\"{\n\t\t\t\t\t\t\t\t&quot;0&quot;: { &quot;name&quot;: &quot;moduleName&quot;, &quot;width&quot;:&quot;50%&quot;},\n\t\t\t\t\t\t\t\t&quot;1&quot;: { &quot;name&quot;: &quot;clicks&quot; , &quot;width&quot;:&quot;50%&quot;}\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t}\" url=\"security/dashboard/modulesUsed\" icon-info=\"{ }\" icon-actions=\"{ }\" show-year=\"true\" show-month=\"true\" _v-40e3ea6f=\"\">\n\n\t\t\t\t\t\t\t</mytableyearmonth>\n\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\n\t\t\t\t</div>\n\n\t\t\t\t<div class=\"row\" style=\"padding:0px\" _v-40e3ea6f=\"\">\n\t\t\t\t\t<div class=\"col-sm-12\" style=\"padding:0px\" _v-40e3ea6f=\"\">\n\t\t\t\t\t \n\t\t\t\t\t  <div style=\"padding-left:10px;padding-right:20px\" _v-40e3ea6f=\"\">\n\t\t\t\t\t  \n\t\t\t\t\t  \t<mychart id=\"Chart2\" type=\"column\" width=\"500\" height=\"250\" url=\"/security/dashboard/modulesUsedByMonth\" title=\"Modules Used by Month\" x-title=\"Days\" y-title=\"Modules Used\" legend-position=\"top\" legend-display=\"false\" show-year=\"true\" show-month=\"false\" _v-40e3ea6f=\"\">\n\t\t\t\t\t  \t</mychart>\n\n\t\t\t\t\t \t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\n\t\t\t</div>\t\t\n\t\t</div>\t\t\n\t</div>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div _v-40e3ea6f=\"\">\n \t<mypopup slot=\"message\" _v-40e3ea6f=\"\"></mypopup>\n\t<myimport slot=\"modal-import\" url-import=\"security/modules/import\" _v-40e3ea6f=\"\"></myimport>\n\t<mytopmenu show-menu=\"true\" _v-40e3ea6f=\"\"></mytopmenu> \n\t<div class=\"container-fluid\" _v-40e3ea6f=\"\">\n\t\t<div class=\"row\" _v-40e3ea6f=\"\">\n\t\t\t<div class=\"col-sm-2\" _v-40e3ea6f=\"\">\n\t\t\t\t<mysubmenu submenu=\"security\" _v-40e3ea6f=\"\"></mysubmenu>\n\t\t\t</div>\n\t\t\t<div class=\"col-sm-10\" _v-40e3ea6f=\"\">\n\t\t\t\t<mymessage message=\"This option allows to follow up how the users use the system and how many times they logged.\" color=\"info\" align=\"center\" _v-40e3ea6f=\"\">\n\t\t\t\t</mymessage>\n\n\t\t\t\t<myhorizontallinks name=\"horizontal-links\" _v-40e3ea6f=\"\"></myhorizontallinks>\n\n\t\t\t\t<div class=\"row\" style=\"padding:0px\" _v-40e3ea6f=\"\">\n\t\t\t\t\t<div class=\"col-sm-12\" style=\"padding:0px\" _v-40e3ea6f=\"\">\n\t\t\t\t\t \n\t\t\t\t\t  <div style=\"padding-left:10px;padding-right:20px\" _v-40e3ea6f=\"\">\n\t\t\t\t\t  \n\t\t\t\t\t  \t<mychart id=\"Chart1\" type=\"spline\" width=\"500\" height=\"250\" url=\"/security/dashboard/modulesUsedByDay\" title=\"Modules Used by Day\" x-title=\"Days\" y-title=\"Modules Used\" legend-position=\"bottom\" legend-display=\"false\" show-year=\"true\" show-month=\"true\" _v-40e3ea6f=\"\">\n\n\t\t\t\t\t  \t</mychart>\n\n\t\t\t\t\t \t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t<div class=\"row\" style=\"padding:0px\" _v-40e3ea6f=\"\">\n\t\t\t\t\t<div class=\"col-sm-12\" _v-40e3ea6f=\"\">\n\t\t\t\t\t \n\t\t\t\t\t\t<mytableyearmonth table-id=\"table1\" table-title=\"Modules Used\" columns-names=\"{\n\t\t\t\t\t\t\t\t&quot;0&quot;: { &quot;name&quot;: &quot;moduleName&quot;, &quot;width&quot;:&quot;50%&quot;},\n\t\t\t\t\t\t\t\t&quot;1&quot;: { &quot;name&quot;: &quot;clicks&quot; , &quot;width&quot;:&quot;50%&quot;}\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t}\" url=\"security/dashboard/modulesUsed\" icon-info=\"{ }\" icon-actions=\"{ }\" show-year=\"true\" show-month=\"true\" _v-40e3ea6f=\"\">\n\n\t\t\t\t\t\t\t</mytableyearmonth>\n\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\n\t\t\t\t</div>\n\n\t\t\t\t<div class=\"row\" style=\"padding:0px\" _v-40e3ea6f=\"\">\n\t\t\t\t\t<div class=\"col-sm-12\" style=\"padding:0px\" _v-40e3ea6f=\"\">\n\t\t\t\t\t \n\t\t\t\t\t  <div style=\"padding-left:10px;padding-right:20px\" _v-40e3ea6f=\"\">\n\t\t\t\t\t  \n\t\t\t\t\t  \t<mychart id=\"Chart2\" type=\"column\" width=\"500\" height=\"250\" url=\"/security/dashboard/modulesUsedByMonth\" title=\"Modules Used by Month\" x-title=\"Days\" y-title=\"Modules Used\" legend-position=\"top\" legend-display=\"false\" show-year=\"true\" show-month=\"false\" _v-40e3ea6f=\"\">\n\t\t\t\t\t  \t</mychart>\n\n\t\t\t\t\t \t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\n\t\t\t</div>\t\t\n\t\t</div>\t\t\n\t</div>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -18153,7 +18174,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/crud/Button.vue":50,"../../components/crud/Form.vue":51,"../../components/crud/Import.vue":52,"../../components/crud/Link.vue":53,"../../components/crud/Table.vue":54,"../../components/graphs/Chart.vue":55,"../../components/login/Login.vue":58,"../../components/login/ResetYourPassword.vue":59,"../../components/menus/HorizontalLinks.vue":60,"../../components/menus/SubMenu.vue":61,"../../components/menus/TopMenu.vue":62,"../../components/messages/Message.vue":63,"../../components/messages/PopUp.vue":64,"../../components/table/TableSearch.vue":65,"../../components/table/TableYearMonth.vue":66,"vue":48,"vue-hot-reload-api":45,"vueify-insert-css":49}],73:[function(require,module,exports){
+},{"../../components/crud/Button.vue":74,"../../components/crud/Form.vue":75,"../../components/crud/Import.vue":76,"../../components/crud/Link.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify-insert-css":73}],97:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n\n")
 'use strict';
 
@@ -18271,7 +18292,7 @@ module.exports = {
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div _v-36e62ffa=\"\">\n <mypopup slot=\"message\" _v-36e62ffa=\"\"></mypopup>\n <myimport slot=\"modal-import\" url-import=\"security/roles/import\" _v-36e62ffa=\"\"></myimport>\n\t<mytopmenu _v-36e62ffa=\"\"></mytopmenu> \n\t<div class=\"container-fluid\" _v-36e62ffa=\"\">\n\t\t<div class=\"row\" _v-36e62ffa=\"\">\n\t\t\t<div class=\"col-sm-2\" _v-36e62ffa=\"\">\n\t\t\t\t<mysubmenu submenu=\"security\" _v-36e62ffa=\"\"></mysubmenu>\n\t\t\t</div>\n\t\t\n\t\t\t<div class=\"col-sm-10\" _v-36e62ffa=\"\">\n\n\t\t\t\t<mymessage message=\"This option allows to add, update, active, inactive, import and export the roles of the application.\" color=\"info\" align=\"center\" _v-36e62ffa=\"\">\n\n\t\t\t\t</mymessage>\n\n\t\t\t\t<mycrudtable table-id=\"table1\" table-title=\"Role List\" select-fields=\"{\t}\" columns-names=\"{\n\t\t\t\t\t\t\t\t&quot;0&quot;: { &quot;name&quot;: &quot;id&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;1&quot;: { &quot;name&quot;: &quot;rolName&quot;, &quot;width&quot;:&quot;25%&quot;},\n\t\t\t\t\t\t\t\t&quot;2&quot;: { &quot;name&quot;: &quot;rolDescription&quot; , &quot;width&quot;:&quot;50%&quot;},\n\t\t\t\t\t\t\t\t&quot;3&quot;: { &quot;name&quot;: &quot;status&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;4&quot;: { &quot;name&quot;: &quot;createdBy&quot;, &quot;width&quot;:&quot;15%&quot;},\n\t\t\t\t\t\t\t\t&quot;5&quot;: { &quot;name&quot;: &quot;updatedBy&quot;, &quot;width&quot;:&quot;25%&quot;}\n\t\t\t\t\t\t}\" url=\"security/roles\" icon-info=\"{ }\" icon-actions=\"{ }\" _v-36e62ffa=\"\">\n\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t<mycrudbuttons slot=\"crud\" url-export=\"security/roles/export\" btn-actions=\"{\n         \t\t\t\t\t\t&quot;0&quot;: {&quot;title&quot;: &quot;Add&quot;,    &quot;method&quot;: &quot;Add&quot;,    &quot;disabled&quot;: false},\n        \t\t\t\t\t\t&quot;1&quot;: {&quot;title&quot;: &quot;Export&quot;, &quot;method&quot;: &quot;Export&quot;, &quot;disabled&quot;: false}, \n        \t\t\t\t\t\t&quot;2&quot;: {&quot;title&quot;: &quot;Import&quot;, &quot;method&quot;: &quot;Import&quot;, &quot;disabled&quot;: false}        \t\t\t\t\n        \t\t\t}\" _v-36e62ffa=\"\">\n\t\t\t\t\t\t</mycrudbuttons>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<mycrudform slot=\"forma\" url=\"security/roles\" form-title=\"Role\" input-fields=\"{\n\t\t\t\t\t\t\t\t\t&quot;0&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;id&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Id&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;readonly&quot;:&quot;true&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\t&quot;1&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;role_name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Role Name&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;Type the Role Name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\t&quot;2&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;textarea&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;role_description&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Role Description&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;Type the Role Description&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t },\n\n\t\t\t\t\t\t\t\t\t&quot;3&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;status&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;deleted_at&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Status&quot;\n\t\t\t\t\t\t\t\t\t }\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t}\" _v-36e62ffa=\"\">\n\t\t\t\t\t\t</mycrudform>\n\t\t\t\t</mycrudtable>\n\t\t\t<div _v-36e62ffa=\"\">\n\t\t</div>\n\t</div>\n </div>\n</div></div>"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div _v-36e62ffa=\"\">\n <mypopup slot=\"message\" _v-36e62ffa=\"\"></mypopup>\n <myimport slot=\"modal-import\" url-import=\"security/roles/import\" _v-36e62ffa=\"\"></myimport>\n\t<mytopmenu show-menu=\"true\" _v-36e62ffa=\"\"></mytopmenu> \n\t<div class=\"container-fluid\" _v-36e62ffa=\"\">\n\t\t<div class=\"row\" _v-36e62ffa=\"\">\n\t\t\t<div class=\"col-sm-2\" _v-36e62ffa=\"\">\n\t\t\t\t<mysubmenu submenu=\"security\" _v-36e62ffa=\"\"></mysubmenu>\n\t\t\t</div>\n\t\t\n\t\t\t<div class=\"col-sm-10\" _v-36e62ffa=\"\">\n\n\t\t\t\t<mymessage message=\"This option allows to add, update, active, inactive, import and export the roles of the application.\" color=\"info\" align=\"center\" _v-36e62ffa=\"\">\n\n\t\t\t\t</mymessage>\n\n\t\t\t\t<mycrudtable table-id=\"table1\" table-title=\"Role List\" select-fields=\"{\t}\" columns-names=\"{\n\t\t\t\t\t\t\t\t&quot;0&quot;: { &quot;name&quot;: &quot;id&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;1&quot;: { &quot;name&quot;: &quot;rolName&quot;, &quot;width&quot;:&quot;25%&quot;},\n\t\t\t\t\t\t\t\t&quot;2&quot;: { &quot;name&quot;: &quot;rolDescription&quot; , &quot;width&quot;:&quot;50%&quot;},\n\t\t\t\t\t\t\t\t&quot;3&quot;: { &quot;name&quot;: &quot;status&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;4&quot;: { &quot;name&quot;: &quot;createdBy&quot;, &quot;width&quot;:&quot;15%&quot;},\n\t\t\t\t\t\t\t\t&quot;5&quot;: { &quot;name&quot;: &quot;updatedBy&quot;, &quot;width&quot;:&quot;25%&quot;}\n\t\t\t\t\t\t}\" url=\"security/roles\" icon-info=\"{ }\" icon-actions=\"{ }\" _v-36e62ffa=\"\">\n\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t<mycrudbuttons slot=\"crud\" url-export=\"security/roles/export\" btn-actions=\"{\n         \t\t\t\t\t\t&quot;0&quot;: {&quot;title&quot;: &quot;Add&quot;,    &quot;method&quot;: &quot;Add&quot;,    &quot;disabled&quot;: false},\n        \t\t\t\t\t\t&quot;1&quot;: {&quot;title&quot;: &quot;Export&quot;, &quot;method&quot;: &quot;Export&quot;, &quot;disabled&quot;: false}, \n        \t\t\t\t\t\t&quot;2&quot;: {&quot;title&quot;: &quot;Import&quot;, &quot;method&quot;: &quot;Import&quot;, &quot;disabled&quot;: false}        \t\t\t\t\n        \t\t\t}\" _v-36e62ffa=\"\">\n\t\t\t\t\t\t</mycrudbuttons>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<mycrudform slot=\"forma\" url=\"security/roles\" form-title=\"Role\" input-fields=\"{\n\t\t\t\t\t\t\t\t\t&quot;0&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;id&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Id&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;readonly&quot;:&quot;true&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\t&quot;1&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;role_name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Role Name&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;Type the Role Name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\t&quot;2&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;textarea&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;role_description&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Role Description&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;Type the Role Description&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t },\n\n\t\t\t\t\t\t\t\t\t&quot;3&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;status&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;deleted_at&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Status&quot;\n\t\t\t\t\t\t\t\t\t }\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t}\" _v-36e62ffa=\"\">\n\t\t\t\t\t\t</mycrudform>\n\t\t\t\t</mycrudtable>\n\t\t\t<div _v-36e62ffa=\"\">\n\t\t</div>\n\t</div>\n </div>\n</div></div>"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -18287,7 +18308,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/crud/Button.vue":50,"../../components/crud/Form.vue":51,"../../components/crud/Import.vue":52,"../../components/crud/Link.vue":53,"../../components/crud/Table.vue":54,"../../components/graphs/Chart.vue":55,"../../components/login/Login.vue":58,"../../components/login/ResetYourPassword.vue":59,"../../components/menus/HorizontalLinks.vue":60,"../../components/menus/SubMenu.vue":61,"../../components/menus/TopMenu.vue":62,"../../components/messages/Message.vue":63,"../../components/messages/PopUp.vue":64,"../../components/table/TableSearch.vue":65,"../../components/table/TableYearMonth.vue":66,"vue":48,"vue-hot-reload-api":45,"vueify-insert-css":49}],74:[function(require,module,exports){
+},{"../../components/crud/Button.vue":74,"../../components/crud/Form.vue":75,"../../components/crud/Import.vue":76,"../../components/crud/Link.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify-insert-css":73}],98:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n\n")
 'use strict';
 
@@ -18405,7 +18426,7 @@ module.exports = {
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div _v-325bac7f=\"\">\n <mypopup slot=\"message\" _v-325bac7f=\"\"></mypopup>\n <myimport slot=\"modal-import\" url-import=\"security/transactions/import\" _v-325bac7f=\"\"></myimport>\n<mytopmenu _v-325bac7f=\"\"></mytopmenu> \n\t<div class=\"container-fluid\" _v-325bac7f=\"\">\n\t\t<div class=\"row\" _v-325bac7f=\"\">\n\t\t\t<div class=\"col-sm-2\" _v-325bac7f=\"\">\n\t\t\t\t<mysubmenu submenu=\"security\" _v-325bac7f=\"\"></mysubmenu>\n\t\t\t</div>\n\t\t\n\t\t\t<div class=\"col-sm-10\" _v-325bac7f=\"\">\n\n\t\t\t\t<mymessage message=\"This option allows to add, update, active, inactive, import and export the transactions for each module for the application.\" color=\"info\" align=\"center\" _v-325bac7f=\"\">\n\n\t\t\t\t</mymessage>\n\t\t\t\t\n\t\t\t\t<mycrudtable table-id=\"table1\" table-title=\"Transaction List\" select-fields=\"{ \t}\" columns-names=\"{\n\t\t\t\t\t\t\t\t&quot;0&quot;: { &quot;name&quot;: &quot;id&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;1&quot;: { &quot;name&quot;: &quot;moduleName&quot;, &quot;width&quot;:&quot;25%&quot;},\n\t\t\t\t\t\t\t\t&quot;2&quot;: { &quot;name&quot;: &quot;transactionName&quot;, &quot;width&quot;:&quot;25%&quot;},\n\t\t\t\t\t\t\t\t&quot;3&quot;: { &quot;name&quot;: &quot;transactionDescription&quot; , &quot;width&quot;:&quot;50%&quot;},\n\t\t\t\t\t\t\t\t&quot;4&quot;: { &quot;name&quot;: &quot;transactionOrder&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;5&quot;: { &quot;name&quot;: &quot;status&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;6&quot;: { &quot;name&quot;: &quot;createdBy&quot;, &quot;width&quot;:&quot;15%&quot;},\n\t\t\t\t\t\t\t\t&quot;7&quot;: { &quot;name&quot;: &quot;updatedBy&quot;, &quot;width&quot;:&quot;25%&quot;}\n\t\t\t\t\t\t}\" url=\"security/transactions\" icon-info=\"{\t}\" icon-actions=\"{ \t}\" _v-325bac7f=\"\">\n\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t<mycrudbuttons slot=\"crud\" url-export=\"security/transactions/export\" btn-actions=\"{\n         \t\t\t\t\t\t&quot;0&quot;: {&quot;title&quot;: &quot;Add&quot;,    &quot;method&quot;: &quot;Add&quot;,    &quot;disabled&quot;: false},\n        \t\t\t\t\t\t&quot;1&quot;: {&quot;title&quot;: &quot;Export&quot;, &quot;method&quot;: &quot;Export&quot;, &quot;disabled&quot;: false}, \n        \t\t\t\t\t\t&quot;2&quot;: {&quot;title&quot;: &quot;Import&quot;, &quot;method&quot;: &quot;Import&quot;, &quot;disabled&quot;: false}        \t\t\t\t\n        \t\t\t}\" _v-325bac7f=\"\">\n\t\t\t\t\t\t</mycrudbuttons>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<mycrudform slot=\"forma\" url=\"security/transactions\" form-title=\"Transaction\" input-fields=\"{\n\t\t\t\t\t\t\t\t\t&quot;0&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;id&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Id&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;readonly&quot;:&quot;true&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\t&quot;1&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;select&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;module_name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Module Name&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;url&quot;: &quot;security/modules/getAllModulesActive&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;table&quot;: &quot;modules&quot;\n\t\t\t\t\t\t\t\t\t },\n\n\t\t\t\t\t\t\t\t\t&quot;2&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;transaction_name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Transaction Name&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;Type the Transaction Name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\t&quot;3&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;textarea&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;transaction_description&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Transaction Description&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;Type the Transaction Description&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t },\n\n\t\t\t\t\t\t\t\t\t&quot;4&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;transaction_order&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Transaction Order&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;Type the Transaction Order&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\t&quot;5&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;status&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;deleted_at&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Status&quot;\n\t\t\t\t\t\t\t\t\t }\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t}\" _v-325bac7f=\"\">\n\t\t\t\t\t\t</mycrudform>\n\t\t\t\t</mycrudtable>\n\t\t\t<div _v-325bac7f=\"\">\n\t\t</div>\n\t</div>\n </div>\n</div></div>"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div _v-325bac7f=\"\">\n <mypopup slot=\"message\" _v-325bac7f=\"\"></mypopup>\n <myimport slot=\"modal-import\" url-import=\"security/transactions/import\" _v-325bac7f=\"\"></myimport>\n<mytopmenu show-menu=\"true\" _v-325bac7f=\"\"></mytopmenu> \n\t<div class=\"container-fluid\" _v-325bac7f=\"\">\n\t\t<div class=\"row\" _v-325bac7f=\"\">\n\t\t\t<div class=\"col-sm-2\" _v-325bac7f=\"\">\n\t\t\t\t<mysubmenu submenu=\"security\" _v-325bac7f=\"\"></mysubmenu>\n\t\t\t</div>\n\t\t\n\t\t\t<div class=\"col-sm-10\" _v-325bac7f=\"\">\n\n\t\t\t\t<mymessage message=\"This option allows to add, update, active, inactive, import and export the transactions for each module for the application.\" color=\"info\" align=\"center\" _v-325bac7f=\"\">\n\n\t\t\t\t</mymessage>\n\t\t\t\t\n\t\t\t\t<mycrudtable table-id=\"table1\" table-title=\"Transaction List\" select-fields=\"{ \t}\" columns-names=\"{\n\t\t\t\t\t\t\t\t&quot;0&quot;: { &quot;name&quot;: &quot;id&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;1&quot;: { &quot;name&quot;: &quot;moduleName&quot;, &quot;width&quot;:&quot;25%&quot;},\n\t\t\t\t\t\t\t\t&quot;2&quot;: { &quot;name&quot;: &quot;transactionName&quot;, &quot;width&quot;:&quot;25%&quot;},\n\t\t\t\t\t\t\t\t&quot;3&quot;: { &quot;name&quot;: &quot;transactionDescription&quot; , &quot;width&quot;:&quot;50%&quot;},\n\t\t\t\t\t\t\t\t&quot;4&quot;: { &quot;name&quot;: &quot;transactionOrder&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;5&quot;: { &quot;name&quot;: &quot;status&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;6&quot;: { &quot;name&quot;: &quot;createdBy&quot;, &quot;width&quot;:&quot;15%&quot;},\n\t\t\t\t\t\t\t\t&quot;7&quot;: { &quot;name&quot;: &quot;updatedBy&quot;, &quot;width&quot;:&quot;25%&quot;}\n\t\t\t\t\t\t}\" url=\"security/transactions\" icon-info=\"{\t}\" icon-actions=\"{ \t}\" _v-325bac7f=\"\">\n\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t<mycrudbuttons slot=\"crud\" url-export=\"security/transactions/export\" btn-actions=\"{\n         \t\t\t\t\t\t&quot;0&quot;: {&quot;title&quot;: &quot;Add&quot;,    &quot;method&quot;: &quot;Add&quot;,    &quot;disabled&quot;: false},\n        \t\t\t\t\t\t&quot;1&quot;: {&quot;title&quot;: &quot;Export&quot;, &quot;method&quot;: &quot;Export&quot;, &quot;disabled&quot;: false}, \n        \t\t\t\t\t\t&quot;2&quot;: {&quot;title&quot;: &quot;Import&quot;, &quot;method&quot;: &quot;Import&quot;, &quot;disabled&quot;: false}        \t\t\t\t\n        \t\t\t}\" _v-325bac7f=\"\">\n\t\t\t\t\t\t</mycrudbuttons>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<mycrudform slot=\"forma\" url=\"security/transactions\" form-title=\"Transaction\" input-fields=\"{\n\t\t\t\t\t\t\t\t\t&quot;0&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;id&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Id&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;readonly&quot;:&quot;true&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\t&quot;1&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;select&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;module_name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Module Name&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;url&quot;: &quot;security/modules/getAllModulesActive&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;table&quot;: &quot;modules&quot;\n\t\t\t\t\t\t\t\t\t },\n\n\t\t\t\t\t\t\t\t\t&quot;2&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;transaction_name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Transaction Name&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;Type the Transaction Name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\t&quot;3&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;textarea&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;transaction_description&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Transaction Description&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;Type the Transaction Description&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t },\n\n\t\t\t\t\t\t\t\t\t&quot;4&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;transaction_order&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Transaction Order&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;Type the Transaction Order&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\t&quot;5&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;status&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;deleted_at&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Status&quot;\n\t\t\t\t\t\t\t\t\t }\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t}\" _v-325bac7f=\"\">\n\t\t\t\t\t\t</mycrudform>\n\t\t\t\t</mycrudtable>\n\t\t\t<div _v-325bac7f=\"\">\n\t\t</div>\n\t</div>\n </div>\n</div></div>"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -18421,7 +18442,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/crud/Button.vue":50,"../../components/crud/Form.vue":51,"../../components/crud/Import.vue":52,"../../components/crud/Link.vue":53,"../../components/crud/Table.vue":54,"../../components/graphs/Chart.vue":55,"../../components/login/Login.vue":58,"../../components/login/ResetYourPassword.vue":59,"../../components/menus/HorizontalLinks.vue":60,"../../components/menus/SubMenu.vue":61,"../../components/menus/TopMenu.vue":62,"../../components/messages/Message.vue":63,"../../components/messages/PopUp.vue":64,"../../components/table/TableSearch.vue":65,"../../components/table/TableYearMonth.vue":66,"vue":48,"vue-hot-reload-api":45,"vueify-insert-css":49}],75:[function(require,module,exports){
+},{"../../components/crud/Button.vue":74,"../../components/crud/Form.vue":75,"../../components/crud/Import.vue":76,"../../components/crud/Link.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify-insert-css":73}],99:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n.link-space[_v-0f79cca1] {\n\tpadding-right: 40px;\n}\n\n")
 'use strict';
 
@@ -18539,7 +18560,7 @@ module.exports = {
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div _v-0f79cca1=\"\">\n \t<mypopup slot=\"message\" _v-0f79cca1=\"\"></mypopup>\n\t<myimport slot=\"modal-import\" url-import=\"security/modules/import\" _v-0f79cca1=\"\"></myimport>\n\t<mytopmenu _v-0f79cca1=\"\"></mytopmenu> \n\t<div class=\"container-fluid\" _v-0f79cca1=\"\">\n\t\t<div class=\"row\" _v-0f79cca1=\"\">\n\t\t\t<div class=\"col-sm-2\" _v-0f79cca1=\"\">\n\t\t\t\t<mysubmenu submenu=\"security\" _v-0f79cca1=\"\"></mysubmenu>\n\t\t\t</div>\n\t\t\t<div class=\"col-sm-10\" _v-0f79cca1=\"\">\n\t\t\t\t<mymessage message=\"This option allows to follow up how the users use the system and how many times they logged.\" color=\"info\" align=\"center\" _v-0f79cca1=\"\">\n\t\t\t\t</mymessage>\n\n\t\t\t\t<myhorizontallinks name=\"horizontal-links\" _v-0f79cca1=\"\"></myhorizontallinks>\n\n\t\t\t\t<div class=\"row\" style=\"padding:0px\" _v-0f79cca1=\"\">\n\t\t\t\t\t<div class=\"col-sm-12\" style=\"padding:0px\" _v-0f79cca1=\"\">\n\t\t\t\t\t \n\t\t\t\t\t  <div style=\"padding-left:10px;padding-right:20px\" _v-0f79cca1=\"\">\n\t\t\t\t\t  \n\t\t\t\t\t  \t<mychart id=\"Chart1\" type=\"spline\" width=\"500\" height=\"250\" url=\"/security/dashboard/transactionsUsedByDay\" title=\"Transactions Used by Day\" x-title=\"Days\" y-title=\"Transactiones Used\" legend-position=\"bottom\" legend-display=\"false\" show-year=\"true\" show-month=\"true\" _v-0f79cca1=\"\">\n\n\t\t\t\t\t  \t</mychart>\n\n\t\t\t\t\t \t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t<div class=\"row\" style=\"padding:0px\" _v-0f79cca1=\"\">\n\t\t\t\t\t<div class=\"col-sm-12\" _v-0f79cca1=\"\">\n\t\t\t\t\t \n\t\t\t\t\t\t<mytableyearmonth table-id=\"table1\" table-title=\"Transactions Used\" columns-names=\"{\n\t\t\t\t\t\t\t\t&quot;0&quot;: { &quot;name&quot;: &quot;moduleName&quot;, &quot;width&quot;:&quot;25%&quot;},\n\t\t\t\t\t\t\t\t&quot;1&quot;: { &quot;name&quot;: &quot;transactionName&quot; , &quot;width&quot;:&quot;50%&quot;},\n\t\t\t\t\t\t\t\t&quot;2&quot;: { &quot;name&quot;: &quot;clicks&quot; , &quot;width&quot;:&quot;50%&quot;}\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t}\" url=\"security/dashboard/transactionsUsed\" icon-info=\"{ }\" icon-actions=\"{ }\" show-year=\"true\" show-month=\"true\" _v-0f79cca1=\"\">\n\n\t\t\t\t\t\t\t</mytableyearmonth>\n\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\n\t\t\t\t</div>\n\n\t\t\t\t<div class=\"row\" style=\"padding:0px\" _v-0f79cca1=\"\">\n\t\t\t\t\t<div class=\"col-sm-12\" style=\"padding:0px\" _v-0f79cca1=\"\">\n\t\t\t\t\t \n\t\t\t\t\t  <div style=\"padding-left:10px;padding-right:20px\" _v-0f79cca1=\"\">\n\t\t\t\t\t  \n\t\t\t\t\t  \t<mychart id=\"Chart2\" type=\"column\" width=\"500\" height=\"250\" url=\"/security/dashboard/transactionsUsedByMonth\" title=\"Transactions Used by Month\" x-title=\"Days\" y-title=\"Transactions Used\" legend-position=\"top\" legend-display=\"false\" show-year=\"true\" show-month=\"false\" _v-0f79cca1=\"\">\n\t\t\t\t\t  \t</mychart>\n\n\t\t\t\t\t \t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\n\t\t\t</div>\t\t\n\t\t</div>\t\t\n\t</div>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div _v-0f79cca1=\"\">\n \t<mypopup slot=\"message\" _v-0f79cca1=\"\"></mypopup>\n\t<myimport slot=\"modal-import\" url-import=\"security/modules/import\" _v-0f79cca1=\"\"></myimport>\n\t<mytopmenu show-menu=\"true\" _v-0f79cca1=\"\"></mytopmenu> \n\t<div class=\"container-fluid\" _v-0f79cca1=\"\">\n\t\t<div class=\"row\" _v-0f79cca1=\"\">\n\t\t\t<div class=\"col-sm-2\" _v-0f79cca1=\"\">\n\t\t\t\t<mysubmenu submenu=\"security\" _v-0f79cca1=\"\"></mysubmenu>\n\t\t\t</div>\n\t\t\t<div class=\"col-sm-10\" _v-0f79cca1=\"\">\n\t\t\t\t<mymessage message=\"This option allows to follow up how the users use the system and how many times they logged.\" color=\"info\" align=\"center\" _v-0f79cca1=\"\">\n\t\t\t\t</mymessage>\n\n\t\t\t\t<myhorizontallinks name=\"horizontal-links\" _v-0f79cca1=\"\"></myhorizontallinks>\n\n\t\t\t\t<div class=\"row\" style=\"padding:0px\" _v-0f79cca1=\"\">\n\t\t\t\t\t<div class=\"col-sm-12\" style=\"padding:0px\" _v-0f79cca1=\"\">\n\t\t\t\t\t \n\t\t\t\t\t  <div style=\"padding-left:10px;padding-right:20px\" _v-0f79cca1=\"\">\n\t\t\t\t\t  \n\t\t\t\t\t  \t<mychart id=\"Chart1\" type=\"spline\" width=\"500\" height=\"250\" url=\"/security/dashboard/transactionsUsedByDay\" title=\"Transactions Used by Day\" x-title=\"Days\" y-title=\"Transactiones Used\" legend-position=\"bottom\" legend-display=\"false\" show-year=\"true\" show-month=\"true\" _v-0f79cca1=\"\">\n\n\t\t\t\t\t  \t</mychart>\n\n\t\t\t\t\t \t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t<div class=\"row\" style=\"padding:0px\" _v-0f79cca1=\"\">\n\t\t\t\t\t<div class=\"col-sm-12\" _v-0f79cca1=\"\">\n\t\t\t\t\t \n\t\t\t\t\t\t<mytableyearmonth table-id=\"table1\" table-title=\"Transactions Used\" columns-names=\"{\n\t\t\t\t\t\t\t\t&quot;0&quot;: { &quot;name&quot;: &quot;moduleName&quot;, &quot;width&quot;:&quot;25%&quot;},\n\t\t\t\t\t\t\t\t&quot;1&quot;: { &quot;name&quot;: &quot;transactionName&quot; , &quot;width&quot;:&quot;50%&quot;},\n\t\t\t\t\t\t\t\t&quot;2&quot;: { &quot;name&quot;: &quot;clicks&quot; , &quot;width&quot;:&quot;50%&quot;}\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t}\" url=\"security/dashboard/transactionsUsed\" icon-info=\"{ }\" icon-actions=\"{ }\" show-year=\"true\" show-month=\"true\" _v-0f79cca1=\"\">\n\n\t\t\t\t\t\t\t</mytableyearmonth>\n\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\n\t\t\t\t</div>\n\n\t\t\t\t<div class=\"row\" style=\"padding:0px\" _v-0f79cca1=\"\">\n\t\t\t\t\t<div class=\"col-sm-12\" style=\"padding:0px\" _v-0f79cca1=\"\">\n\t\t\t\t\t \n\t\t\t\t\t  <div style=\"padding-left:10px;padding-right:20px\" _v-0f79cca1=\"\">\n\t\t\t\t\t  \n\t\t\t\t\t  \t<mychart id=\"Chart2\" type=\"column\" width=\"500\" height=\"250\" url=\"/security/dashboard/transactionsUsedByMonth\" title=\"Transactions Used by Month\" x-title=\"Days\" y-title=\"Transactions Used\" legend-position=\"top\" legend-display=\"false\" show-year=\"true\" show-month=\"false\" _v-0f79cca1=\"\">\n\t\t\t\t\t  \t</mychart>\n\n\t\t\t\t\t \t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\n\t\t\t</div>\t\t\n\t\t</div>\t\t\n\t</div>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -18555,7 +18576,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/crud/Button.vue":50,"../../components/crud/Form.vue":51,"../../components/crud/Import.vue":52,"../../components/crud/Link.vue":53,"../../components/crud/Table.vue":54,"../../components/graphs/Chart.vue":55,"../../components/login/Login.vue":58,"../../components/login/ResetYourPassword.vue":59,"../../components/menus/HorizontalLinks.vue":60,"../../components/menus/SubMenu.vue":61,"../../components/menus/TopMenu.vue":62,"../../components/messages/Message.vue":63,"../../components/messages/PopUp.vue":64,"../../components/table/TableSearch.vue":65,"../../components/table/TableYearMonth.vue":66,"vue":48,"vue-hot-reload-api":45,"vueify-insert-css":49}],76:[function(require,module,exports){
+},{"../../components/crud/Button.vue":74,"../../components/crud/Form.vue":75,"../../components/crud/Import.vue":76,"../../components/crud/Link.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify-insert-css":73}],100:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n\n")
 'use strict';
 
@@ -18673,7 +18694,7 @@ module.exports = {
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div _v-367b6c64=\"\">\n <mypopup slot=\"message\" _v-367b6c64=\"\"></mypopup>\n <myimport slot=\"modal-import\" url-import=\"security/roles/import\" _v-367b6c64=\"\"></myimport>\n\t<mytopmenu _v-367b6c64=\"\"></mytopmenu> \n\t<div class=\"container-fluid\" _v-367b6c64=\"\">\n\t\t<div class=\"row\" _v-367b6c64=\"\">\n\t\t\t<div class=\"col-sm-2\" _v-367b6c64=\"\">\n\t\t\t\t<mysubmenu submenu=\"security\" _v-367b6c64=\"\"></mysubmenu>\n\t\t\t</div>\n\t\t\n\t\t\t<div class=\"col-sm-10\" _v-367b6c64=\"\">\n\n\t\t\t\t<mymessage message=\"This option allows to add, update, active, inactive, import and export the users of the application.\" color=\"info\" align=\"center\" _v-367b6c64=\"\">\n\t\t\t\t</mymessage>\n\t\t\t\t\n\t\t\t\t<mycrudtable table-title=\"User List\" table-id=\"table1\" select-fields=\"{\t}\" columns-names=\"{\n\t\t\t\t\t\t\t\t&quot;0&quot;: { &quot;name&quot;: &quot;id&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;1&quot;: { &quot;name&quot;: &quot;username&quot;, &quot;width&quot;:&quot;15%&quot;},\n\t\t\t\t\t\t\t\t&quot;2&quot;: { &quot;name&quot;: &quot;userFullname&quot;, &quot;width&quot;:&quot;25%&quot;},\n\t\t\t\t\t\t\t\t&quot;3&quot;: { &quot;name&quot;: &quot;emailAccount&quot; , &quot;width&quot;:&quot;50%&quot;},\n\t\t\t\t\t\t\t\t&quot;4&quot;: { &quot;name&quot;: &quot;roleName&quot; , &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;5&quot;: { &quot;name&quot;: &quot;status&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;6&quot;: { &quot;name&quot;: &quot;createdBy&quot;, &quot;width&quot;:&quot;15%&quot;},\n\t\t\t\t\t\t\t\t&quot;7&quot;: { &quot;name&quot;: &quot;updatedBy&quot;, &quot;width&quot;:&quot;25%&quot;}\n\t\t\t\t\t\t}\" url=\"security/users\" icon-info=\"{\t}\" icon-actions=\"{\t\t}\" _v-367b6c64=\"\">\n\t\t\t\t\n\t\t\t\t\t\t<mycrudbuttons slot=\"crud\" url-export=\"security/users/export\" btn-actions=\"{\n         \t\t\t\t\t\t&quot;0&quot;: {&quot;title&quot;: &quot;Add&quot;,    &quot;method&quot;: &quot;Add&quot;,    &quot;disabled&quot;: false},\n          \t\t\t\t\t\t&quot;1&quot;: {&quot;title&quot;: &quot;Export&quot;, &quot;method&quot;: &quot;Export&quot;, &quot;disabled&quot;: false}, \n          \t\t\t\t\t\t&quot;2&quot;: {&quot;title&quot;: &quot;Import&quot;, &quot;method&quot;: &quot;Import&quot;, &quot;disabled&quot;: false}        \t\t\t\t\t}\" _v-367b6c64=\"\">\n\t\t\t\t\t\t</mycrudbuttons>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<mycrudform slot=\"forma\" url=\"security/users\" form-title=\"User\" input-fields=\"{\n\t\t\t\t\t\t\t\t\t&quot;0&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;id&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Id&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;readonly&quot;:&quot;true&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\t&quot;1&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;username&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Username&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;Type the User ID&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\t&quot;2&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;user_fullname&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;User Fullname&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;Type the User Fullname&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\t&quot;3&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;email&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;User Email&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;Type the User Email&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t },\n\n\t\t\t\t\t\t\t\t\t &quot;4&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;select&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;role_name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Role Name&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;url&quot;: &quot;security/roles/getAllRolesActive&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;table&quot;: &quot;roles&quot;\n\t\t\t\t\t\t\t\t\t },\n\n\t\t\t\t\t\t\t\t\t &quot;5&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;status&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;deleted_at&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Status&quot;\n\t\t\t\t\t\t\t\t\t }\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t}\" _v-367b6c64=\"\">\n\t\t\t\t\t\t</mycrudform>\n\t\t\t\t</mycrudtable>\n\t\t\t<div _v-367b6c64=\"\">\n\t\t</div>\n\t</div>\n </div>\n</div></div>"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div _v-367b6c64=\"\">\n <mypopup slot=\"message\" _v-367b6c64=\"\"></mypopup>\n <myimport slot=\"modal-import\" url-import=\"security/roles/import\" _v-367b6c64=\"\"></myimport>\n\t<mytopmenu show-menu=\"true\" _v-367b6c64=\"\"></mytopmenu> \n\t<div class=\"container-fluid\" _v-367b6c64=\"\">\n\t\t<div class=\"row\" _v-367b6c64=\"\">\n\t\t\t<div class=\"col-sm-2\" _v-367b6c64=\"\">\n\t\t\t\t<mysubmenu submenu=\"security\" _v-367b6c64=\"\"></mysubmenu>\n\t\t\t</div>\n\t\t\n\t\t\t<div class=\"col-sm-10\" _v-367b6c64=\"\">\n\n\t\t\t\t<mymessage message=\"This option allows to add, update, active, inactive, import and export the users of the application.\" color=\"info\" align=\"center\" _v-367b6c64=\"\">\n\t\t\t\t</mymessage>\n\t\t\t\t\n\t\t\t\t<mycrudtable table-title=\"User List\" table-id=\"table1\" select-fields=\"{\t}\" columns-names=\"{\n\t\t\t\t\t\t\t\t&quot;0&quot;: { &quot;name&quot;: &quot;id&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;1&quot;: { &quot;name&quot;: &quot;username&quot;, &quot;width&quot;:&quot;15%&quot;},\n\t\t\t\t\t\t\t\t&quot;2&quot;: { &quot;name&quot;: &quot;userFullname&quot;, &quot;width&quot;:&quot;25%&quot;},\n\t\t\t\t\t\t\t\t&quot;3&quot;: { &quot;name&quot;: &quot;emailAccount&quot; , &quot;width&quot;:&quot;50%&quot;},\n\t\t\t\t\t\t\t\t&quot;4&quot;: { &quot;name&quot;: &quot;roleName&quot; , &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;5&quot;: { &quot;name&quot;: &quot;status&quot;, &quot;width&quot;:&quot;10%&quot;},\n\t\t\t\t\t\t\t\t&quot;6&quot;: { &quot;name&quot;: &quot;createdBy&quot;, &quot;width&quot;:&quot;15%&quot;},\n\t\t\t\t\t\t\t\t&quot;7&quot;: { &quot;name&quot;: &quot;updatedBy&quot;, &quot;width&quot;:&quot;25%&quot;}\n\t\t\t\t\t\t}\" url=\"security/users\" icon-info=\"{\t}\" icon-actions=\"{\t\t}\" _v-367b6c64=\"\">\n\t\t\t\t\n\t\t\t\t\t\t<mycrudbuttons slot=\"crud\" url-export=\"security/users/export\" btn-actions=\"{\n         \t\t\t\t\t\t&quot;0&quot;: {&quot;title&quot;: &quot;Add&quot;,    &quot;method&quot;: &quot;Add&quot;,    &quot;disabled&quot;: false},\n          \t\t\t\t\t\t&quot;1&quot;: {&quot;title&quot;: &quot;Export&quot;, &quot;method&quot;: &quot;Export&quot;, &quot;disabled&quot;: false}, \n          \t\t\t\t\t\t&quot;2&quot;: {&quot;title&quot;: &quot;Import&quot;, &quot;method&quot;: &quot;Import&quot;, &quot;disabled&quot;: false}        \t\t\t\t\t}\" _v-367b6c64=\"\">\n\t\t\t\t\t\t</mycrudbuttons>\n\t\t\t\t\t\t\n\t\t\t\t\t\t<mycrudform slot=\"forma\" url=\"security/users\" form-title=\"User\" input-fields=\"{\n\t\t\t\t\t\t\t\t\t&quot;0&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;id&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Id&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;readonly&quot;:&quot;true&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\t&quot;1&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;username&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Username&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;Type the User ID&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\t&quot;2&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;user_fullname&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;User Fullname&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;Type the User Fullname&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t},\n\n\t\t\t\t\t\t\t\t\t&quot;3&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;text&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;email&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;User Email&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;placeholder&quot;:&quot;Type the User Email&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\t\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;\n\t\t\t\t\t\t\t\t\t },\n\n\t\t\t\t\t\t\t\t\t &quot;4&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;select&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;role_name&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;value&quot;: &quot;&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Role Name&quot;, \n\t\t\t\t\t\t\t\t\t\t&quot;required&quot;: &quot;true&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;maxlength&quot;: &quot;&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;url&quot;: &quot;security/roles/getAllRolesActive&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;table&quot;: &quot;roles&quot;\n\t\t\t\t\t\t\t\t\t },\n\n\t\t\t\t\t\t\t\t\t &quot;5&quot;: {\n\t\t\t\t\t\t\t\t\t\t&quot;type&quot;: &quot;status&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;name&quot;: &quot;deleted_at&quot;,\n\t\t\t\t\t\t\t\t\t\t&quot;label&quot;: &quot;Status&quot;\n\t\t\t\t\t\t\t\t\t }\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t}\" _v-367b6c64=\"\">\n\t\t\t\t\t\t</mycrudform>\n\t\t\t\t</mycrudtable>\n\t\t\t<div _v-367b6c64=\"\">\n\t\t</div>\n\t</div>\n </div>\n</div></div>"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -18689,7 +18710,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/crud/Button.vue":50,"../../components/crud/Form.vue":51,"../../components/crud/Import.vue":52,"../../components/crud/Link.vue":53,"../../components/crud/Table.vue":54,"../../components/graphs/Chart.vue":55,"../../components/login/Login.vue":58,"../../components/login/ResetYourPassword.vue":59,"../../components/menus/HorizontalLinks.vue":60,"../../components/menus/SubMenu.vue":61,"../../components/menus/TopMenu.vue":62,"../../components/messages/Message.vue":63,"../../components/messages/PopUp.vue":64,"../../components/table/TableSearch.vue":65,"../../components/table/TableYearMonth.vue":66,"vue":48,"vue-hot-reload-api":45,"vueify-insert-css":49}],77:[function(require,module,exports){
+},{"../../components/crud/Button.vue":74,"../../components/crud/Form.vue":75,"../../components/crud/Import.vue":76,"../../components/crud/Link.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify-insert-css":73}],101:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n\n.link-space[_v-aef9bb96] {\n\tpadding-right: 40px;\n}\n\n")
 'use strict';
 
@@ -18807,7 +18828,7 @@ module.exports = {
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div _v-aef9bb96=\"\">\n \t<mypopup slot=\"message\" _v-aef9bb96=\"\"></mypopup>\n\t<myimport slot=\"modal-import\" url-import=\"security/modules/import\" _v-aef9bb96=\"\"></myimport>\n\n\t<mytopmenu _v-aef9bb96=\"\"></mytopmenu> \n\t<div class=\"container-fluid\" _v-aef9bb96=\"\">\n\t\t\n\t\t<div class=\"row\" _v-aef9bb96=\"\">\n\t\t\t<div class=\"col-sm-2\" _v-aef9bb96=\"\">\n\t\t\t\t<mysubmenu submenu=\"security\" _v-aef9bb96=\"\"></mysubmenu>\n\t\t\t</div>\n\t\t\t<div class=\"col-sm-10\" _v-aef9bb96=\"\">\n\n\t\t\t\t<mymessage message=\"This option allows to follow up how the users use the system and how many times they logged.\" color=\"info\" align=\"center\" _v-aef9bb96=\"\">\n\t\t\t\t</mymessage>\n\n\t\t\t\t<myhorizontallinks name=\"horizontal-links\" _v-aef9bb96=\"\"></myhorizontallinks>\n\n\t    \t\t<div class=\"row\" style=\"padding:0px\" _v-aef9bb96=\"\">\n\t\t\t\t\t<div class=\"col-sm-12\" style=\"padding:0px\" _v-aef9bb96=\"\">\n\t\t\t\t\t \n\t\t\t\t\t  <div style=\"padding-left:10px;padding-right:20px\" _v-aef9bb96=\"\">\n\t\t\t\t\t  \n\t\t\t\t\t  \t<mychart id=\"Chart1\" type=\"spline\" width=\"500\" height=\"250\" url=\"/security/dashboard/usersLoggedByDay\" title=\"Users Logged by Day\" x-title=\"Days\" y-title=\"Users Logged\" legend-position=\"bottom\" legend-display=\"false\" show-year=\"true\" show-month=\"true\" _v-aef9bb96=\"\">\n\n\t\t\t\t\t  \t</mychart>\n\n\t\t\t\t\t \t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t<div class=\"row\" style=\"padding:0px\" _v-aef9bb96=\"\">\n\t\t\t\t\t<div class=\"col-sm-6\" _v-aef9bb96=\"\">\n\t\t\t\t\t \n\t\t\t\t\t\t<mytableyearmonth table-id=\"table1\" table-title=\"Top User Logged\" columns-names=\"{\n\t\t\t\t\t\t\t\t\t&quot;0&quot;: { &quot;name&quot;: &quot;username&quot;, &quot;width&quot;:&quot;25%&quot;},\n\t\t\t\t\t\t\t\t\t&quot;1&quot;: { &quot;name&quot;: &quot;userFullname&quot; , &quot;width&quot;:&quot;50%&quot;},\n\t\t\t\t\t\t\t\t\t&quot;2&quot;: { &quot;name&quot;: &quot;timesLogged&quot; , &quot;width&quot;:&quot;50%&quot;}\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t}\" url=\"security/dashboard/usersLogged\" icon-info=\"{ }\" icon-actions=\"{ }\" show-year=\"true\" show-month=\"true\" _v-aef9bb96=\"\">\n\n\t\t\t\t\t\t\t</mytableyearmonth>\n\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\n\n\t\t\t\t\t<div class=\"col-sm-6\" _v-aef9bb96=\"\">\n\t\t\t\t\t \n\t\t\t\t\t  <mytableyearmonth table-id=\"table2\" table-title=\"Actions by User Logged\" columns-names=\"{\n\t\t\t\t\t\t\t\t\t\t\t&quot;0&quot;: { &quot;name&quot;: &quot;username&quot;, &quot;width&quot;:&quot;25%&quot;},\n\t\t\t\t\t\t\t\t\t\t\t&quot;1&quot;: { &quot;name&quot;: &quot;actions&quot; , &quot;width&quot;:&quot;50%&quot;},\n\t\t\t\t\t\t\t\t\t\t\t&quot;2&quot;: { &quot;name&quot;: &quot;clicks&quot;, &quot;width&quot;:&quot;10%&quot;}\n\t\t\t\t\t\t\t\t\t}\" url=\"security/dashboard/actionsByUsersLogged\" icon-info=\"{ }\" icon-actions=\"{ }\" show-year=\"true\" show-month=\"true\" _v-aef9bb96=\"\">\n\n\t\t\t\t\t\t</mytableyearmonth>\n\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<div class=\"row\" style=\"padding:0px\" _v-aef9bb96=\"\">\n\t\t\t\t\t<div class=\"col-sm-12\" style=\"padding:0px\" _v-aef9bb96=\"\">\n\t\t\t\t\t \n\t\t\t\t\t  <div style=\"padding-left:10px;padding-right:20px\" _v-aef9bb96=\"\">\n\t\t\t\t\t  \n\t\t\t\t\t  \t<mychart id=\"Chart2\" type=\"column\" width=\"500\" height=\"250\" url=\"/security/dashboard/usersLoggedByMonth\" title=\"Users Logged by Month\" x-title=\"Days\" y-title=\"Users Logged\" legend-position=\"top\" legend-display=\"false\" show-year=\"true\" show-month=\"false\" _v-aef9bb96=\"\">\n\t\t\t\t\t  \t</mychart>\n\n\t\t\t\t\t \t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\n\t\t\t</div>\t\t\n\t\t</div>\t\t\n\t</div>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div _v-aef9bb96=\"\">\n \t<mypopup slot=\"message\" _v-aef9bb96=\"\"></mypopup>\n\t<myimport slot=\"modal-import\" url-import=\"security/modules/import\" _v-aef9bb96=\"\"></myimport>\n\n\t<mytopmenu show-menu=\"true\" _v-aef9bb96=\"\"></mytopmenu> \n\t<div class=\"container-fluid\" _v-aef9bb96=\"\">\n\t\t\n\t\t<div class=\"row\" _v-aef9bb96=\"\">\n\t\t\t<div class=\"col-sm-2\" _v-aef9bb96=\"\">\n\t\t\t\t<mysubmenu submenu=\"security\" _v-aef9bb96=\"\"></mysubmenu>\n\t\t\t</div>\n\t\t\t<div class=\"col-sm-10\" _v-aef9bb96=\"\">\n\n\t\t\t\t<mymessage message=\"This option allows to follow up how the users use the system and how many times they logged.\" color=\"info\" align=\"center\" _v-aef9bb96=\"\">\n\t\t\t\t</mymessage>\n\n\t\t\t\t<myhorizontallinks name=\"horizontal-links\" _v-aef9bb96=\"\"></myhorizontallinks>\n\n\t    \t\t<div class=\"row\" style=\"padding:0px\" _v-aef9bb96=\"\">\n\t\t\t\t\t<div class=\"col-sm-12\" style=\"padding:0px\" _v-aef9bb96=\"\">\n\t\t\t\t\t \n\t\t\t\t\t  <div style=\"padding-left:10px;padding-right:20px\" _v-aef9bb96=\"\">\n\t\t\t\t\t  \n\t\t\t\t\t  \t<mychart id=\"Chart1\" type=\"spline\" width=\"500\" height=\"250\" url=\"/security/dashboard/usersLoggedByDay\" title=\"Users Logged by Day\" x-title=\"Days\" y-title=\"Users Logged\" legend-position=\"bottom\" legend-display=\"false\" show-year=\"true\" show-month=\"true\" _v-aef9bb96=\"\">\n\n\t\t\t\t\t  \t</mychart>\n\n\t\t\t\t\t \t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t<div class=\"row\" style=\"padding:0px\" _v-aef9bb96=\"\">\n\t\t\t\t\t<div class=\"col-sm-6\" _v-aef9bb96=\"\">\n\t\t\t\t\t \n\t\t\t\t\t\t<mytableyearmonth table-id=\"table1\" table-title=\"Top User Logged\" columns-names=\"{\n\t\t\t\t\t\t\t\t\t&quot;0&quot;: { &quot;name&quot;: &quot;username&quot;, &quot;width&quot;:&quot;25%&quot;},\n\t\t\t\t\t\t\t\t\t&quot;1&quot;: { &quot;name&quot;: &quot;userFullname&quot; , &quot;width&quot;:&quot;50%&quot;},\n\t\t\t\t\t\t\t\t\t&quot;2&quot;: { &quot;name&quot;: &quot;timesLogged&quot; , &quot;width&quot;:&quot;50%&quot;}\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t}\" url=\"security/dashboard/usersLogged\" icon-info=\"{ }\" icon-actions=\"{ }\" show-year=\"true\" show-month=\"true\" _v-aef9bb96=\"\">\n\n\t\t\t\t\t\t\t</mytableyearmonth>\n\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\n\n\t\t\t\t\t<div class=\"col-sm-6\" _v-aef9bb96=\"\">\n\t\t\t\t\t \n\t\t\t\t\t  <mytableyearmonth table-id=\"table2\" table-title=\"Actions by User Logged\" columns-names=\"{\n\t\t\t\t\t\t\t\t\t\t\t&quot;0&quot;: { &quot;name&quot;: &quot;username&quot;, &quot;width&quot;:&quot;25%&quot;},\n\t\t\t\t\t\t\t\t\t\t\t&quot;1&quot;: { &quot;name&quot;: &quot;actions&quot; , &quot;width&quot;:&quot;50%&quot;},\n\t\t\t\t\t\t\t\t\t\t\t&quot;2&quot;: { &quot;name&quot;: &quot;clicks&quot;, &quot;width&quot;:&quot;10%&quot;}\n\t\t\t\t\t\t\t\t\t}\" url=\"security/dashboard/actionsByUsersLogged\" icon-info=\"{ }\" icon-actions=\"{ }\" show-year=\"true\" show-month=\"true\" _v-aef9bb96=\"\">\n\n\t\t\t\t\t\t</mytableyearmonth>\n\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\t\t\t\t<div class=\"row\" style=\"padding:0px\" _v-aef9bb96=\"\">\n\t\t\t\t\t<div class=\"col-sm-12\" style=\"padding:0px\" _v-aef9bb96=\"\">\n\t\t\t\t\t \n\t\t\t\t\t  <div style=\"padding-left:10px;padding-right:20px\" _v-aef9bb96=\"\">\n\t\t\t\t\t  \n\t\t\t\t\t  \t<mychart id=\"Chart2\" type=\"column\" width=\"500\" height=\"250\" url=\"/security/dashboard/usersLoggedByMonth\" title=\"Users Logged by Month\" x-title=\"Days\" y-title=\"Users Logged\" legend-position=\"top\" legend-display=\"false\" show-year=\"true\" show-month=\"false\" _v-aef9bb96=\"\">\n\t\t\t\t\t  \t</mychart>\n\n\t\t\t\t\t \t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\n\n\t\t\t</div>\t\t\n\t\t</div>\t\t\n\t</div>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -18823,15 +18844,16 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/crud/Button.vue":50,"../../components/crud/Form.vue":51,"../../components/crud/Import.vue":52,"../../components/crud/Link.vue":53,"../../components/crud/Table.vue":54,"../../components/graphs/Chart.vue":55,"../../components/login/Login.vue":58,"../../components/login/ResetYourPassword.vue":59,"../../components/menus/HorizontalLinks.vue":60,"../../components/menus/SubMenu.vue":61,"../../components/menus/TopMenu.vue":62,"../../components/messages/Message.vue":63,"../../components/messages/PopUp.vue":64,"../../components/table/TableSearch.vue":65,"../../components/table/TableYearMonth.vue":66,"vue":48,"vue-hot-reload-api":45,"vueify-insert-css":49}],78:[function(require,module,exports){
+},{"../../components/crud/Button.vue":74,"../../components/crud/Form.vue":75,"../../components/crud/Import.vue":76,"../../components/crud/Link.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify-insert-css":73}],102:[function(require,module,exports){
 'use strict';
 
 var Vue = require('vue');
 var VueRouter = require('vue-router');
-var VueResource = require('vue-resource');
+//var VueResource = require('vue-resource');
+var axios = require('axios');
 
 Vue.use(VueRouter);
-Vue.use(VueResource);
+//Vue.use(VueResource);
 
 //Vue.config.debug = true;
 
@@ -18839,22 +18861,34 @@ var router = new VueRouter({
     history: false
 });
 
-Vue.http.interceptors.push({
-
-    //   request: function (request){
-    //     request.headers['Authorization'] = auth.getAuthHeader()
-    //     return request
-    //   },
-
-    response: function response(_response) {
-        if (_response.status == 401) {
-            router.app.$route.router.go('/login');
-        }
-
-        return _response;
-    }
-
+axios.interceptors.request.use(function (config) {
+    config.headers['X-CSRF-TOKEN'] = Laravel.csrfToken;
+    return config;
 });
+
+axios.interceptors.response.use(function (response) {
+    if (response.status == 401) {
+        router.app.$route.router.go('/login');
+    }
+    return response;
+});
+
+Vue.prototype.$http = axios;
+
+// Vue.http.interceptors.push({
+
+//   request: function (request){
+//     request.headers['X-CSRF-Token'] = Laravel.csrfToken;
+//     return request;
+//   },
+
+//   response: function (response) {
+//     if (response.status==401){
+//         router.app.$route.router.go('/login');
+//      }
+//     return response;
+//   }
+// });
 
 router.map({
 
@@ -18935,6 +18969,6 @@ var App = Vue.extend({
 
 router.start(App, '#app');
 
-},{"./views/login/LoginView.vue":67,"./views/login/ResetYourPasswordView.vue":68,"./views/security/AccessRights.vue":69,"./views/security/ActionsUsedView.vue":70,"./views/security/Modules.vue":71,"./views/security/ModulesUsedView.vue":72,"./views/security/Roles.vue":73,"./views/security/Transactions.vue":74,"./views/security/TransactionsUsedView.vue":75,"./views/security/Users.vue":76,"./views/security/UsersLoggedView.vue":77,"vue":48,"vue-resource":46,"vue-router":47}]},{},[78]);
+},{"./views/login/LoginView.vue":91,"./views/login/ResetYourPasswordView.vue":92,"./views/security/AccessRights.vue":93,"./views/security/ActionsUsedView.vue":94,"./views/security/Modules.vue":95,"./views/security/ModulesUsedView.vue":96,"./views/security/Roles.vue":97,"./views/security/Transactions.vue":98,"./views/security/TransactionsUsedView.vue":99,"./views/security/Users.vue":100,"./views/security/UsersLoggedView.vue":101,"axios":1,"vue":72,"vue-router":71}]},{},[102]);
 
 //# sourceMappingURL=vueroute.js.map

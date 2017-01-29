@@ -2,27 +2,27 @@
 
 use Illuminate\Support\ServiceProvider;
 
-use Megacampus\Services\Graph\GraphService;
-use Megacampus\Services\Mail\MailService;
-use Megacampus\Services\Notification\NotificationService;
-use Megacampus\Services\Notification\NotificationServiceInterface;
-use Megacampus\Services\Login\LoginService;
-use Megacampus\Services\Validation\ValidationService;
-use Megacampus\Services\Document\DocumentService;
-use Megacampus\Services\Log\LogRepository;
+use MyCode\Services\Graph\GraphService;
+use MyCode\Services\Mail\MailService;
+use MyCode\Services\Notification\NotificationService;
+use MyCode\Services\Notification\NotificationServiceInterface;
+use MyCode\Services\Login\LoginService;
+use MyCode\Services\Validation\ValidationService;
+use MyCode\Services\Document\DocumentService;
+use MyCode\Services\Log\LogRepository;
 
-use Megacampus\Repositories\Module\ModuleRepository;
-use Megacampus\Repositories\Program\ProgramRepository;
-use Megacampus\Repositories\Role\RoleRepository;
-use Megacampus\Repositories\Transaction\TransactionRepository;
-use Megacampus\Repositories\RoleTransaction\RoleTransactionRepository;
-use Megacampus\Repositories\TransactionAction\TransactionActionRepository;
-use Megacampus\Repositories\User\UserRepository;
-use Megacampus\Repositories\Task\TaskRepository;
-use Megacampus\Repositories\Institute\InstituteRepository;
-use Megacampus\Repositories\Configuration\ConfigurationRepository;
-use Megacampus\Repositories\Fee\FeeRepository;
-use Megacampus\Repositories\Product\ProductRepository;
+use MyCode\Repositories\Module\ModuleRepository;
+use MyCode\Repositories\Program\ProgramRepository;
+use MyCode\Repositories\Role\RoleRepository;
+use MyCode\Repositories\Transaction\TransactionRepository;
+use MyCode\Repositories\RoleTransaction\RoleTransactionRepository;
+use MyCode\Repositories\TransactionAction\TransactionActionRepository;
+use MyCode\Repositories\User\UserRepository;
+use MyCode\Repositories\Task\TaskRepository;
+use MyCode\Repositories\Institute\InstituteRepository;
+use MyCode\Repositories\Configuration\ConfigurationRepository;
+use MyCode\Repositories\Fee\FeeRepository;
+use MyCode\Repositories\Product\ProductRepository;
 //AppUseRepository_Template Don´t Delete This Line
 
 use Module, Program, Role, RoleTransaction, Task, TaskLog, Institute, TransactionAction, Transaction, User;
@@ -54,7 +54,7 @@ class AppServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-		// Megacampus/Storage
+		// MyCode/Storage
 
 		/*$this->app->bind('\User', function($app)
 		{
@@ -62,60 +62,60 @@ class AppServiceProvider extends ServiceProvider {
 		});*/
 
 
-		$this->app->bind('Megacampus\Repositories\User\UserRepositoryInterface', function($app) 
+		$this->app->bind('MyCode\Repositories\User\UserRepositoryInterface', function($app) 
 		{
 			return new UserRepository(new User, new Role, new MailService, new GraphService);
 		});
 
-		$this->app->bind('Megacampus\Repositories\Program\ProgramRepositoryInterface', function($app)
+		$this->app->bind('MyCode\Repositories\Program\ProgramRepositoryInterface', function($app)
 		{
 			return new ProgramRepository(new Program);
 		});
 
-		$this->app->bind('Megacampus\Repositories\Role\RoleRepositoryInterface', function($app) 
+		$this->app->bind('MyCode\Repositories\Role\RoleRepositoryInterface', function($app) 
 		{
 			return new RoleRepository(new Role);
 		});
 
-		$this->app->bind('Megacampus\Repositories\Module\ModuleRepositoryInterface', function($app) 
+		$this->app->bind('MyCode\Repositories\Module\ModuleRepositoryInterface', function($app) 
 		{
 			return new ModuleRepository(new Module, new GraphService);
 		});
 
-		$this->app->bind('Megacampus\Repositories\Transaction\TransactionRepositoryInterface', function($app) 
+		$this->app->bind('MyCode\Repositories\Transaction\TransactionRepositoryInterface', function($app) 
 		{
 			return new TransactionRepository(new Transaction, new GraphService);
 		});
 
-		$this->app->bind('Megacampus\Repositories\RoleTransaction\RoleTransactionRepositoryInterface', function($app) 
+		$this->app->bind('MyCode\Repositories\RoleTransaction\RoleTransactionRepositoryInterface', function($app) 
 		{
 			return new RoleTransactionRepository(new RoleTransaction);
 		});
 
-		$this->app->bind('Megacampus\Repositories\TransactionAction\TransactionActionRepositoryInterface', function($app) 
+		$this->app->bind('MyCode\Repositories\TransactionAction\TransactionActionRepositoryInterface', function($app) 
 		{
 			return new TransactionActionRepository(new TransactionAction, new GraphService);
 		});
 
-		$this->app->bind('Megacampus\Repositories\Task\TaskRepositoryInterface', function($app) 
+		$this->app->bind('MyCode\Repositories\Task\TaskRepositoryInterface', function($app) 
 		{
 			return new TaskRepository(new Task, new TaskLog);
 		});
 
-		$this->app->bind('Megacampus\Repositories\Institute\InstituteRepositoryInterface', function($app) 
+		$this->app->bind('MyCode\Repositories\Institute\InstituteRepositoryInterface', function($app) 
 		{
 			return new InstituteRepository(new Institute, new GraphService);
 		});
 		
-		$this->app->bind('Megacampus\Repositories\Configuration\ConfigurationRepositoryInterface', function($app) 
+		$this->app->bind('MyCode\Repositories\Configuration\ConfigurationRepositoryInterface', function($app) 
 		{
 			return new ConfigurationRepository(new Configuration, new GraphService);
 		});
-		$this->app->bind('Megacampus\Repositories\Fee\FeeRepositoryInterface', function($app) 
+		$this->app->bind('MyCode\Repositories\Fee\FeeRepositoryInterface', function($app) 
 		{
 			return new FeeRepository(new Fee, new GraphService);
 		});
-		$this->app->bind('Megacampus\Repositories\Product\ProductRepositoryInterface', function($app) 
+		$this->app->bind('MyCode\Repositories\Product\ProductRepositoryInterface', function($app) 
 		{
 			return new ProductRepository(new Product, new GraphService);
 		});
@@ -126,15 +126,15 @@ class AppServiceProvider extends ServiceProvider {
 
 
 
-		$this->app->bind('Megacampus\Services\Login\LoginServiceInterface','Megacampus\Services\Login\LoginService');
-		$this->app->bind('Megacampus\Services\Mail\MailServiceInterface','Megacampus\Services\Mail\MailService');
-		$this->app->bind('Megacampus\Services\Notification\NotificationServiceInterface','Megacampus\Services\Notification\NotificationService');
-		$this->app->bind('Megacampus\Services\Url\UrlServiceInterface','Megacampus\Services\Url\UrlService');	
-		$this->app->bind('Megacampus\Services\Validation\ValidationServiceInterface','Megacampus\Services\Validation\ValidationService');
-		$this->app->bind('Megacampus\Services\Document\DocumentServiceInterface','Megacampus\Services\Document\DocumentService');
-		$this->app->bind('Megacampus\Services\Login\LoginServiceInterface','Megacampus\Services\Login\LoginService');
-		$this->app->bind('Megacampus\Services\Graph\GraphServiceInterface','Megacampus\Services\Graph\GraphService');
-		$this->app->bind('Megacampus\Services\Log\LogServiceInterface','Megacampus\Services\Log\LogService');
+		$this->app->bind('MyCode\Services\Login\LoginServiceInterface','MyCode\Services\Login\LoginService');
+		$this->app->bind('MyCode\Services\Mail\MailServiceInterface','MyCode\Services\Mail\MailService');
+		$this->app->bind('MyCode\Services\Notification\NotificationServiceInterface','MyCode\Services\Notification\NotificationService');
+		$this->app->bind('MyCode\Services\Url\UrlServiceInterface','MyCode\Services\Url\UrlService');	
+		$this->app->bind('MyCode\Services\Validation\ValidationServiceInterface','MyCode\Services\Validation\ValidationService');
+		$this->app->bind('MyCode\Services\Document\DocumentServiceInterface','MyCode\Services\Document\DocumentService');
+		$this->app->bind('MyCode\Services\Login\LoginServiceInterface','MyCode\Services\Login\LoginService');
+		$this->app->bind('MyCode\Services\Graph\GraphServiceInterface','MyCode\Services\Graph\GraphService');
+		$this->app->bind('MyCode\Services\Log\LogServiceInterface','MyCode\Services\Log\LogService');
 
 	}
 

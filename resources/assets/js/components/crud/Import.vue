@@ -111,19 +111,6 @@
           }
         });
 
-/*
-        this.$http({url: this.urlImport, method: 'POST', data: data}).then(function(response){
-          this.reloadAfterAction();
-        }).finally(function (response) {
-           this.processing = false;
-            $('#myModal').modal('hide');
-           // this.displayPopUpMessage(response);
-        }).catch(function (response) {
-          $('#myModal').modal('hide');
-          this.processing = false;
-         // this.displayPopUpMessage(response);
-
-        });   */ 
       },
 
       //convert rows/fields to json

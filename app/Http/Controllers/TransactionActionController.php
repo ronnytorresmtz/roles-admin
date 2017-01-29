@@ -12,8 +12,8 @@
 use Illuminate\Http\Request;
 
 use App\Events\RegisterTransactionAccessEvent;
-use Megacampus\Repositories\TransactionAction\TransactionActionRepositoryInterface;
-use Megacampus\Repositories\Transaction\TransactionRepositoryInterface;
+use MyCode\Repositories\TransactionAction\TransactionActionRepositoryInterface;
+use MyCode\Repositories\Transaction\TransactionRepositoryInterface;
 
 
 class TransactionActionController extends Controller {

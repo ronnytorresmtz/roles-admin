@@ -12,10 +12,10 @@
 use Illuminate\Http\Request;
 
 use App\Events\RegisterTransactionAccessEvent;
-use Megacampus\Repositories\Transaction\TransactionRepositoryInterface;
-use Megacampus\Services\Url\UrlServiceInterface;
-use Megacampus\Services\Validation\ValidationServiceInterface;
-use Megacampus\Services\Document\DocumentServiceInterface;
+use MyCode\Repositories\Transaction\TransactionRepositoryInterface;
+use MyCode\Services\Url\UrlServiceInterface;
+use MyCode\Services\Validation\ValidationServiceInterface;
+use MyCode\Services\Document\DocumentServiceInterface;
 
 
 class TransactionController extends Controller {

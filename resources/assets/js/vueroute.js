@@ -1,9 +1,10 @@
 var Vue = require('vue');
 var VueRouter = require('vue-router');
-var VueResource=require('vue-resource');
+//var VueResource = require('vue-resource');
+var axios = require('axios');
 
 Vue.use(VueRouter);
-Vue.use(VueResource);
+//Vue.use(VueResource);
 
 //Vue.config.debug = true;
 
@@ -11,22 +12,34 @@ var router = new VueRouter({
   history: false
 });
 
-Vue.http.interceptors.push({
+axios.interceptors.request.use(function(config){
+    config.headers['X-CSRF-TOKEN'] = Laravel.csrfToken
+    return config;
+})
 
-//   request: function (request){
-//     request.headers['Authorization'] = auth.getAuthHeader()
-//     return request
-//   },
-
-  response: function (response) {
+axios.interceptors.response.use(function (response) {
     if (response.status==401){
         router.app.$route.router.go('/login');
-     }
-     
+    }
     return response;
-  }
-
 });
+
+Vue.prototype.$http = axios;
+
+// Vue.http.interceptors.push({
+
+//   request: function (request){
+//     request.headers['X-CSRF-Token'] = Laravel.csrfToken; 
+//     return request;
+//   },
+
+//   response: function (response) {
+//     if (response.status==401){
+//         router.app.$route.router.go('/login');
+//      }
+//     return response;
+//   }
+// });
 
 
 router.map({

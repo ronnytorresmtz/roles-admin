@@ -162,12 +162,12 @@ return [
 
 
 		/*
-		 * MegaCampus Application Service Providers...
+		 * roles-admin Application Service Providers...
 		 */
-		//'Megacampus\Repositories\StorageServiceProvider',	
-		//'Megacampus\Repositories\Program\ProgramServiceProvider',	
-		//'Megacampus\Repositories\User\UserServiceProvider',	
-		//'Megacampus\Services\UtilsServiceProvider'		
+		//'MyCode\Repositories\StorageServiceProvider',	
+		//'MyCode\Repositories\Program\ProgramServiceProvider',	
+		//'MyCode\Repositories\User\UserServiceProvider',	
+		//'MyCode\Services\UtilsServiceProvider'		
 
 
 	],

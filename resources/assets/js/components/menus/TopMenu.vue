@@ -22,14 +22,14 @@ a{
     <nav class="navbar navbar-default">
       <div class="container-fluid" >
         <a class="navbar-brand" href="#">Roles Admin</a>
-            <ul class="nav navbar-nav" > 
+            <ul class="nav navbar-nav" v-show="displayMenu"> 
               <li v-for="menu in menus" >
                 <a v-link="menu.initialURL">{{menu.title}}</a>
               </li>
             </ul>
-            <ul class="nav navbar-nav navbar-right">
+            <ul class="nav navbar-nav navbar-right" v-show="displayMenu">
               <li> 
-                <a class="logout" @click="logout" style="margin-right:10px"> Logout </a> 
+                <a class="logout" @click="logout" style="margin-right:10px" > Logout </a> 
               </li> 
             </ul> 
       </div>
@@ -40,10 +40,12 @@ a{
 <script>
   module.exports = {
 
+  props: ['showMenu'],
 
    data: function(){
       return{
-        menus: []
+        menus: [],
+        displayMenu: (this.showMenu=="false") ? false : true
       }
     },
 
@@ -59,7 +61,6 @@ a{
         {'title':'Help', 'initialURL': '/help'},
       ]
       
-     // this.$route.router.go('/login');
     },
 
     methods: {

@@ -12,10 +12,10 @@
 use Illuminate\Http\Request;
 
 use App\Events\RegisterTransactionAccessEvent;
-use Megacampus\Repositories\Role\RoleRepositoryInterface as RoleRepositoryInterface;
-use Megacampus\Services\Url\UrlServiceInterface as UrlServiceInterface;
-use Megacampus\Services\Validation\ValidationServiceInterface as ValidationServiceInterface;
-use Megacampus\Services\Document\DocumentServiceInterface as DocumentServiceInterface;
+use MyCode\Repositories\Role\RoleRepositoryInterface as RoleRepositoryInterface;
+use MyCode\Services\Url\UrlServiceInterface as UrlServiceInterface;
+use MyCode\Services\Validation\ValidationServiceInterface as ValidationServiceInterface;
+use MyCode\Services\Document\DocumentServiceInterface as DocumentServiceInterface;
 
 
 class RoleController extends Controller {

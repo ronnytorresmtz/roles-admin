@@ -15,11 +15,10 @@ class Kernel extends HttpKernel {
 		'Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse',
 		'Illuminate\Session\Middleware\StartSession',
 		'Illuminate\View\Middleware\ShareErrorsFromSession',
-		//'App\Http\Middleware\VerifyCsrfToken',
+		'App\Http\Middleware\VerifyCsrfToken',
 
 		//Clockwork third party tool
 		'Clockwork\Support\Laravel\ClockworkMiddleware',
-		
 	];
 
 	/**
@@ -31,11 +30,9 @@ class Kernel extends HttpKernel {
 		'auth'               => 'App\Http\Middleware\Authenticate',
 		'auth.basic'         => 'Illuminate\Auth\Middleware\AuthenticateWithBasicAuth',
 		'guest'              => 'App\Http\Middleware\RedirectIfAuthenticated',
-		'token.verification' => 'App\Http\Middleware\VerifyTokenForResetPassword',
+	//	'token.verification' => 'App\Http\Middleware\VerifyTokenForResetPassword',
 
-		//MegaCampus Middleware
-		//'checkRoleAccess'	 => 'App\Http\Middleware\CheckRoleAccess',
-		//'menuRoleAccess'	 => 'App\Http\Middleware\MenuRoleAccess',
+		
 	];
 
 	

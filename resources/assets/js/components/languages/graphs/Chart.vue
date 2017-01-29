@@ -111,16 +111,17 @@ module.exports = {
       },
 
       displayGraph: function(year, month){
-        this.loading = true;
-        this.$http.post(this.url, {"year": year, "month": month}).then((responde) => {
-          this.labels = responde.data.labels;
-          this.label = responde.data.legend;
-          this.series = responde.data.series;
+        var self=this;
+        self.loading = true;
+        self.$http.post(self.url, {"year": year, "month": month}).then((responde) => {
+          self.labels = responde.data.labels;
+          self.label = responde.data.legend;
+          self.series = responde.data.series;
         }).then(function (responde) {
-          $('#' + this.id).highcharts(this.setOptions(this.series));
-          this.loading = false;
+          $('#' + self.id).highcharts(self.setOptions(self.series));
+          self.loading = false;
         }).catch(function (responde) {
-          this.loading = false;
+          self.loading = false;
           alert('alerta: ' + responde.status);
         });
       },

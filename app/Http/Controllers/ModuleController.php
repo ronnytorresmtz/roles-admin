@@ -12,10 +12,10 @@
 use Illuminate\Http\Request;
 
 use App\Events\RegisterTransactionAccessEvent;
-use Megacampus\Repositories\Module\ModuleRepositoryInterface;
-use Megacampus\Services\Url\UrlServiceInterface;
-use Megacampus\Services\Validation\ValidationServiceInterface;
-use Megacampus\Services\Document\DocumentServiceInterface;
+use MyCode\Repositories\Module\ModuleRepositoryInterface;
+use MyCode\Services\Url\UrlServiceInterface;
+use MyCode\Services\Validation\ValidationServiceInterface;
+use MyCode\Services\Document\DocumentServiceInterface;
 
 
 class ModuleController extends Controller {
@@ -42,7 +42,7 @@ class ModuleController extends Controller {
 								ValidationServiceInterface $validationService,
 								DocumentServiceInterface $documentService)
 	{
-		$this->moduleRepository    = $moduleRepository;
+		$this->moduleRepository  = $moduleRepository;
 		$this->urlService        = $urlService;
 		$this->validationService = $validationService;
 		$this->documentService   = $documentService;
