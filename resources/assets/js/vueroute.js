@@ -11,21 +11,20 @@ var router = new VueRouter({
   history: false
 });
 
+
 Vue.http.interceptors.push({
 
-//   request: function (request){
-//     request.headers['Authorization'] = auth.getAuthHeader()
-//     return request
-//   },
+  request: function (request){
+    request.headers['X-CSRF-Token'] = Laravel.csrfToken; 
+    return request;
+  },
 
   response: function (response) {
     if (response.status==401){
         router.app.$route.router.go('/login');
      }
-     
     return response;
   }
-
 });
 
 
