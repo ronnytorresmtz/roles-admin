@@ -21,13 +21,13 @@
  
  </body>
 
- <script>   
+ {{-- <script>   
     window.Laravel = {!! json_encode([ 'csrfToken' => csrf_token(),]); !!} 
- </script>
+ </script> --}}
 
  <script src="assets/js/jquery-1.11.1.min.js"></script>
  <script src="assets/js/highcharts/highcharts.js"></script>
  <script src="assets/js/bootstrap.min.js"></script>
- <script src="js/vueroute.js"></script>
+ <script src="./js/routes.js"></script>
  
  </html>

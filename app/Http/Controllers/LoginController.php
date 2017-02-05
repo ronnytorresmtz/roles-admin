@@ -34,7 +34,7 @@ class LoginController extends Controller {
 
     public function getLogIn()
 	{
-		return View::make ('vueroute');
+		return View::make ('home');
     }
    
 

@@ -123,7 +123,7 @@
 
 <script 
 
-src="../parent.js" type="text/javascript">
+src="../../main.js" type="text/javascript">
 	
 </script>
 

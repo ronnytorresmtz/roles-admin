@@ -1,122 +1,111 @@
-var Vue = require('vue');
-var VueRouter = require('vue-router');
-//var VueResource = require('vue-resource');
-var axios = require('axios');
-
-Vue.use(VueRouter);
-//Vue.use(VueResource);
-
-//Vue.config.debug = true;
+import { } from '../js/bootstrap.js';
 
 var router = new VueRouter({
   history: false
-});
-
-axios.interceptors.request.use(function(config){
-    config.headers['X-CSRF-TOKEN'] = Laravel.csrfToken
-    return config;
 })
 
-axios.interceptors.response.use(function (response) {
-    if (response.status==401){
-        router.app.$route.router.go('/login');
+router.beforeEach(function (transition) {
+    if (transition.to.auth){
+        axios.get('login/userAuthenticated').then(function(response){
+            if (response.data=='OK'){
+                transition.next();
+            }else{  
+                router.go('/login');
+                transition.next();
+            }
+        }).catch(function (response) {
+            alert (response.status + '-' + response.statusText);
+            transition.abort();
+        });
     }
-    return response;
+    else{
+       transition.next(); 
+    }
 });
-
-Vue.prototype.$http = axios;
-
-// Vue.http.interceptors.push({
-
-//   request: function (request){
-//     request.headers['X-CSRF-Token'] = Laravel.csrfToken; 
-//     return request;
-//   },
-
-//   response: function (response) {
-//     if (response.status==401){
-//         router.app.$route.router.go('/login');
-//      }
-//     return response;
-//   }
-// });
-
 
 router.map({
 
     '/': {
         name: 'home',
         component: require('./views/login/LoginView.vue'),
+        auth: false
     },
 
     '/login': {
         name: 'login',
         component: require('./views/login/LoginView.vue'),
+        auth: false
     },
 
     '/resetYourPassword': {
         name: 'resetYourPassword',
         component: require('./views/login/ResetYourPasswordView.vue'),
+        auth: false
     },
 
     '/dashboard': {
         name: 'dashboard',
         component: require('./views/security/UsersLoggedView.vue'),
+        auth: true
     },
 
     '/userslogged': {
         name: 'userlogged',
         component: require('./views/security/UsersLoggedView.vue'),
+        auth: true
     },
 
     '/modulesused': {
         name: 'modulesused',
         component: require('./views/security/ModulesUsedView.vue'), 
+        auth: true
     },
 
     '/transactionsused': {
         name: 'transactionsused',
         component: require('./views/security/TransactionsUsedView.vue'), 
+        auth: true
     },
 
     '/actionsused': {
         name: 'actionsused',
         component: require('./views/security/ActionsUsedView.vue'), 
+        auth: true
     },
 
     '/users': {
         name: 'users',
         component: require('./views/security/Users.vue'), 
+        auth: true
     },
     '/roles': {
         name: 'roles',
         component: require('./views/security/Roles.vue'), 
+        auth: true
     },
     '/accessrights': {
         name: 'accessrights',
         component: require('./views/security/AccessRights.vue'), 
+        auth: true
     },
     '/modules': {
         name: 'modules',
         component: require('./views/security/Modules.vue'), 
+        auth: true
     },
     '/transactions': {
         name: 'transactions',
         component: require('./views/security/Transactions.vue'), 
+        auth: true
     },
     //Link_Template Don´t Delete This Line
 });
 
-// router.redirect({
-//   '*': '/dashboard'
-// });
-
-var App = Vue.extend({
-  //  store,
-    // components: { 
-    //     'topmenu': require('./components/menus/TopMenu.vue'),
-    // }
-
+router.redirect({
+  '*': '/'
 });
+
+
+var App = Vue.extend({ });
 
 router.start(App, '#app');

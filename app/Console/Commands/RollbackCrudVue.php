@@ -246,7 +246,7 @@ class RollbackCrudVue extends Command
 		$this->info('');
 		$this->info('4) Rollback Manually the Traslation File (../languages/Traslations.vue) from the templates directory (OldLang)');
 		$this->info('');
-		$this->info('5) Rollback Manually the vueroute File (../js/vueroute.vue) from the templates directory (OldRouterMap)');
+		$this->info('5) Rollback Manually the routes File (../js/routes.js) from the templates directory (OldRouterMap)');
 		$this->info('');
 		$this->info('6) Rollback Manually the validation File for en and sp (..lang/en/validation.php) from the templates directory (OldRouterMap)');
 		$this->info('');
