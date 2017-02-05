@@ -359,7 +359,7 @@
       },
 
       displayPopUpMessage: function(response){
-        this.$dispatch('displayAlert', (response.status==200) ? 'success' : 'danger', response.data.message + ' (' + response.status + ')');
+        this.$dispatch('displayAlert', (response.status==200) ? 'success' : 'danger', response.statusText + ' (' + response.status + ')');
       },
 
       jsonToArray: function(data){

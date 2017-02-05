@@ -111,7 +111,6 @@ module.exports = {
       timesLogged:  'Accesos',
       clicks:       'Clicks',
 
-
 			//Traslations_Template Don´t Delete This Line 
 
     

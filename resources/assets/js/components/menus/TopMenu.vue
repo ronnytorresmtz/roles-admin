@@ -69,9 +69,9 @@ a{
         window.location.href = '/login/logOut'; 
       },
 
-      displayPopUpMessage: function(response){
-        this.$dispatch('displayAlert', (response.status==200) ? 'success' : 'danger', response.data.message + ' (' + response.status + ')');
-      },
+      // displayPopUpMessage: function(response){
+      //   this.$dispatch('displayAlert', (response.status==200) ? 'success' : 'danger', response.statusText + ' (' + response.status + ')');
+      // },
       
     },
 

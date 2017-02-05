@@ -157,7 +157,7 @@
             self.$route.router.go('/login');
           }else{
             self.loading = false;
-            self.$dispatch('displayAlert',  'danger', response.data.message);
+            self.$dispatch('displayAlert',  'danger', response.statusText);
           }
         }).catch(function (response) {
           self.loading = false;
