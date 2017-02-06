@@ -6,6 +6,7 @@
 
 <template>
   <div>
+	<mytopmenu show-menu="false"></mytopmenu>
     <mypopup slot="message"></mypopup>
 	<div class="container-fluid">
 		<div class="row">
