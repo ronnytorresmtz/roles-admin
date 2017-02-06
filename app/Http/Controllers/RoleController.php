@@ -56,7 +56,7 @@ class RoleController extends Controller {
 
 		Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.index'));
 
-		return response()->json($roles, 200);
+		return response()->json($roles);
 
 	}
 
@@ -65,7 +65,7 @@ class RoleController extends Controller {
 		
 		$roles=$this->roleRepository->getAllRolesActive(null);
 
-	  	return response()->json($roles, 200);
+	  	return response()->json($roles);
 	}
 
 
@@ -74,7 +74,7 @@ class RoleController extends Controller {
 		
 		$roles=$this->roleRepository->getAllRolesActive($this->itemsByPage);
 
-	  	return response()->json($roles, 200);
+	  	return response()->json($roles);
 	}
 
 	/**
@@ -96,12 +96,12 @@ class RoleController extends Controller {
 			
 				Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . 'store'));
 
-				return response()->json($result, 200);
+				return response()->json($result);
 			}
 
 		}
 
-		return response()->json($result, 400);
+		return response()->json($result);
 	}
 
 	/**
@@ -123,12 +123,12 @@ class RoleController extends Controller {
 
 		 		Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.update'));
 
-		 		return response()->json($result, 200);
+		 		return response()->json($result);
 		 	}
 
 	 	}
 
-		return response()->json($result, 400);
+		return response()->json($result);
 	}
 
 
@@ -147,10 +147,10 @@ class RoleController extends Controller {
 
 			Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.delete'));		
 
-			return response()->json($result, 200);
+			return response()->json($result);
 		}
 
-	 	return response()->json($result, 400);
+	 	return response()->json($result);
 	}
 
 	/**
@@ -167,7 +167,7 @@ class RoleController extends Controller {
 		//$label_search= $value;
 		Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.search'));
 		//make the view and return the item filtered
-		return response()->json($roles, 200);
+		return response()->json($roles);
     	
 	}
 
@@ -187,10 +187,10 @@ class RoleController extends Controller {
 
 			Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.export'));
 
-			return response()->json($result, 200); 
+			return response()->json($result); 
 		}
 
-		return response()->json($result, 400); 
+		return response()->json($result); 
 	}
 
 
@@ -211,12 +211,12 @@ class RoleController extends Controller {
 
 				Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.import'));
 
-				return response()->json($result, 200);
+				return response()->json($result);
 			}
 
 		}
 		
-		return response()->json($result, 400);
+		return response()->json($result);
 	}
 
 }	

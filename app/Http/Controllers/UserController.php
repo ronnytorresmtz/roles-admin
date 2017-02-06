@@ -79,12 +79,12 @@ class UserController extends Controller {
 			
 				Event::fire(new RegisterTransactionAccessEvent('security.users.store'));
 
-				return response()->json($result, 200);
+				return response()->json($result);
 			}
 
 		}
 
-		return response()->json($result, 400);
+		return response()->json($result);
 	}
 
 	/**
@@ -109,12 +109,12 @@ class UserController extends Controller {
 
 		 		Event::fire(new RegisterTransactionAccessEvent('security.users.update'));
 
-		 		return response()->json($result, 200);
+		 		return response()->json($result);
 		 	}
 
 	 	}
 
-		return response()->json($result, 400);
+		return response()->json($result);
 	}
 
 
@@ -133,10 +133,10 @@ class UserController extends Controller {
 
   		Event::fire(new RegisterTransactionAccessEvent('security.users.delete'));	
 
-  		return response()->json($result, 200);
+  		return response()->json($result);
   	}
 
-	 	return response()->json($result, 400);
+	 	return response()->json($result);
 	}
 
 	/**
@@ -153,7 +153,7 @@ class UserController extends Controller {
 		//$label_search= $value;
 		Event::fire(new RegisterTransactionAccessEvent('security.users.search'));
 		//make the view and return the item filtered
-		return response()->json($users, 200);
+		return response()->json($users);
     	
 	}
 
@@ -224,7 +224,7 @@ class UserController extends Controller {
      	Event::fire(new RegisterTransactionAccessEvent('security.dashboard.users'));
     	$usersLoggedByDay= $this->userRepository->getUsersLoggedbyDay($request);
 
-    	return response()->json($usersLoggedByDay, 200);
+    	return response()->json($usersLoggedByDay);
     }
 
 
@@ -232,7 +232,7 @@ class UserController extends Controller {
     {
     	$usersLogged = $this->userRepository->getUsersLogged($request, $this->itemsByPage);
       	
-      	return response()->json($usersLogged, 200);
+      	return response()->json($usersLogged);
     }
 
 
@@ -240,7 +240,7 @@ class UserController extends Controller {
     {
     	$usersLogged = $this->userRepository->getActionsByUsersLogged($request, $this->itemsByPage);
       	
-	    return response()->json($usersLogged, 200);
+	    return response()->json($usersLogged);
     }
 
 
@@ -248,7 +248,7 @@ class UserController extends Controller {
     {
     	$usersLoggedByMonth = $this->userRepository->getUsersLoggedbyMonth($request);
 
-    	return response()->json($usersLoggedByMonth, 200);
+    	return response()->json($usersLoggedByMonth);
     }
 
 }	

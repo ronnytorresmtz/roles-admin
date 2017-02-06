@@ -37,7 +37,7 @@ class TransactionActionController extends Controller {
 
     	$transactionActionUsedByDay = $this->transactionActionRepository->getTransactionsActionsUsedbyDay($request);
 
-    	return response()->json($transactionActionUsedByDay, 200);
+    	return response()->json($transactionActionUsedByDay);
     }
 
 
@@ -45,7 +45,7 @@ class TransactionActionController extends Controller {
     {
     	  $transactionActionUsed = $this->transactionActionRepository->getTransactionsActionsUsed($request, $this->itemsByPage);
       	
-      	return response()->json($transactionActionUsed, 200);
+      	return response()->json($transactionActionUsed);
     }
 
 
@@ -53,7 +53,7 @@ class TransactionActionController extends Controller {
     {
     	$transactionActionUsedByMonth = $this->transactionActionRepository->getTransactionsActionsUsedByMonth($request);
 
-    	return response()->json($transactionActionUsedByMonth, 200);
+    	return response()->json($transactionActionUsedByMonth);
     }
 	
 

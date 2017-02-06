@@ -56,7 +56,7 @@ class ModuleController extends Controller {
 
 		Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.index'));
 
-		return response()->json($modules, 200);
+		return response()->json($modules);
 
 	}
 
@@ -65,7 +65,7 @@ class ModuleController extends Controller {
 		
 		$modules=$this->moduleRepository->getAllModulesActive(null);
 
-	  	return response()->json($modules, 200);
+	  	return response()->json($modules);
 	}
 
 
@@ -74,7 +74,7 @@ class ModuleController extends Controller {
 		
 		$modules=$this->moduleRepository->getAllModulesActive($this->itemsByPage);
 
-	  	return response()->json($modules, 200);
+	  	return response()->json($modules);
 	}
 
 	/**
@@ -96,12 +96,12 @@ class ModuleController extends Controller {
 			
 				Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.store'));
 
-				return response()->json($result, 200);
+				return response()->json($result);
 			}
 
 		}
 
-		return response()->json($result, 400);
+		return response()->json($result);
 	}
 
 	/**
@@ -123,12 +123,12 @@ class ModuleController extends Controller {
 
 		 		Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.update'));
 
-		 		return response()->json($result, 200);
+		 		return response()->json($result);
 		 	}
 
 	 	}
 
-		return response()->json($result, 400);
+		return response()->json($result);
 	}
 
 
@@ -147,10 +147,10 @@ class ModuleController extends Controller {
 
 			Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.delete'));		
 
-			return response()->json($result, 200);
+			return response()->json($result);
 		}
 
-	 	return response()->json($result, 400);
+	 	return response()->json($result);
 	}
 
 	/**
@@ -167,7 +167,7 @@ class ModuleController extends Controller {
 		//$label_search= $value;
 		Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.search'));
 		//make the view and return the item filtered
-		return response()->json($modules, 200);
+		return response()->json($modules);
     	
 	}
 
@@ -187,10 +187,10 @@ class ModuleController extends Controller {
 
 			Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.export'));
 
-			return response()->json($result, 200); 
+			return response()->json($result); 
 		}
 
-		return response()->json($result, 400); 
+		return response()->json($result); 
 	}
 
 
@@ -211,22 +211,22 @@ class ModuleController extends Controller {
 
 				Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.import'));
 
-				return response()->json($result, 200);
+				return response()->json($result);
 			}
 
 		}
 		
-		return response()->json($result, 400);
+		return response()->json($result);
 	}
 
 
 	public function postSecurityModulesUsedByDay(Request $request)
     {
      	Event::fire(new RegisterTransactionAccessEvent('security.dashboard.modules'));
-		 
+
     	$moduleUsedByDay = $this->moduleRepository->getModulesUsedbyDay($request);
 
-    	return response()->json($moduleUsedByDay, 200);
+    	return response()->json($moduleUsedByDay);
     }
 
 
@@ -234,7 +234,7 @@ class ModuleController extends Controller {
     {
     	$moduleUsed = $this->moduleRepository->getModulesUsed($request, $this->itemsByPage);
       	
-      	return response()->json($moduleUsed, 200);
+      	return response()->json($moduleUsed);
     }
 
 
@@ -242,7 +242,7 @@ class ModuleController extends Controller {
     {
     	$moduleUsedByMonth = $this->moduleRepository->getModulesUsedByMonth($request);
 
-    	return response()->json($moduleUsedByMonth, 200);
+    	return response()->json($moduleUsedByMonth);
     }
 
 }	
