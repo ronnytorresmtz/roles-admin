@@ -71,7 +71,7 @@ class UserController extends Controller {
 		// validate the fields base on the rules define
 		$result=$this->validationService->validateInputs($this->userRepository->getModel(), $request->all(), 'AddUserForm', 'validation.users');
        
-    if (! $result['error']){
+   		if (! $result['error']){
 
 			$result = $this->userRepository->store($request);
 
