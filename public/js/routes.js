@@ -15638,7 +15638,11 @@ module.exports = {
     },
 
     displayPopUpMessage: function displayPopUpMessage(response) {
-      this.$dispatch('displayAlert', response.status == 200 ? 'success' : 'danger', response.statusText + ' (' + response.status + ')');
+      try {
+        this.$dispatch('displayAlert', !response.data.error ? 'success' : 'danger', response.data.message + ' (' + response.status + ')');
+      } catch (error) {
+        this.$dispatch('displayAlert', 'danger', error.name + ' Exception: ' + error.message);
+      }
     },
 
     expand: function expand() {
@@ -16156,7 +16160,11 @@ module.exports = {
     },
 
     displayPopUpMessage: function displayPopUpMessage(response) {
-      this.$dispatch('displayAlert', response.status == 200 ? 'success' : 'danger', response.statusText + ' (' + response.status + ')');
+      try {
+        this.$dispatc('displayAlert', !response.data.error ? 'success' : 'danger', response.data.message + ' (' + response.status + ')');
+      } catch (error) {
+        this.$dispatch('displayAlert', 'danger', error.name + ' Exception: ' + error.message);
+      }
     },
 
     accessRightForRoleSelected: function accessRightForRoleSelected(e) {
@@ -16309,7 +16317,11 @@ module.exports = {
     },
 
     displayPopUpMessage: function displayPopUpMessage(response) {
-      this.$dispatch('displayAlert', response.status == 200 ? 'success' : 'danger', response.statusText + ' (' + response.status + ')');
+      try {
+        this.$dispatc('displayAlert', !response.data.error ? 'success' : 'danger', response.data.message + ' (' + response.status + ')');
+      } catch (error) {
+        this.$dispatch('displayAlert', 'danger', error.name + ' Exception: ' + error.message);
+      }
     },
 
     setOptions: function setOptions(series) {
@@ -16661,7 +16673,7 @@ module.exports = {
       //Module 
       moduleTopMessage: 'Esta opción permite agregar, actualizar, activar, inactivar, importar y exportar los módulos de la aplicación.',
       moduleList: 'Lista de Módulos'
-   }, (0, _defineProperty3.default)(_sp, 'moduleName', 'Nombre de Módulo'), (0, _defineProperty3.default)(_sp, 'moduleDescription', 'Descripción del Módulo'), (0, _defineProperty3.default)(_sp, 'moduleOrder', 'Order del Módulo'), (0, _defineProperty3.default)(_sp, 'transactionTopMessage', 'Esta opción permite agregar, actualizar, activar, inactivar, importar y exportar las transacciones de la aplicación.'), (0, _defineProperty3.default)(_sp, 'transactionList', 'Lista de Transacciones'), (0, _defineProperty3.default)(_sp, 'transactionName', 'Nombre de Transacción'), (0, _defineProperty3.default)(_sp, 'transactionDescription', 'Descripción de Transacción'), (0, _defineProperty3.default)(_sp, 'transactionOrder', 'Orden de Transacción'), (0, _defineProperty3.default)(_sp, 'dashboardTopMessage', 'Es opción permite dar seguimiento al uso del sistema y a la cantidad de usuarios que se logean'), (0, _defineProperty3.default)(_sp, 'userLogged', 'Usuarios Logeados'), (0, _defineProperty3.default)(_sp, 'usersLoggedByDay', 'Usuarios Logeados por Día'), (0, _defineProperty3.default)(_sp, 'topUserLogged', 'Usuarios Logeados'), (0, _defineProperty3.default)(_sp, 'actionsByUserLogged', 'Acciones por Usuarios Logeados'), (0, _defineProperty3.default)(_sp, 'usersLoggedByMonth', 'Usuarios Logeados por Mes'), (0, _defineProperty3.default)(_sp, 'modulesUsed', 'Modulos Usados'), (0, _defineProperty3.default)(_sp, 'modulesUsedByDay', 'Modulos Usados por Día'), (0, _defineProperty3.default)(_sp, 'modulesUsedByMonth', 'Modulos Usados por Mes'), (0, _defineProperty3.default)(_sp, 'transactionsUsed', 'Transacciones Usadas'), (0, _defineProperty3.default)(_sp, 'transactionsUsedByDay', 'Transacciones Usadas por Día'), (0, _defineProperty3.default)(_sp, 'transactionsUsedByMonth', 'Transacciones Usadas por Mes'), (0, _defineProperty3.default)(_sp, 'actionsUsed', 'Acciones Usadas'), (0, _defineProperty3.default)(_sp, 'actionsUsedByDay', 'Acciones Usadas por Día'), (0, _defineProperty3.default)(_sp, 'actionsUsedByMonth', 'Acciones Usadas por Mes'), (0, _defineProperty3.default)(_sp, 'year', 'Año'), (0, _defineProperty3.default)(_sp, 'month', 'Mes'), (0, _defineProperty3.default)(_sp, 'timesLogged', 'Accesos'), (0, _defineProperty3.default)(_sp, 'clicks', 'Clicks'), _sp)
+   }, (0, _defineProperty3.default)(_sp, 'moduleName', 'Nombre de Módulo'), (0, _defineProperty3.default)(_sp, 'moduleDescription', 'Descripción del Módulo'), (0, _defineProperty3.default)(_sp, 'moduleOrder', 'Orden del Módulo'), (0, _defineProperty3.default)(_sp, 'transactionTopMessage', 'Esta opción permite agregar, actualizar, activar, inactivar, importar y exportar las transacciones de la aplicación.'), (0, _defineProperty3.default)(_sp, 'transactionList', 'Lista de Transacciones'), (0, _defineProperty3.default)(_sp, 'transactionName', 'Nombre de Transacción'), (0, _defineProperty3.default)(_sp, 'transactionDescription', 'Descripción de Transacción'), (0, _defineProperty3.default)(_sp, 'transactionOrder', 'Orden de Transacción'), (0, _defineProperty3.default)(_sp, 'dashboardTopMessage', 'Es opción permite dar seguimiento al uso del sistema y a la cantidad de usuarios que se logean'), (0, _defineProperty3.default)(_sp, 'userLogged', 'Usuarios Logeados'), (0, _defineProperty3.default)(_sp, 'usersLoggedByDay', 'Usuarios Logeados por Día'), (0, _defineProperty3.default)(_sp, 'topUserLogged', 'Usuarios Logeados'), (0, _defineProperty3.default)(_sp, 'actionsByUserLogged', 'Acciones por Usuarios Logeados'), (0, _defineProperty3.default)(_sp, 'usersLoggedByMonth', 'Usuarios Logeados por Mes'), (0, _defineProperty3.default)(_sp, 'modulesUsed', 'Modulos Usados'), (0, _defineProperty3.default)(_sp, 'modulesUsedByDay', 'Modulos Usados por Día'), (0, _defineProperty3.default)(_sp, 'modulesUsedByMonth', 'Modulos Usados por Mes'), (0, _defineProperty3.default)(_sp, 'transactionsUsed', 'Transacciones Usadas'), (0, _defineProperty3.default)(_sp, 'transactionsUsedByDay', 'Transacciones Usadas por Día'), (0, _defineProperty3.default)(_sp, 'transactionsUsedByMonth', 'Transacciones Usadas por Mes'), (0, _defineProperty3.default)(_sp, 'actionsUsed', 'Acciones Usadas'), (0, _defineProperty3.default)(_sp, 'actionsUsedByDay', 'Acciones Usadas por Día'), (0, _defineProperty3.default)(_sp, 'actionsUsedByMonth', 'Acciones Usadas por Mes'), (0, _defineProperty3.default)(_sp, 'year', 'Año'), (0, _defineProperty3.default)(_sp, 'month', 'Mes'), (0, _defineProperty3.default)(_sp, 'timesLogged', 'Accesos'), (0, _defineProperty3.default)(_sp, 'clicks', 'Clicks'), _sp)
 
 };
 if (module.exports.__esModule) module.exports = module.exports.default
@@ -16768,7 +16780,11 @@ module.exports = {
     },
 
     displayPopUpMessage: function displayPopUpMessage(response) {
-      this.$dispatch('displayAlert', response.status == 200 ? 'success' : 'danger', response.data + ' (' + response.status + ')');
+      try {
+        this.$dispatc('displayAlert', !response.data.error ? 'success' : 'danger', response.data.message + ' (' + response.status + ')');
+      } catch (error) {
+        this.$dispatch('displayAlert', 'danger', error.name + ' Exception: ' + error.message);
+      }
     },
 
     isValidEmail: function isValidEmail(email) {
@@ -16880,7 +16896,11 @@ module.exports = {
     },
 
     displayPopUpMessage: function displayPopUpMessage(response) {
-      this.$dispatch('displayAlert', response.status == 200 ? 'success' : 'danger', response.data + ' (' + response.status + ')');
+      try {
+        this.$dispatc('displayAlert', !response.data.error ? 'success' : 'danger', response.data.message + ' (' + response.status + ')');
+      } catch (error) {
+        this.$dispatch('displayAlert', 'danger', error.name + ' Exception: ' + error.message);
+      }
     }
   },
 
@@ -16960,7 +16980,7 @@ if (module.hot) {(function () {  module.hot.accept()
 })()}
 },{"../../components/languages/Languages.vue":80,"vue":72,"vue-hot-reload-api":70,"vueify/lib/insert-css":73}],85:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
-var __vueify_style__ = __vueify_insert__.insert("\n\n\t.cursor-hand{\n\t\tcursor: pointer;\n\t}\n  \n  .left-panel-border{\n    border-top:none;\n    border-left:none;\n    border-right:none;\n\n  }\n\n")
+var __vueify_style__ = __vueify_insert__.insert("\n\n\t.cursor-hand{\n\t\tcursor: pointer;\n\t}\n  \n  .left-panel-border{\n    border-top:none;\n    border-left:none;\n    border-right:none;\n\n  }\n  \n\n")
 'use strict';
 
 var _stringify = require('babel-runtime/core-js/json/stringify');
@@ -17006,13 +17026,13 @@ module.exports = {
 
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\t<div>\n\t  <div class=\"panel panel-default\">  \n\t\t  <div class=\"panel-heading\"> \n\t\t  \t<h3 class=\"panel-title\">{{ ts['menuOptions']}}</h3> \n\t\t  </div> \n      <div class=\"list-group \" v-for=\"subOption in subOptions\">\n         <a class=\"list-group-item left-panel-border\" style=\"color:blue\" v-link=\"subOption.method\">{{ ts[subOption.title] }}</a>\n      </div>\n\t</div>\n</div>"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\t<div>\n\t  <div class=\"panel panel-default\">  \n\t\t  <div class=\"panel-heading\"> \n\t\t  \t<h3 class=\"panel-title\">{{ ts['menuOptions']}}</h3> \n\t\t  </div> \n      <div class=\"list-group \" v-for=\"subOption in subOptions\">\n         <a class=\"list-group-item left-panel-border\" style=\"color:#428bca\" v-link=\"subOption.method\">{{ ts[subOption.title] }}</a>\n      </div>\n\t</div>\n</div>"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   module.hot.dispose(function () {
-    __vueify_insert__.cache["\n\n\t.cursor-hand{\n\t\tcursor: pointer;\n\t}\n  \n  .left-panel-border{\n    border-top:none;\n    border-left:none;\n    border-right:none;\n\n  }\n\n"] = false
+    __vueify_insert__.cache["\n\n\t.cursor-hand{\n\t\tcursor: pointer;\n\t}\n  \n  .left-panel-border{\n    border-top:none;\n    border-left:none;\n    border-right:none;\n\n  }\n  \n\n"] = false
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
@@ -17315,7 +17335,11 @@ module.exports = {
     },
 
     displayPopUpMessage: function displayPopUpMessage(response) {
-      this.$dispatch('displayAlert', response.status == 200 ? 'success' : 'danger', response.statusText + ' (' + response.status + ')');
+      try {
+        this.$dispatc('displayAlert', !response.data.error ? 'success' : 'danger', response.data.message + ' (' + response.status + ')');
+      } catch (error) {
+        this.$dispatch('displayAlert', 'danger', error.name + ' Exception: ' + error.message);
+      }
     },
 
     setSearchParam: function setSearchParam() {
@@ -17541,7 +17565,11 @@ module.exports = {
     },
 
     displayPopUpMessage: function displayPopUpMessage(response) {
-      this.$dispatch('displayAlert', response.status == 200 ? 'success' : 'danger', response.statusText + ' (' + response.status + ')');
+      try {
+        this.$dispatc('displayAlert', !response.data.error ? 'success' : 'danger', response.data.message + ' (' + response.status + ')');
+      } catch (error) {
+        this.$dispatch('displayAlert', 'danger', error.name + ' Exception: ' + error.message);
+      }
     },
 
     jsonToArray: function jsonToArray(data) {
