@@ -18,7 +18,7 @@
 			<div class="col-sm-10">
 
 				<mymessage 
-					message="This option allows to add, update, active, inactive, import and export the roles of the application."
+					message="roleTopMessage"
 					color="info"
 					align="center"
 				>
@@ -29,7 +29,7 @@
 
 						table-id="table1"
 						
-						table-title="Role List" 
+						table-title="roleList" 
 
 						select-fields='{	}'
 									
@@ -54,9 +54,9 @@
 							slot="crud" 
 							url-export="security/roles/export"
 							btn-actions='{
-         						"0": {"title": "Add",    "method": "Add",    "disabled": false},
-        						"1": {"title": "Export", "method": "Export", "disabled": false}, 
-        						"2": {"title": "Import", "method": "Import", "disabled": false}        				
+         						"0": {"title": "add",    "method": "Add",    "disabled": false},
+        						"1": {"title": "export", "method": "Export", "disabled": false}, 
+        						"2": {"title": "import", "method": "Import", "disabled": false}        				
         			}'
 						>
 						</mycrudbuttons>
@@ -66,14 +66,14 @@
 
 							url="security/roles"
 
-							form-title="Role"
+							form-title="role"
 
 							input-fields='{
 									"0": {
 										"type": "text",
 										"name": "id",
 										"value": "", 
-										"label": "Id",	
+										"label": "id",	
 										"placeholder":"",
 										"readonly":"true",
 										"required": "true",	
@@ -84,7 +84,7 @@
 										"type": "text",
 										"name": "role_name",
 										"value": "", 
-										"label": "Role Name", 
+										"label": "roleName", 
 										"placeholder":"Type the Role Name",
 										"required": "true",	
 										"maxlength": ""
@@ -94,7 +94,7 @@
 										"type": "textarea",
 										"name": "role_description",
 										"value": "", 
-										"label": "Role Description", 
+										"label": "roleDescription", 
 										"placeholder":"Type the Role Description",
 										"required": "true",	
 										"maxlength": ""
@@ -103,7 +103,7 @@
 									"3": {
 										"type": "status",
 										"name": "deleted_at",
-										"label": "Status"
+										"label": "status"
 									 }
 									
 								}'

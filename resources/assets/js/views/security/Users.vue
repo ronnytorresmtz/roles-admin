@@ -18,13 +18,13 @@
 			<div class="col-sm-10">
 
 				<mymessage 
-					message="This option allows to add, update, active, inactive, import and export the users of the application."
+					message="userTopMessage"
 					color="info"
 					align="center"
 				>
 				</mymessage>
 				
-				<mycrudtable  table-title="User List" 
+				<mycrudtable  table-title="userList" 
 
 						table-id="table1"
 
@@ -34,7 +34,7 @@
 								"0": { "name": "id", "width":"10%"},
 								"1": { "name": "username", "width":"15%"},
 								"2": { "name": "userFullname", "width":"25%"},
-								"3": { "name": "emailAccount" , "width":"50%"},
+								"3": { "name": "userEmail" , "width":"50%"},
 								"4": { "name": "roleName" , "width":"10%"},
 								"5": { "name": "status", "width":"10%"},
 								"6": { "name": "createdBy", "width":"15%"},
@@ -52,9 +52,9 @@
 							slot="crud" 
 							url-export="security/users/export"
 							btn-actions='{
-         						"0": {"title": "Add",    "method": "Add",    "disabled": false},
-          						"1": {"title": "Export", "method": "Export", "disabled": false}, 
-          						"2": {"title": "Import", "method": "Import", "disabled": false}        					}'
+         						"0": {"title": "add",    "method": "Add",    "disabled": false},
+          						"1": {"title": "export", "method": "Export", "disabled": false}, 
+          						"2": {"title": "import", "method": "Import", "disabled": false}        					}'
 						>
 						</mycrudbuttons>
 						
@@ -63,14 +63,14 @@
 
 							url="security/users"
 
-							form-title="User"
+							form-title="user"
 
 							input-fields='{
 									"0": {
 										"type": "text",
 										"name": "id",
 										"value": "", 
-										"label": "Id",	
+										"label": "id",	
 										"placeholder":"",
 										"readonly":"true",
 										"required": "true",	
@@ -81,7 +81,7 @@
 										"type": "text",
 										"name": "username",
 										"value": "", 
-										"label": "Username",	
+										"label": "username",	
 										"placeholder":"Type the User ID",
 										"required": "true",	
 										"maxlength": ""
@@ -91,7 +91,7 @@
 										"type": "text",
 										"name": "user_fullname",
 										"value": "", 
-										"label": "User Fullname", 
+										"label": "userFullname", 
 										"placeholder":"Type the User Fullname",
 										"required": "true",	
 										"maxlength": ""
@@ -101,7 +101,7 @@
 										"type": "text",
 										"name": "email",
 										"value": "", 
-										"label": "User Email", 
+										"label": "userEmail", 
 										"placeholder":"Type the User Email",
 										"required": "true",	
 										"maxlength": ""
@@ -111,7 +111,7 @@
 										"type": "select",
 										"name": "role_name",
 										"value": "", 
-										"label": "Role Name", 
+										"label": "roleName", 
 										"required": "true",
 										"maxlength": "",
 										"url": "security/roles/getAllRolesActive",
@@ -121,7 +121,7 @@
 									 "5": {
 										"type": "status",
 										"name": "deleted_at",
-										"label": "Status"
+										"label": "status"
 									 }
 									
 								}'

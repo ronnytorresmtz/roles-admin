@@ -21,7 +21,7 @@
 			<div class="col-sm-10" >
 				<mymessage 
 					slot="message"
-					message="This option allows to follow up how the users use the system and how many times they logged."
+					message="dashboardTopMessage"
 					color="info"
 					align="center"
 				>
@@ -40,7 +40,7 @@
 					  		width="500"
 					  		height="250"
 							url="/security/dashboard/transactionsActionsUsedByDay"
-							title="Actions by Day"
+							title="actionsUsedByDay"
 							x-title="Days"
 							y-title="Actions"
 							legend-position="bottom"
@@ -62,7 +62,7 @@
 
 							table-id="table1"
 
-							table-title="Actions Used" 
+							table-title="actionsUsed" 
 
 							columns-names='{
 								"0": { "name": "moduleName", "width":"25%"},
@@ -100,7 +100,7 @@
 					  		width="500"
 					  		height="250"
 							url="/security/dashboard/transactionsActionsUsedByMonth"
-							title="Actions by Month"
+							title="actionsUsedByMonth"
 							x-title="Days"
 							y-title="Actions"
 							legend-position="top"

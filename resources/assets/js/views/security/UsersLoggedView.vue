@@ -23,7 +23,7 @@
 			<div class="col-sm-10" >
 
 				<mymessage 
-					message="This option allows to follow up how the users use the system and how many times they logged."
+					message="dashboardTopMessage"
 					color="info"
 					align="center"
 				>
@@ -42,7 +42,7 @@
 					  		width="500"
 					  		height="250"
 							  url="/security/dashboard/usersLoggedByDay"
-							  title="Users Logged by Day"
+							  title="usersLoggedByDay"
 							  x-title="Days"
 							  y-title="Users Logged"
 							  legend-position="bottom"
@@ -64,7 +64,7 @@
 
 							table-id="table1"
 
-							table-title="Top User Logged" 
+							table-title="topUserLogged" 
 
 							columns-names='{
 									"0": { "name": "username", "width":"25%"},
@@ -96,7 +96,7 @@
 
 					  			table-id="table2"
 
-									table-title="Actions by User Logged" 
+									table-title="actionsByUserLogged" 
 
 									columns-names='{
 											"0": { "name": "username", "width":"25%"},
@@ -132,7 +132,7 @@
 					  		width="500"
 					  		height="250"
 							  url="/security/dashboard/usersLoggedByMonth"
-							  title="Users Logged by Month"
+							  title="usersLoggedByMonth"
 							  x-title="Days"
 							  y-title="Users Logged"
 							  legend-position="top"

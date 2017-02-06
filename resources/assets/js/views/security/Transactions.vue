@@ -18,7 +18,7 @@
 			<div class="col-sm-10">
 
 				<mymessage 
-					message="This option allows to add, update, active, inactive, import and export the transactions for each module for the application."
+					message="transactionTopMessage"
 					color="info"
 					align="center"
 				>
@@ -29,7 +29,7 @@
 
 						table-id="table1"
 
-						table-title="Transaction List" 
+						table-title="transactionList" 
 
 						select-fields='{ 	}'
 									
@@ -57,9 +57,9 @@
 							slot="crud" 
 							url-export="security/transactions/export"
 							btn-actions='{
-         						"0": {"title": "Add",    "method": "Add",    "disabled": false},
-        						"1": {"title": "Export", "method": "Export", "disabled": false}, 
-        						"2": {"title": "Import", "method": "Import", "disabled": false}        				
+         						"0": {"title": "add",    "method": "Add",    "disabled": false},
+        						"1": {"title": "export", "method": "Export", "disabled": false}, 
+        						"2": {"title": "import", "method": "Import", "disabled": false}        				
         			}'
 						>
 						</mycrudbuttons>
@@ -69,14 +69,14 @@
 
 							url="security/transactions"
 
-							form-title="Transaction"
+							form-title="transaction"
 
 							input-fields='{
 									"0": {
 										"type": "text",
 										"name": "id",
 										"value": "", 
-										"label": "Id",	
+										"label": "id",	
 										"placeholder":"",
 										"readonly":"true",
 										"required": "true",	
@@ -87,7 +87,7 @@
 										"type": "select",
 										"name": "module_name",
 										"value": "", 
-										"label": "Module Name", 
+										"label": "moduleName", 
 										"required": "true",	
 										"url": "security/modules/getAllModulesActive",
 										"table": "modules"
@@ -97,7 +97,7 @@
 										"type": "text",
 										"name": "transaction_name",
 										"value": "", 
-										"label": "Transaction Name", 
+										"label": "transactionName", 
 										"placeholder":"Type the Transaction Name",
 										"required": "true",	
 										"maxlength": ""
@@ -107,7 +107,7 @@
 										"type": "textarea",
 										"name": "transaction_description",
 										"value": "", 
-										"label": "Transaction Description", 
+										"label": "transactionDescription", 
 										"placeholder":"Type the Transaction Description",
 										"required": "true",	
 										"maxlength": ""
@@ -117,7 +117,7 @@
 										"type": "text",
 										"name": "transaction_order",
 										"value": "", 
-										"label": "Transaction Order", 
+										"label": "transactionOrder", 
 										"placeholder":"Type the Transaction Order",
 										"required": "true",	
 										"maxlength": ""
@@ -126,7 +126,7 @@
 									"5": {
 										"type": "status",
 										"name": "deleted_at",
-										"label": "Status"
+										"label": "status"
 									 }
 									
 								}'
