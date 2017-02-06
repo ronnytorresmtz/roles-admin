@@ -13,7 +13,6 @@ use Illuminate\Http\Request;
 use App\Events\RegisterTransactionAccessEvent;
 use MyCode\Repositories\User\UserRepositoryInterface;
 use MyCode\Repositories\Role\RoleRepositoryInterface;
-use MyCode\Services\Url\UrlServiceInterface;
 use MyCode\Services\Validation\ValidationServiceInterface;
 use MyCode\Services\Document\DocumentServiceInterface;
 
@@ -27,7 +26,6 @@ class UserController extends Controller {
 	 */
 
 	protected $userRepository;
-	protected $urlService;
 	protected $validationService;
 	protected $documentService;
 	protected $roleRepository;
@@ -39,13 +37,11 @@ class UserController extends Controller {
 
 
 	public function __construct(UserRepositoryInterface $userRepository,
-															RoleRepositoryInterface $roleRepository,
-															UrlServiceInterface $urlService, 
-															ValidationServiceInterface $validationService,
-															DocumentServiceInterface $documentService)
+								RoleRepositoryInterface $roleRepository,
+								ValidationServiceInterface $validationService,
+								DocumentServiceInterface $documentService)
 	{
 		$this->userRepository    = $userRepository;
-		$this->urlService        = $urlService;
 		$this->validationService = $validationService;
 		$this->documentService   = $documentService;
 		$this->roleRepository    = $roleRepository;
