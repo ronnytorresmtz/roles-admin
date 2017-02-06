@@ -11,6 +11,7 @@
     border-right:none;
 
   }
+  
 
 </style>
 
@@ -21,7 +22,7 @@
 		  	<h3 class="panel-title">{{ ts['menuOptions']}}</h3> 
 		  </div> 
       <div class="list-group " class="cursor-hand" v-for="subOption in subOptions">
-         <a  class="list-group-item left-panel-border" style="color:blue" v-link="subOption.method">{{ ts[subOption.title] }}</a>
+         <a  class="list-group-item left-panel-border" style="color:#428bca" v-link="subOption.method">{{ ts[subOption.title] }}</a>
       </div>
 	</div>
 </template>
