@@ -13,7 +13,7 @@
       <div class="modal-content">
         <div class="modal-header" style="background:#f5f5f5">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="myModalLabel">Import File</h4>
+          <h4 class="modal-title" id="myModalLabel">{{ ts['importFile'] }}</h4>
         </div>
         <div class="modal-body">
           <Form>
@@ -24,7 +24,7 @@
                 <div class="col-md-6" align="left">
                   <div v-if="processing">
                     <span class="processing" align="left">
-                      <img src="/assets/icons/loading_image.gif"/> Processing
+                      <img src="/assets/icons/loading_image.gif"/> {{ ts['processing'] }}
                     </span>
                   </div>
                   <div v-else>
@@ -32,9 +32,9 @@
                   </div>
                 </div>
                 <div class="col-md-6" align="right">
-                  <button class="btn btn-sm btn-success" @click.prevent=importItems($event)> Import</button>
-                  <button type="reset" class="btn btn-sm btn-success">Reset</button>
-                  <button class="btn btn-sm btn-default" data-dismiss="modal" @click.prevent=closeModal>Close</button>
+                  <button class="btn btn-sm btn-success" @click.prevent=importItems($event)> {{ ts['import'] }}</button>
+                  <button type="reset" class="btn btn-sm btn-success">{{ ts['reset'] }}</button>
+                  <button class="btn btn-sm btn-default" data-dismiss="modal" @click.prevent=closeModal>{{ ts['close'] }}</button>
                 <div>
               </div>
             </div>
@@ -49,7 +49,11 @@
 </template>
 
 <script>
+  import MyLang from '../../components/languages/Languages.vue';
+
   module.exports = {
+
+    mixins: [MyLang],
 
     props: ['urlImport'],
 

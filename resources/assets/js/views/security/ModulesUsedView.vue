@@ -20,7 +20,7 @@
 			</div>
 			<div class="col-sm-10" >
 				<mymessage 
-					message="This option allows to follow up how the users use the system and how many times they logged."
+					message="dashboardTopMessage"
 					color="info"
 					align="center"
 				>
@@ -39,7 +39,7 @@
 					  		width="500"
 					  		height="250"
 							url="/security/dashboard/modulesUsedByDay"
-							title="Modules Used by Day"
+							title="modulesUsedByDay"
 							x-title="Days"
 							y-title="Modules Used"
 							legend-position="bottom"
@@ -61,7 +61,7 @@
 
 							table-id="table1"
 
-							table-title="Modules Used" 
+							table-title="modulesUsed" 
 
 							columns-names='{
 								"0": { "name": "moduleName", "width":"50%"},
@@ -98,7 +98,7 @@
 					  		width="500"
 					  		height="250"
 							url="/security/dashboard/modulesUsedByMonth"
-							title="Modules Used by Month"
+							title="modulesUsedByMonth"
 							x-title="Days"
 							y-title="Modules Used"
 							legend-position="top"
@@ -122,7 +122,7 @@
 
 <script 
 
-src="../parent.js" type="text/javascript">
+src="../../main.js" type="text/javascript">
 	
 </script>
 

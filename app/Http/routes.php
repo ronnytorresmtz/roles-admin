@@ -24,5 +24,5 @@ foreach ($allFiles as $file) {
 
 Route::get('/vue', function (){
 
-	return View::make ('vueroute');
+	return View::make ('home');
 });

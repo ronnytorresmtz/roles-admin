@@ -34,7 +34,7 @@ class LoginController extends Controller {
 
     public function getLogIn()
 	{
-		return View::make ('vueroute');
+		return View::make ('home');
     }
    
 
@@ -111,7 +111,7 @@ class LoginController extends Controller {
 	}
 
 
-	public function getTokenExist(Request $request)
+	public function postTokenExist(Request $request)
 	{
 
 		return response()->json($this->userRepository->findToken($request), 200);

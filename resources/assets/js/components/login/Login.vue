@@ -19,7 +19,7 @@
     <slot name="message"></slot>
     <div class="panel panel-default component-center"> 
       <div class="panel-heading">
-        <h3 class="panel-title">Sign In
+        <h3 class="panel-title">{{ ts['signIn'] }}
           <span style="color:blue; padding-top:10px; padding-right:20px" align="left" v-if='loading'>
               <img src="/assets/icons/loading_image.gif"/>   
             </span>
@@ -38,7 +38,7 @@
                     name="username" 
                     id="username" 
                     class ="form-control",
-										placeholder="Type the user name"
+										placeholder="{{ ts['typeTheUsername'] }}"
 										value="">
 									</input>
 								</div>
@@ -59,7 +59,7 @@
                     name="password" 
                     id="password" 
                     class ="form-control",
-										placeholder="Type the password">
+										placeholder="{{ ts['typeThePassword'] }}">
 									</input>
 									
 								</div>
@@ -72,14 +72,14 @@
             <div class="col-sm-6 text-left">
               <div class="control-group" >
                 <input type="checkbox" v-model="rememberMe"></input>
-                Remember Me
+                {{ ts['rememberMe'] }}
               </div>	
             </div>	
 											
             <div class="col-sm-6 text-right">
               <div class="control-group"  >
                 <a @click="showEmailToSend">
-                Forgot your Password 
+                {{ ts['forgotYourPassword'] }}
                 </a>	
               </div>
             </div>	
@@ -93,8 +93,8 @@
               <div class="col-sm-12 text-left">
 
                   <div class="alert alert-info">
-                    <p><strong>Get Your Password</strong></p>
-                    Enter the email address associated with your account, then click Send. You will recieve an email with instrucctions to set a new password.'
+                    <p><strong>{{ ts['getYourPassword'] }}</strong></p>
+                    {{ ts['getYourPassMsg'] }}
 							    </div>
                   <div class="input-group">
                     <span class="input-group-addon" id="basic-addon1">
@@ -106,11 +106,11 @@
                       name="email" 
                       id="email" 
                       class ="form-control",
-                      placeholder="Type an email address"
+                      placeholder="{{ ts['typeTheEmailAddress'] }}"
                       value="">
                     </input>
                   </div>
-                  <span v-show="emailErrMessage" class="error-email">Please type a valid email address</span>
+                  <span v-show="emailErrMessage" class="error-email">{{ ts['typeTheEmailError'] }}</span>
                   <hr>
 
                     <div class="control-group" >
@@ -123,7 +123,7 @@
                               :disabled="(email) ? false : true"
                               @click="btnSendEmail"
                             >
-                              Send
+                             {{ ts['send'] }} 
                             </button>
                           </div>			
                         </div>	
@@ -140,7 +140,7 @@
                   class="btn btn-sm btn-success"
                   @click="btnLoginDemo"
                 > 
-                 Login User Demo 
+                 {{ ts['loginUserDemo'] }} 
                 </button>
               </div>
 
@@ -151,7 +151,7 @@
                   :disabled="(username && password) ? false : true"
                   @click="btnLogin"
                  >
-                  Sign in 
+                  {{ ts['signIn'] }}
                  </button>
               </div>			
             </div>	
@@ -165,7 +165,11 @@
 
 <script>
 
+ import MyLang from '../../components/languages/Languages.vue';
+
   module.exports = {
+
+   mixins: [MyLang],
 
     ready: function(){
       this.username=localStorage.getItem("rememberUserName");

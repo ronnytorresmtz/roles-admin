@@ -6,6 +6,7 @@
 
 <template>
   <div>
+	<mytopmenu show-menu="false"></mytopmenu>
     <mypopup slot="message"></mypopup>
 	<div class="container-fluid">
 		<div class="row">
@@ -22,7 +23,7 @@
 
 <script 
 
-src="../parent.js" type="text/javascript">
+src="../../main.js" type="text/javascript">
 	
 </script>
 

@@ -10,7 +10,7 @@ import MyTableYearMonth     from '../../components/table/TableYearMonth.vue';
 import MyTableSearch        from '../../components/table/TableSearch.vue';
 import MyForm               from '../../components/crud/Form.vue';
 import MyImport             from '../../components/crud/Import.vue';
-import MyLink               from '../../components/crud/Link.vue';
+//import MyLink               from '../../components/crud/Link.vue';
 import MyChart              from '../../components/graphs/Chart.vue';
 import MyHorizontalLinks    from '../../components/menus/HorizontalLinks.vue';
 import MyMessage            from '../../components/messages/Message.vue';
@@ -36,7 +36,7 @@ module.exports = {
       'mytablesearch':     MyTableSearch,
     	'mysubmenu':         MySubMenu,
       'myimport':          MyImport,
-      'mylink':            MyLink,
+     // 'mylink':            MyLink,
       'mychart':           MyChart,
       'myhorizontallinks': MyHorizontalLinks,
       'mymessage':         MyMessage,

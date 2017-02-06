@@ -10,13 +10,19 @@
 <template>
   <div>
     <p class="bg-{{color}} message-padding" align="{{align}}">
-        {{message}}
+        {{ ts[message] }}
     </p>
   </div>
 </template>
 
 <script>
+
+  import MyLang from '../../components/languages/Languages.vue';
+
+
   module.exports = {
+
+    mixins: [MyLang],
 
     props: ['message', 'color', 'align'],
     

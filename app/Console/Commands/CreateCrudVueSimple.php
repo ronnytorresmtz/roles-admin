@@ -393,17 +393,17 @@ class CreateCrudVueSimple extends Command {
 			'Link'      => $this->replaceTemplateTextWithModel('Link_Template.php', $argument, $directory)
 			);
 		//Get the File to be modified
-		$modelActual=file_get_contents(base_path() . '\resources\assets\js\vueroute.js');
+		$modelActual=file_get_contents(base_path() . '\resources\assets\js\routes.js');
 		//Generate a timestamp 
 		$dateTime=str_replace(':','_', str_replace('-','_', Carbon::now()));
 		//Store the Original in the templates\provider\oldARouterMap  as a backup of the orginal file
-		file_put_contents(base_path() . '\vue-templates\RouterMap\OldRouterMap\vueroute_' . $dateTime . '.js', $modelActual);
+		file_put_contents(base_path() . '\vue-templates\RouterMap\OldRouterMap\routes_' . $dateTime . '.js', $modelActual);
 		//Add the new text replacing a comment
 		//App_Use_Repository_Template Don´t Delete This Line
 		//$modelActualChanged=str_replace('//Component_Template Don´t Delete This Line', $modelNew['Component'], $modelActual);
 		$modelActualChanged=str_replace('//Link_Template Don´t Delete This Line', $modelNew['Link'], $modelActualChanged);
 		//Generate the new file (orginal + new text)
-		file_put_contents(base_path() . '\resources\assets\js\vueroute.js', $modelActualChanged);
+		file_put_contents(base_path() . '\resources\assets\js\routes.js', $modelActualChanged);
 		//Display a user message
 		$this->displayConsoleMessage('Router Map');
 

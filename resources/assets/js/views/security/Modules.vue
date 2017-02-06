@@ -18,7 +18,7 @@
 			<div class="col-sm-10">
 
 				<mymessage 
-					message="This option allows to add, update, active, inactive, import and export the modules of the application."
+					message="moduleTopMessage" 
 					color="info"
 					align="center"
 				>
@@ -29,7 +29,7 @@
 
 						table-id="table1"
 
-						table-title="Module List" 
+						table-title="moduleList" 
 
 						select-fields='{	}'
 									
@@ -56,9 +56,9 @@
 							slot="crud" 
 							url-export="security/modules/export"
 							btn-actions='{
-         						"0": {"title": "Add",    "method": "Add",    "disabled": false},
-        						"1": {"title": "Export", "method": "Export", "disabled": false}, 
-        						"2": {"title": "Import", "method": "Import", "disabled": false}        				
+         						"0": {"title": "add",    "method": "Add",    "disabled": false},
+        						"1": {"title": "export", "method": "Export", "disabled": false}, 
+        						"2": {"title": "import", "method": "Import", "disabled": false}        				
         			}'
 						>
 						</mycrudbuttons>
@@ -68,14 +68,14 @@
 
 							url="security/modules"
 
-							form-title="Module"
+							form-title="module"
 
 							input-fields='{
 									"0": {
 										"type": "text",
 										"name": "id",
 										"value": "", 
-										"label": "Id",	
+										"label": "id",	
 										"placeholder":"",
 										"readonly":"true",
 										"required": "true",	
@@ -86,7 +86,7 @@
 										"type": "text",
 										"name": "module_name",
 										"value": "", 
-										"label": "Module Name", 
+										"label": "moduleName", 
 										"placeholder":"Type the Module Name",
 										"required": "true",	
 										"maxlength": ""
@@ -96,7 +96,7 @@
 										"type": "textarea",
 										"name": "module_description",
 										"value": "", 
-										"label": "Module Description", 
+										"label": "moduleDescription", 
 										"placeholder":"Type the Module Description",
 										"required": "true",	
 										"maxlength": ""
@@ -106,7 +106,7 @@
 										"type": "text",
 										"name": "module_order",
 										"value": "", 
-										"label": "Module order", 
+										"label": "moduleOrder", 
 										"placeholder":"Type the Module Order",
 										"required": "true",	
 										"maxlength": ""
@@ -115,7 +115,7 @@
 									"4": {
 										"type": "status",
 										"name": "deleted_at",
-										"label": "Status"
+										"label": "status"
 									 }
 									
 								}'
@@ -131,7 +131,7 @@
 
 <script 
 
-src="../parent.js" type="text/javascript">
+src="../../main.js" type="text/javascript">
 	
 </script>
 

@@ -17,7 +17,7 @@
 			<div class="col-sm-10">
 
 				<mymessage 
-					message="This options allows to set the access rights for each role at transaction level for each module."
+					message="accessRightsTopMessage"
 					color="info"
 					align="center"
 				>
@@ -27,7 +27,7 @@
 				
 						table-id="table1"
 
-						table-title="Access Rights List" 
+						table-title="accessRightsList" 
 
 						select-fields='{
 
@@ -35,7 +35,7 @@
 								"type": "select",
 								"name": "role_name",
 								"value": "", 
-								"label": "Role Name", 
+								"label": "roleName", 
 								"required": "true",	
 								"url": "security/roles/getAllRolesActivebyPage",
 								"table": "roles"
@@ -64,9 +64,9 @@
 							slot="crud" 
 							url-export="security/roles_transactions/export" 
 							btn-actions='{
-         						"0": {"title": "Add",    "method": "Add",    "disabled": false},
-          						"1": {"title": "Export", "method": "Export", "disabled": false}, 
-          						"2": {"title": "Import", "method": "Import", "disabled": false}
+         						"0": {"title": "add",    "method": "Add",    "disabled": false},
+          						"1": {"title": "export", "method": "Export", "disabled": false}, 
+          						"2": {"title": "import", "method": "Import", "disabled": false}
         					}'
         				>
 						</mycrudbuttons>
@@ -76,14 +76,14 @@
 
 							url="security/roles_transactions"
 
-							form-title="Access Rights"
+							form-title="accessRights"
 
 							input-fields='{
 									"0": {
 										"type": "text",
 										"name": "id",
 										"value": "", 
-										"label": "Id",	
+										"label": "id",	
 										"placeholder":"",
 										"readonly":"true",
 										"required": "true"
@@ -93,7 +93,7 @@
 										"type": "select",
 										"name": "role_name",
 										"value": "", 
-										"label": "Role Name", 
+										"label": "roleName", 
 										"required": "true",	
 										"url": "security/roles/getAllRolesActive",
 										"table": "roles"
@@ -103,7 +103,7 @@
 										"type": "select",
 										"name": "module_name",
 										"value": "", 
-										"label": "Module Name", 
+										"label": "moduleName", 
 										"required": "true",	
 										"url": "security/modules/getAllModulesActive",
 										"table": "modules"
@@ -113,7 +113,7 @@
 										"type": "select",
 										"name": "transaction_name",
 										"value": "", 
-										"label": "Transaction Name", 
+										"label": "transactionName", 
 										"required": "true",	
 										"url": "security/roles_transactions/moduleSelected",
 										"table": "transactions",
@@ -125,7 +125,7 @@
 										"type": "hidden",
 										"name": "transaction_description",
 										"value": "", 
-										"label": "Transaction Description", 
+										"label": "transactionDescription", 
 										"readonly":"true"	
 									 }, 
 
@@ -134,7 +134,7 @@
 										"type": "select",
 										"name": "transaction_action_name",
 										"value": "", 
-										"label": "Transaction Action", 
+										"label": "transactionActions", 
 										"required": "true",	
 										"url": "security/roles_transactions/transactionActions",
 										"table": "transactions_actions"
@@ -153,7 +153,7 @@
 
 <script 
 
-src="../parent.js" type="text/javascript">
+src="../../main.js" type="text/javascript">
 
 </script>
 

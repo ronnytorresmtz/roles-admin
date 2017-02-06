@@ -35,7 +35,7 @@
       <div class="panel panel-default" > 
         <div class="panel-heading">
           <h3 class="panel-title">
-            {{tableTitle}}
+            {{ ts[tableTitle] }}
             <span style="color:blue; padding-top:10px; padding-right:20px" align="left" v-if='loading'>
               <img src="/assets/icons/loading_image.gif"/>   
             </span>
@@ -45,13 +45,13 @@
           <div class="row">
             <div v-if="showYear">
               <div class="col-xs-1 selectwidth " v-if="showYear">
-                Year: 
+                {{ ts['year'] }}: 
                 <select name="year" class="form-control selectwidth" v-model="yearSelected" @change="changeYearMonth()">
                   <option v-for="(key, value) in years" value="{{value}}"> {{value}} </option>
                 </select>
               </div>
               <div class="col-xs-1" v-if="showMonth" >
-                Month: 
+                {{ ts['month'] }}:  
                 <select name="month" class="form-control selectwidth" v-model="monthSelected" @change="changeYearMonth()">
                   <option v-for="(key, value) in months" value="{{key + 1}}"> {{value}} </option>
                 </select>
@@ -79,11 +79,11 @@
                   <td  v-for="(key, value) in row" @click="itemSelected(row)">
                     <span v-if="key=='deleted_at'" >
                         <span v-if="value==undefined">
-                            <span class="btn btn-xs btn-success"> Active </span>
+                            <span class="btn btn-xs btn-success"> {{ ts['active'] }}  </span>
                            <!--  <i class="glyphicon glyphicon-ok"></i> -->
                         </span>
                         <span v-else>
-                            <span class="btn btn-xs btn-danger"> Inactive </span>
+                            <span class="btn btn-xs btn-danger"> {{ ts['inactive'] }} </span>
                             <!-- <i class="glyphicon glyphicon-remove" ></i> -->
                         </span>
                     </span>
@@ -116,19 +116,19 @@
                <div class="col-sm-6">
                 <div align="left" style="padding-top:10px">
                   <p style="font-size:13px;" > 
-                     Showing: {{from}} to {{to}} of {{total}} items
+                     {{ ts['showing'] }}: {{from}} {{ ts['to'] }} {{to}} {{ ts['of'] }} {{total}} items
                   </p>
                 </div>
               </div>
               <div v-if="NoMorePages" style="color:gray" align="right"> 
-                  <strong> <em>No more Pages</strong></em> 
+                  <strong> <em>{{ ts['noMorePages'] }}</strong></em> 
               </div>  
               <div class="col-sm-6">
                 <div align="right" style="padding-top:10px">
-                  <a class="btn btn-sm btn-primary button-size" @click.prevent="goToFisrtPage"> Start </a> 
-                  <a class="btn btn-sm btn-primary button-size" @click.prevent="goToPrevPage"> Prev </a> 
-                  <a class="btn btn-sm btn-primary button-size" @click.prevent="goToNextPage"> Next </a> 
-                  <a class="btn btn-sm btn-primary button-size" @click.prevent="goToLastPage"> End </a> 
+                  <a class="btn btn-sm btn-primary button-size" @click.prevent="goToFisrtPage"> {{ ts['start'] }} </a> 
+                  <a class="btn btn-sm btn-primary button-size" @click.prevent="goToPrevPage"> {{ ts['prev'] }} </a> 
+                  <a class="btn btn-sm btn-primary button-size" @click.prevent="goToNextPage"> {{ ts['next'] }} </a> 
+                  <a class="btn btn-sm btn-primary button-size" @click.prevent="goToLastPage"> {{ ts['end'] }} </a> 
                   <br/> <br/>
                 </div>
               </div>
@@ -315,7 +315,7 @@
       },
 
       displayPopUpMessage: function(response){
-        this.$dispatch('displayAlert', (response.status==200) ? 'success' : 'danger', response.data.message + ' (' + response.status + ')');
+        this.$dispatch('displayAlert', (response.status==200) ? 'success' : 'danger', response.statusText + ' (' + response.status + ')');
       },
 
       jsonToArray: function(data){
