@@ -29,11 +29,12 @@ class TransactionActionController extends Controller {
     {
     $this->transactionActionRepository = $transactionActionRepository;
     $this->transactionRepository       = $transactionRepository;
-	}
+    }
 
 		public function postSecurityTransactionsActionsUsedByDay(Request $request)
     {
      	Event::fire(new RegisterTransactionAccessEvent('security.dashboard.actions'));
+
     	$transactionActionUsedByDay = $this->transactionActionRepository->getTransactionsActionsUsedbyDay($request);
 
     	return response()->json($transactionActionUsedByDay, 200);

@@ -115,8 +115,8 @@ class RoleController extends Controller {
 		// validate the fields base on the rules define
 		$result=$this->validationService->validateInputs($this->roleRepository->getModel(), $request->all(), 'role.update', 'validation.roles');
       // Send to view the errors messages
-    if (! $result['error']){
-  	// update the data to the database
+		if (! $result['error']){
+		// update the data to the database
     	$result=$this->roleRepository->update($id, $request);
 
 		 	if (! $result['error']){

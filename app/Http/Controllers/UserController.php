@@ -43,7 +43,7 @@ class UserController extends Controller {
 															UrlServiceInterface $urlService, 
 															ValidationServiceInterface $validationService,
 															DocumentServiceInterface $documentService)
-		{
+	{
 		$this->userRepository    = $userRepository;
 		$this->urlService        = $urlService;
 		$this->validationService = $validationService;

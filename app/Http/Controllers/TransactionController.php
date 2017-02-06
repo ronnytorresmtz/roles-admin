@@ -114,9 +114,9 @@ class TransactionController extends Controller {
 	{
 		// validate the fields base on the rules define
 		$result=$this->validationService->validateInputs($this->transactionRepository->getModel(), $request->all(), 'transaction.update', 'validation.transactions');
-      // Send to view the errors messages
-    if (! $result['error']){
-  	// update the data to the database
+		// Send to view the errors messages
+		if (! $result['error']){
+		// update the data to the database
     	$result=$this->transactionRepository->update($id, $request);
 
 		 	if (! $result['error']){
@@ -223,6 +223,7 @@ class TransactionController extends Controller {
     public function postSecurityTransactionsUsedByDay(Request $request)
     {
      	Event::fire(new RegisterTransactionAccessEvent('security.dashboard.transactions'));
+
     	$transactionsUsedByDay = $this->transactionRepository->getTransactionsUsedbyDay($request);
 
     	return response()->json($transactionsUsedByDay, 200);

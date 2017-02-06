@@ -223,6 +223,7 @@ class ModuleController extends Controller {
 	public function postSecurityModulesUsedByDay(Request $request)
     {
      	Event::fire(new RegisterTransactionAccessEvent('security.dashboard.modules'));
+		 
     	$moduleUsedByDay = $this->moduleRepository->getModulesUsedbyDay($request);
 
     	return response()->json($moduleUsedByDay, 200);
