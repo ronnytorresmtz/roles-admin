@@ -12,7 +12,7 @@ git push origin --delete {Branch Name}
 MERGE
 //Merge branches with master
 git checkout master
-gti merge {Branch Name}
+git merge {Branch Name}
 git push origin master
 
 LOG
