@@ -75,7 +75,7 @@
         <div class="panel panel-default" > 
           <div class="panel-heading">
             <h3 class="panel-title">
-              {{tableTitle}}
+              {{ts[tableTitle]}}
               <span style="color:blue; padding-top:10px; padding-right:20px" align="left" v-if='loading'>
                 <img src="/assets/icons/loading_image.gif"/>   
               </span>
@@ -86,7 +86,7 @@
               <div class="col-sm-4">
                 <div v-show="(selects.length>0) ? true : false">
                   <div class="select-margin" v-for="select in selects">
-                      <b>{{select.label}}:</b> 
+                      <b>{{ts[select.label]}}:</b> 
                       <select 
                         class="form-control"
                         name="select.name" 
@@ -104,7 +104,7 @@
                 </div>
                 <div v-else> 
                   <div class="input-group" v-show="showTableOnly">
-                    <input type="text" v-model="searchText" class="form-control" @keyup.enter="search" placeholder="Search for...">
+                    <input type="text" v-model="searchText" class="form-control" @keyup.enter="search" placeholder="{{ ts['searchFor'] }}">
                     <span class="input-group-btn">
                       <button class="btn btn-primary" type="button" @click="search">
                         <i class="glyphicon glyphicon-search"> </i>
@@ -116,7 +116,7 @@
 
               <div class="col-sm-3" align="left" @click="searchText=''">
                 <div class="btn btn-xs btn-warning" v-show="filterApplied" style="margin:5px" >
-                   Clear Filter <span> &times; </span>
+                   {{ ts['clearFilter'] }} <span> &times; </span>
                 </div>
               </div>
 
@@ -145,10 +145,10 @@
                     <td  v-for="(key, value) in row" @click="itemSelected(row)">
                       <span v-if="key=='deleted_at'" >
                           <span v-if="value==undefined">
-                              <span class="btn btn-xs btn-success"> Active </span>
+                              <span class="btn btn-xs btn-success"> {{ ts['active'] }} </span>
                           </span>
                           <span v-else>
-                              <span class="btn btn-xs btn-danger"> Inactive </span>
+                              <span class="btn btn-xs btn-danger"> {{ ts['inactive'] }} </span>
                           </span>
                       </span>
 
@@ -181,19 +181,19 @@
                  <div class="col-sm-6">
                   <div align="left" style="padding-top:10px">
                   <p style="font-size:13px;" > 
-                     Showing: {{from}} to {{to}} of {{total}} items
+                     {{ ts['showing'] }}: {{from}} {{ ts['to'] }} {{to}} {{ ts['of'] }} {{total}} {{ ts['items'] }}
                   </p>
                   </div>
                 </div>
                 <div v-if="NoMorePages" style="color:gray" align="right"> 
-                  <strong> <em>No more Pages</strong></em> 
+                  <strong> <em>{{ ts['noMorePages'] }}</strong></em> 
                 </div>  
                 <div class="col-sm-6">
                   <div align="right" style="padding-top:10px">
-                    <a class="btn btn-sm btn-primary button-size" @click.prevent="goToFisrtPage"> Start </a> 
-                    <a class="btn btn-sm btn-primary button-size" @click.prevent="goToPrevPage"> Prev </a> 
-                    <a class="btn btn-sm btn-primary button-size" @click.prevent="goToNextPage"> Next </a> 
-                    <a class="btn btn-sm btn-primary button-size" @click.prevent="goToLastPage"> End </a> 
+                    <a class="btn btn-sm btn-primary button-size" @click.prevent="goToFisrtPage"> {{ ts['start'] }} </a> 
+                    <a class="btn btn-sm btn-primary button-size" @click.prevent="goToPrevPage"> {{ ts['prev'] }} </a> 
+                    <a class="btn btn-sm btn-primary button-size" @click.prevent="goToNextPage"> {{ ts['next'] }} </a> 
+                    <a class="btn btn-sm btn-primary button-size" @click.prevent="goToLastPage"> {{ ts['end'] }} </a> 
                     <br/> <br/>
                   </div>
                 </div>

@@ -15,7 +15,7 @@ module.exports = {
     data: function(){
       return {
         ts: '',
-        locale: 'en',
+        locale: 'sp',
       }
     },
 
@@ -28,6 +28,7 @@ module.exports = {
       setLocale: function(e){
         this.locale= e.target.value;
         this.ts= this.getLang();
+        
       }
      
     }

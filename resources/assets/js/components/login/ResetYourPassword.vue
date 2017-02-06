@@ -17,7 +17,7 @@
 <template>
   <div class="panel panel-default component-center" v-if="showView">
     <div class="panel-heading">
-      <h3 class="panel-title">Forgot Your Password </h3>
+      <h3 class="panel-title">{{ ts['resetYourPassword'] }} </h3>
     </div>           
     <div class="panel-body">
 
@@ -25,10 +25,11 @@
           <div class="row">
             <div class="col-sm-12 text-left">
               <p class="alert alert-info">
-                Type the Security Code you received in your email account, then type your New Password, confirm the New Password and Click Send.
+                {{ ts['securtiyNumberMsg'] }}
+                
                 
               </p>
-              Security Number
+               {{ ts['securityNumber'] }}
               <div class="input-group">
                 <span class="input-group-addon" id="basic-addon1">
                   <i class="glyphicon glyphicon-lock" ></i>
@@ -41,12 +42,12 @@
                   value=""
                   size="10px"
                   aria-describedby="basic-addon1"
-                  placeholder="Type the security number">
+                  placeholder="{{ ts['typeTheSecurityNumber']}}">
                 </input>
               </div>
               
               <hr>
-              New Password
+               {{ ts['newPassword'] }}
               <div class="input-group">
                 <span class="input-group-addon" id="basic-addon1">
                   <i class="glyphicon glyphicon-lock" ></i>
@@ -57,14 +58,14 @@
                     name="new_password" 
                     class ="form-control",
                     maxlength="15",
-                    placeholder="Type the new password">
+                    placeholder="{{ ts['typeTheNewPassword'] }}">
                 </input>
               </div>
 
-              <span v-show="lengthMessage" class="confirm-password">Password require 8 characters</span>
+              <span v-show="lengthMessage" class="confirm-password">{{ ts['newPasswordError'] }}</span>
 
               <br>
-              Confirm Password
+             {{ ts['confirmPassword'] }}
               <div class="input-group">
                 <span class="input-group-addon" id="basic-addon1">
                   <i class="glyphicon glyphicon-lock" ></i>
@@ -75,11 +76,11 @@
                     name="new_password_confirmation" 
                     class ="form-control",
                     maxlength="15",
-                    placeholder="Confirm the new password">
+                    placeholder="{{ ts['typeTheConfirmPassword'] }}">
                 </input>
               </div>
              
-              <span v-show="confirmMessage" class="confirm-password">Confirm Password does not match</span>
+              <span v-show="confirmMessage" class="confirm-password">{{ ts['confirmPasswordError'] }}</span>
               
             </div>
           </div>
@@ -93,7 +94,7 @@
               @click.prevent="resetPassword"
               :disabled="(confirmMessage) ? true : false"
             >
-            Reset
+            {{ ts['reset'] }}
             </button>
           </div>	
       </form>
@@ -104,11 +105,15 @@
 
 <script>
 
+  import MyLang from '../../components/languages/Languages.vue';
+
   module.exports = {
+
+   mixins: [MyLang],
 
     beforeCompile: function(){
       var self=this;
-      self.$http.get('login/tokenExist', {token: self.$route.query.token}).then(function(response){
+      self.$http.post('login/tokenExist', {token: self.$route.query.token}).then(function(response){
           if (response.data==true){
             self.showView = true;
             self.token = self.$route.query.token;

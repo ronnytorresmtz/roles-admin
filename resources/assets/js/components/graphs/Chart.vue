@@ -13,7 +13,7 @@
   <div class="panel panel-default"> 
     <div class="panel-heading">
       <h3 class="panel-title">
-      {{title}}
+      {{ ts[title] }}
       <span style="color:blue;" align="left" v-if='loading'>
         <img src="/assets/icons/loading_image.gif"/>
       </span>
@@ -23,13 +23,13 @@
       <div class="row">
           <div v-if="showYear">
             <div class="col-xs-1 selectwidth " v-if="showYear">
-              Year: 
+              {{ ts['year'] }}: 
               <select name="year" class="form-control selectwidth" v-model="yearSelected" @change="changeYearMonth()">
                 <option v-for="(key, value) in years" value="{{value}}"> {{value}} </option>
               </select>
             </div>
             <div class="col-xs-1" v-if="showMonth" >
-              Month: 
+              {{ ts['month'] }}: 
               <select name="month" class="form-control selectwidth" v-model="monthSelected" @change="changeYearMonth()">
                 <option v-for="(key, value) in months" value="{{key + 1}}"> {{value}} </option>
               </select>
@@ -47,7 +47,7 @@
 
 </template>
 
-myChart
+
 <script>
 
 import MyLang from '../../components/languages/Languages.vue';

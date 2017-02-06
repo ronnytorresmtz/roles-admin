@@ -10,12 +10,12 @@
     <slot name="message"></slot>
     <slot name="modal-import"></slot>
     <span  v-for="action in actions">
-        <a href="{{urlExport}}" class="btn btn-sm btn-primary button-size" v-if="(action.title=='Export') ? true : false">   
-          Export
+        <a href="{{urlExport}}" class="btn btn-sm btn-primary button-size" v-if="(action.title=='export') ? true : false">   
+          {{ ts['export'] }}
         </a>
 
        <button v-else id="buttonsId" class="btn btn-sm btn-primary button-size" :disabled="action.disabled" @click.prevent="getActionMethod(action.method)"> 
-        {{ action.title }} 
+        {{ ts[action.title] }} 
        </button>
     </span>
  </div>
@@ -24,7 +24,12 @@
 </template>
 
 <script>
+
+ import MyLang from '../../components/languages/Languages.vue';
+
   module.exports = {
+
+    mixins: [MyLang],
 
     props: ['urlExport', 'btnActions'],
 

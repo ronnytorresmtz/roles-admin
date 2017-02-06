@@ -18,17 +18,22 @@
 	<div>
 	  <div class="panel panel-default">  
 		  <div class="panel-heading"> 
-		  	<h3 class="panel-title">Menu Options </h3> 
+		  	<h3 class="panel-title">{{ ts['menuOptions']}}</h3> 
 		  </div> 
       <div class="list-group " class="cursor-hand" v-for="subOption in subOptions">
-         <a  class="list-group-item left-panel-border" style="color:blue" v-link="subOption.method">{{subOption.title}}</a>
+         <a  class="list-group-item left-panel-border" style="color:blue" v-link="subOption.method">{{ ts[subOption.title] }}</a>
       </div>
 	</div>
 </template>
 
 
 <script>
+
+  import MyLang from '../../components/languages/Languages.vue';
+
   module.exports = {
+
+    mixins: [MyLang],
 
     props: ['submenu'],
 
@@ -37,13 +42,13 @@
         subOptions:[],
   			subMenus:{
           "security": {
-            "1":{"title":"Dashboard", "method": "/dashboard"},
-            "2":{"title":"Modules", "method": "/modules"},
-            "3":{"title":"Transactions", "method": "/transactions"},
-            "4":{"title":"Roles", "method": "/roles"},
-            "5":{"title":"Users", "method": "/users"},
-            "6":{"title":"Access Rights", "method": "/accessrights"},
-            "7":{"title":"Help", "method": "/help"}
+            "1":{"title":"dashboard", "method": "/dashboard"},
+            "2":{"title":"modules", "method": "/modules"},
+            "3":{"title":"transactions", "method": "/transactions"},
+            "4":{"title":"roles", "method": "/roles"},
+            "5":{"title":"users", "method": "/users"},
+            "6":{"title":"accessRights", "method": "/accessrights"},
+            "7":{"title":"help", "method": "/help"}
           },
         }
   		}

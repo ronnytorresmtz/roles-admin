@@ -42,11 +42,12 @@
   <div>
     <div class="panel panel-default" > 
       <div class="pull-right expand-botton">
-        <button class="btn btn-xs btn-default expand-botton" @click.prevent="expand" v-text="expandOrCollapse">
+        <button class="btn btn-xs btn-default expand-botton" @click.prevent="expand">
+          {{ ts[expandOrCollapse] }}
         </button>
       </div>
       <div class="panel-heading">
-        <h3 class="panel-title">{{actionType}} {{formTitle}}</h3>
+        <h3 class="panel-title">{{ ts[actionType] }} {{ ts[formTitle] }}</h3>
       </div>  
    
       <div class="panel-body body-height"> 
@@ -56,14 +57,14 @@
 
             <div class="col-sm-12 text-left" v-if="(field.type=='text')">
               <div class="control-group">
-                <b>{{field.label}}:</b> <span class="lg-red" v-text="field.required && !field.value ? ' *' : ''"></span>
+                <b>{{ ts[field.label] }}:</b> <span class="lg-red" v-text="field.required && !field.value ? ' *' : ''"></span>
                 <span >
                   <input 
                     type="text"
                     v-model="field.value"
                     name="field.name"
                     maxlength={{field.maxlength}} 
-                    placeholder={{field.placeholder}} 
+                    placeholder={{ts[field.placeholder]}} 
                     :readonly="field.readonly"
                     required={{field.required}}
                     class="form-control"
@@ -75,13 +76,13 @@
             
               <div class="col-sm-12 text-left" v-if="(field.type=='textarea')">
                 <div class="control-group">
-                  <b>{{field.label}}:</b> <span class="lg-red" v-text="field.required && !field.value ? ' *' : ''"></span>
+                  <b>{{ts[field.label]}}:</b> <span class="lg-red" v-text="field.required && !field.value ? ' *' : ''"></span>
                   <span >
                     <textarea 
                         v-model="field.value"
                         name="field.name"
                         maxlength={{field.maxlength}} 
-                        placeholder={{field.placeholder}} 
+                        placeholder={{ts[field.placeholder]}} 
                         :readonly="field.readonly"
                         required={{field.required}}
                         class="form-control"
@@ -93,13 +94,13 @@
             
               <div class="col-sm-12 text-left" v-if="(field.type=='checkbox')">
                 <div class="control-group"> 
-                  <b>{{field.label}}:</b>  
+                  <b>{{ ts[field.label] }}:</b>  
                   <input 
                     type="checkbox" 
                     v-model="field.value"
                     name="field.name"
                     maxlength={{field.maxlength}} 
-                    placeholder={{field.placeholder}} 
+                    placeholder={{ts[field.placeholder]}} 
                     checked={{field.checked}} 
                     :readonly="field.readonly"
                     required={{field.required}}
@@ -110,7 +111,7 @@
 
              <div class="col-sm-12 text-left" v-if="(field.type=='select')">
               <div class="control-group"> 
-                <b>{{field.label}}:</b> 
+                <b>{{ ts[field.label] }}:</b> 
                 <select 
                   id="{{field.name}}"
                   class="form-control"
@@ -131,7 +132,7 @@
 
             <div class="col-sm-12 text-left" v-if="(field.type=='status' && actionType!='Add')" >
               <div class="control-group"> 
-                <b>{{field.label}}:</b>  
+                <b>{{ ts[field.label] }}:</b>  
                 <span >
                   <i class="glyphicon glyphicon-{{itemStatus}}" name="deleted_at"></i>
                 </span>
@@ -142,20 +143,20 @@
         </div>
       </div>
       <div class="row text-left align-button">
-        <button class="btn btn-sm btn-success button-size" v-show="displayBtnSave" :disabled="isDisableBtnSave" @click.prevent="btnSave" > Save </button> 
-        <button class="btn btn-sm btn-success button-size" v-show="displayBtnUpdate" :disabled="isDisableBtnUpdate" @click.prevent="btnUpdate" > Update </a> 
-        <button class="btn btn-sm btn-danger button-size" v-show="displayBtnDelete" @click.prevent="btnDelete" > Delete </button>
-        <button class="btn btn-sm btn-success button-size" v-show="displayBtnExport" @click.prevent="btnExport" > Export </button>
-        <button class="btn btn-sm btn-success button-size" v-show="displayBtnImport" @click.prevent="btnImport" > Import </button>
-        <button class="btn btn-sm btn-default button-size" @click.prevent="btnClose" > Close </button>
+        <button class="btn btn-sm btn-success button-size" v-show="displayBtnSave" :disabled="isDisableBtnSave" @click.prevent="btnSave" > {{ ts['save'] }} </button> 
+        <button class="btn btn-sm btn-success button-size" v-show="displayBtnUpdate" :disabled="isDisableBtnUpdate" @click.prevent="btnUpdate" > {{ ts['update'] }} </a> 
+        <button class="btn btn-sm btn-danger button-size" v-show="displayBtnDelete" @click.prevent="btnDelete" > {{ ts['delete'] }} </button>
+        <button class="btn btn-sm btn-success button-size" v-show="displayBtnExport" @click.prevent="btnExport" > {{ ts['export'] }} </button>
+        <button class="btn btn-sm btn-success button-size" v-show="displayBtnImport" @click.prevent="btnImport" > {{ ts['import'] }} </button>
+        <button class="btn btn-sm btn-default button-size" @click.prevent="btnClose" > {{ ts['close'] }} </button>
       </div>
       
-        <div class="processing" align="left" v-if="processing">
+        <!--<div class="processing" align="left" v-if="processing">
           <img src="/assets/icons/loading_image.gif"/> Processing
         </div>
         <div v-else>
           <br><br>
-        </div>
+        </div>-->
         <br>
        <!--  <pre>{{ $data | json }}</pre> -->
     </div> 
@@ -164,9 +165,15 @@
 </template>
 
 <script>
+
+  import MyLang from '../../components/languages/Languages.vue';
+
+  
   var CONST_NEW='New';
 
   module.exports = {
+
+    mixins: [MyLang],
 
     props: ['url','formTitle','inputFields'],
 
@@ -181,7 +188,7 @@
         currentItem:'',
         nuevo: 'disabled',
         IsCrudExpanded: false,
-        expandOrCollapse: 'Expand',
+        expandOrCollapse: 'expand',
         actionType: '',
         displayBtnSave:false,
         displayBtnUpdate:false,
@@ -361,9 +368,9 @@
       expand: function(){
         this.IsCrudExpanded = !this.IsCrudExpanded;
         if (this.IsCrudExpanded){
-          this.expandOrCollapse='Collapse'
+          this.expandOrCollapse='collapse'
         }else{
-           this.expandOrCollapse='Expand'
+           this.expandOrCollapse='expand'
         }
         this.$dispatch('expandCrud');
       },
@@ -463,7 +470,7 @@
       add: function(){
         this.btnReset();
         this.initButtons();
-        this.actionType      ='Add';
+        this.actionType      ='add';
         this.displayBtnSave  = true;
         this.displayBtnReset = true;
         this.fields[0].value = CONST_NEW;
@@ -474,7 +481,7 @@
       
       edit: function(){
         this.initButtons();
-        this.actionType       ='Edit';
+        this.actionType       ='edit';
         this.displayBtnUpdate = true;
         this.displayBtnDelete = true;
         this.displayBtnReset  = true;
