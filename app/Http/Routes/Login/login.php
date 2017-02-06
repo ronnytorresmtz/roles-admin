@@ -33,10 +33,10 @@ Route::group(array('middleware' => 'guest'), function(){
 		'uses'			=> 'LoginController@getUserAuthenticated'
 	));
 
-	Route::get('login/tokenExist', array(
+	Route::post('login/tokenExist', array(
 
 		'as'			=> 'login.tokenExist',
-		'uses'			=> 'LoginController@getTokenExist'
+		'uses'			=> 'LoginController@postTokenExist'
 	));
 
 
