@@ -21,7 +21,7 @@ module.exports = {
     data: function() {
       return {
        
-      }
+      };
     },
 
     components: { 
@@ -68,4 +68,4 @@ module.exports = {
       },
 
     }
-  }
+  };
