@@ -1,39 +1,52 @@
+
 // store.js
 
-import Vue from 'vue';
-import Vuex from 'vuex';
+const store = {
 
-Vue.use(Vuex);
+  IsUserLogged:false
 
-const store = new Vuex.Store({
+};
+
+module.exports = {
+
+  store
+
+};
+
+// import Vue from 'vue';
+// import Vuex from 'vuex';
+
+// Vue.use(Vuex);
+
+// const store = new Vuex.Store({
  
-  state: {
-    showForm: false
-  },
+//   state: {
+//     userLogged: false
+//   },
 
-  mutations: {
-    TOGGLE_FORM(state){
-    	state.showForm = ! state.showForm
-    },
+//   mutations: {
+//     SET_USERLOGGED(state, value){
+//     	state.userLogged = value;
+//     },
 
-  },
+//   },
 
-  actions: {
-    toggleForm({commit}) {
-      commit('TOGGLE_FORM')
-    }
-  },
+//   actions: {
+//     setUserLogged({commit}, value) {
+//       commit('SET_USERLOGGED', value);
+//     }
+//   },
 
-  getters: {
-    getShowForm: function(state){
-     return state.showForm;
-    }
-  }
-});
+//   getters: {
+//     isUserLogged: function(state){
+//      return state.userLogged;
+//     }
+//   }
+// });
 
-export default new Vuex.Store({
-  state,
-  mutations,
-  actions,
-  getters
-});
+// export default new Vuex.Store({
+//   state,
+//   mutations,
+//   actions,
+//   getters
+// });
