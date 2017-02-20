@@ -15,7 +15,7 @@ module.exports = {
     data: function(){
       return {
         ts: '',
-        locale: 'sp',
+        locale: 'en',
       }
     },
 
