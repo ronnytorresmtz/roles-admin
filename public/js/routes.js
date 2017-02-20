@@ -16399,7 +16399,7 @@ module.exports = {
   data: function data() {
     return {
       ts: '',
-      locale: 'sp'
+      locale: 'en'
     };
   },
 
@@ -17605,23 +17605,30 @@ if (module.hot) {(function () {  module.hot.accept()
 
 require('../js/bootstrap.js');
 
+var _store = require('../js/store/store.js');
+
 var router = new VueRouter({
     history: false
 });
 
 router.beforeEach(function (transition) {
     if (transition.to.auth) {
-        axios.get('login/userAuthenticated').then(function (response) {
-            if (response.data == 'OK') {
-                transition.next();
-            } else {
-                router.go('/login');
-                transition.next();
-            }
-        }).catch(function (response) {
-            alert(response.status + '-' + response.statusText);
-            transition.abort();
-        });
+        if (!_store.store.IsUserLogged) {
+            axios.get('login/userAuthenticated').then(function (response) {
+                if (response.data == 'OK') {
+                    _store.store.IsUserLogged = true;
+                    transition.next();
+                } else {
+                    router.go('/login');
+                    transition.next();
+                }
+            }).catch(function (response) {
+                alert(response.status + '-' + response.statusText);
+                transition.abort();
+            });
+        } else {
+            transition.next();
+        }
     } else {
         transition.next();
     }
@@ -17708,11 +17715,70 @@ router.redirect({
     '*': '/'
 });
 
-var App = Vue.extend({});
+var App = Vue.extend({
+
+    store: _store.store
+
+});
 
 router.start(App, '#app');
 
-},{"../js/bootstrap.js":74,"./views/login/LoginView.vue":92,"./views/login/ResetYourPasswordView.vue":93,"./views/security/AccessRights.vue":94,"./views/security/ActionsUsedView.vue":95,"./views/security/Modules.vue":96,"./views/security/ModulesUsedView.vue":97,"./views/security/Roles.vue":98,"./views/security/Transactions.vue":99,"./views/security/TransactionsUsedView.vue":100,"./views/security/Users.vue":101,"./views/security/UsersLoggedView.vue":102}],92:[function(require,module,exports){
+},{"../js/bootstrap.js":74,"../js/store/store.js":92,"./views/login/LoginView.vue":93,"./views/login/ResetYourPasswordView.vue":94,"./views/security/AccessRights.vue":95,"./views/security/ActionsUsedView.vue":96,"./views/security/Modules.vue":97,"./views/security/ModulesUsedView.vue":98,"./views/security/Roles.vue":99,"./views/security/Transactions.vue":100,"./views/security/TransactionsUsedView.vue":101,"./views/security/Users.vue":102,"./views/security/UsersLoggedView.vue":103}],92:[function(require,module,exports){
+"use strict";
+
+// store.js
+
+var store = {
+
+  IsUserLogged: false
+
+};
+
+module.exports = {
+
+  store: store
+
+};
+
+// import Vue from 'vue';
+// import Vuex from 'vuex';
+
+// Vue.use(Vuex);
+
+// const store = new Vuex.Store({
+
+//   state: {
+//     userLogged: false
+//   },
+
+//   mutations: {
+//     SET_USERLOGGED(state, value){
+//     	state.userLogged = value;
+//     },
+
+//   },
+
+//   actions: {
+//     setUserLogged({commit}, value) {
+//       commit('SET_USERLOGGED', value);
+//     }
+//   },
+
+//   getters: {
+//     isUserLogged: function(state){
+//      return state.userLogged;
+//     }
+//   }
+// });
+
+// export default new Vuex.Store({
+//   state,
+//   mutations,
+//   actions,
+//   getters
+// });
+
+},{}],93:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n\n\n")
 'use strict';
@@ -17843,7 +17909,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-df8ed76e", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/crud/Button.vue":75,"../../components/crud/Form.vue":76,"../../components/crud/Import.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify/lib/insert-css":73}],93:[function(require,module,exports){
+},{"../../components/crud/Button.vue":75,"../../components/crud/Form.vue":76,"../../components/crud/Import.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify/lib/insert-css":73}],94:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n\n\n")
 'use strict';
@@ -17974,7 +18040,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-2c0f3986", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/crud/Button.vue":75,"../../components/crud/Form.vue":76,"../../components/crud/Import.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify/lib/insert-css":73}],94:[function(require,module,exports){
+},{"../../components/crud/Button.vue":75,"../../components/crud/Form.vue":76,"../../components/crud/Import.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify/lib/insert-css":73}],95:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n\n")
 'use strict';
@@ -18105,7 +18171,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-3a3fb885", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/crud/Button.vue":75,"../../components/crud/Form.vue":76,"../../components/crud/Import.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify/lib/insert-css":73}],95:[function(require,module,exports){
+},{"../../components/crud/Button.vue":75,"../../components/crud/Form.vue":76,"../../components/crud/Import.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify/lib/insert-css":73}],96:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n\n.link-space[_v-4792ea36] {\n\tpadding-right: 40px;\n}\n\n")
 'use strict';
@@ -18236,7 +18302,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-4792ea36", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/crud/Button.vue":75,"../../components/crud/Form.vue":76,"../../components/crud/Import.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify/lib/insert-css":73}],96:[function(require,module,exports){
+},{"../../components/crud/Button.vue":75,"../../components/crud/Form.vue":76,"../../components/crud/Import.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify/lib/insert-css":73}],97:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n\n\n")
 'use strict';
@@ -18367,7 +18433,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-58a10f66", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/crud/Button.vue":75,"../../components/crud/Form.vue":76,"../../components/crud/Import.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify/lib/insert-css":73}],97:[function(require,module,exports){
+},{"../../components/crud/Button.vue":75,"../../components/crud/Form.vue":76,"../../components/crud/Import.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify/lib/insert-css":73}],98:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n\n.link-space[_v-40e3ea6f] {\n\tpadding-right: 40px;\n}\n\n")
 'use strict';
@@ -18498,7 +18564,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-40e3ea6f", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/crud/Button.vue":75,"../../components/crud/Form.vue":76,"../../components/crud/Import.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify/lib/insert-css":73}],98:[function(require,module,exports){
+},{"../../components/crud/Button.vue":75,"../../components/crud/Form.vue":76,"../../components/crud/Import.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify/lib/insert-css":73}],99:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n\n\n")
 'use strict';
@@ -18629,7 +18695,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-36e62ffa", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/crud/Button.vue":75,"../../components/crud/Form.vue":76,"../../components/crud/Import.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify/lib/insert-css":73}],99:[function(require,module,exports){
+},{"../../components/crud/Button.vue":75,"../../components/crud/Form.vue":76,"../../components/crud/Import.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify/lib/insert-css":73}],100:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n\n\n")
 'use strict';
@@ -18760,7 +18826,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-325bac7f", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/crud/Button.vue":75,"../../components/crud/Form.vue":76,"../../components/crud/Import.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify/lib/insert-css":73}],100:[function(require,module,exports){
+},{"../../components/crud/Button.vue":75,"../../components/crud/Form.vue":76,"../../components/crud/Import.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify/lib/insert-css":73}],101:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n\n.link-space[_v-0f79cca1] {\n\tpadding-right: 40px;\n}\n\n")
 'use strict';
@@ -18891,7 +18957,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-0f79cca1", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/crud/Button.vue":75,"../../components/crud/Form.vue":76,"../../components/crud/Import.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify/lib/insert-css":73}],101:[function(require,module,exports){
+},{"../../components/crud/Button.vue":75,"../../components/crud/Form.vue":76,"../../components/crud/Import.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify/lib/insert-css":73}],102:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n\n\n")
 'use strict';
@@ -19022,7 +19088,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-367b6c64", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/crud/Button.vue":75,"../../components/crud/Form.vue":76,"../../components/crud/Import.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify/lib/insert-css":73}],102:[function(require,module,exports){
+},{"../../components/crud/Button.vue":75,"../../components/crud/Form.vue":76,"../../components/crud/Import.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify/lib/insert-css":73}],103:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n\n.link-space[_v-aef9bb96] {\n\tpadding-right: 40px;\n}\n\n")
 'use strict';
