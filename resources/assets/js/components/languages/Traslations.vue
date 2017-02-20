@@ -284,7 +284,7 @@ module.exports = {
       moduleList:        'Lista de Módulos',
       moduleName:        'Nombre de Módulo',
       moduleDescription: 'Descripción del Módulo',
-      moduleOrder:       'Order del Módulo',
+      moduleOrder:       'Orden del Módulo',
 
 			//Transaction
       transactionTopMessage:  'Esta opción permite agregar, actualizar, activar, inactivar, importar y exportar las transacciones de la aplicación.',

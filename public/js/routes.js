@@ -15638,7 +15638,11 @@ module.exports = {
     },
 
     displayPopUpMessage: function displayPopUpMessage(response) {
-      this.$dispatch('displayAlert', response.status == 200 ? 'success' : 'danger', response.statusText + ' (' + response.status + ')');
+      try {
+        this.$dispatch('displayAlert', !response.data.error ? 'success' : 'danger', response.data.message + ' (' + response.status + ')');
+      } catch (error) {
+        this.$dispatch('displayAlert', 'danger', error.name + ' Exception: ' + error.message);
+      }
     },
 
     expand: function expand() {
@@ -16156,7 +16160,11 @@ module.exports = {
     },
 
     displayPopUpMessage: function displayPopUpMessage(response) {
-      this.$dispatch('displayAlert', response.status == 200 ? 'success' : 'danger', response.statusText + ' (' + response.status + ')');
+      try {
+        this.$dispatc('displayAlert', !response.data.error ? 'success' : 'danger', response.data.message + ' (' + response.status + ')');
+      } catch (error) {
+        this.$dispatch('displayAlert', 'danger', error.name + ' Exception: ' + error.message);
+      }
     },
 
     accessRightForRoleSelected: function accessRightForRoleSelected(e) {
@@ -16309,7 +16317,11 @@ module.exports = {
     },
 
     displayPopUpMessage: function displayPopUpMessage(response) {
-      this.$dispatch('displayAlert', response.status == 200 ? 'success' : 'danger', response.statusText + ' (' + response.status + ')');
+      try {
+        this.$dispatc('displayAlert', !response.data.error ? 'success' : 'danger', response.data.message + ' (' + response.status + ')');
+      } catch (error) {
+        this.$dispatch('displayAlert', 'danger', error.name + ' Exception: ' + error.message);
+      }
     },
 
     setOptions: function setOptions(series) {
@@ -16387,7 +16399,7 @@ module.exports = {
   data: function data() {
     return {
       ts: '',
-      locale: 'sp'
+      locale: 'en'
     };
   },
 
@@ -16661,7 +16673,7 @@ module.exports = {
       //Module 
       moduleTopMessage: 'Esta opción permite agregar, actualizar, activar, inactivar, importar y exportar los módulos de la aplicación.',
       moduleList: 'Lista de Módulos'
-   }, (0, _defineProperty3.default)(_sp, 'moduleName', 'Nombre de Módulo'), (0, _defineProperty3.default)(_sp, 'moduleDescription', 'Descripción del Módulo'), (0, _defineProperty3.default)(_sp, 'moduleOrder', 'Order del Módulo'), (0, _defineProperty3.default)(_sp, 'transactionTopMessage', 'Esta opción permite agregar, actualizar, activar, inactivar, importar y exportar las transacciones de la aplicación.'), (0, _defineProperty3.default)(_sp, 'transactionList', 'Lista de Transacciones'), (0, _defineProperty3.default)(_sp, 'transactionName', 'Nombre de Transacción'), (0, _defineProperty3.default)(_sp, 'transactionDescription', 'Descripción de Transacción'), (0, _defineProperty3.default)(_sp, 'transactionOrder', 'Orden de Transacción'), (0, _defineProperty3.default)(_sp, 'dashboardTopMessage', 'Es opción permite dar seguimiento al uso del sistema y a la cantidad de usuarios que se logean'), (0, _defineProperty3.default)(_sp, 'userLogged', 'Usuarios Logeados'), (0, _defineProperty3.default)(_sp, 'usersLoggedByDay', 'Usuarios Logeados por Día'), (0, _defineProperty3.default)(_sp, 'topUserLogged', 'Usuarios Logeados'), (0, _defineProperty3.default)(_sp, 'actionsByUserLogged', 'Acciones por Usuarios Logeados'), (0, _defineProperty3.default)(_sp, 'usersLoggedByMonth', 'Usuarios Logeados por Mes'), (0, _defineProperty3.default)(_sp, 'modulesUsed', 'Modulos Usados'), (0, _defineProperty3.default)(_sp, 'modulesUsedByDay', 'Modulos Usados por Día'), (0, _defineProperty3.default)(_sp, 'modulesUsedByMonth', 'Modulos Usados por Mes'), (0, _defineProperty3.default)(_sp, 'transactionsUsed', 'Transacciones Usadas'), (0, _defineProperty3.default)(_sp, 'transactionsUsedByDay', 'Transacciones Usadas por Día'), (0, _defineProperty3.default)(_sp, 'transactionsUsedByMonth', 'Transacciones Usadas por Mes'), (0, _defineProperty3.default)(_sp, 'actionsUsed', 'Acciones Usadas'), (0, _defineProperty3.default)(_sp, 'actionsUsedByDay', 'Acciones Usadas por Día'), (0, _defineProperty3.default)(_sp, 'actionsUsedByMonth', 'Acciones Usadas por Mes'), (0, _defineProperty3.default)(_sp, 'year', 'Año'), (0, _defineProperty3.default)(_sp, 'month', 'Mes'), (0, _defineProperty3.default)(_sp, 'timesLogged', 'Accesos'), (0, _defineProperty3.default)(_sp, 'clicks', 'Clicks'), _sp)
+   }, (0, _defineProperty3.default)(_sp, 'moduleName', 'Nombre de Módulo'), (0, _defineProperty3.default)(_sp, 'moduleDescription', 'Descripción del Módulo'), (0, _defineProperty3.default)(_sp, 'moduleOrder', 'Orden del Módulo'), (0, _defineProperty3.default)(_sp, 'transactionTopMessage', 'Esta opción permite agregar, actualizar, activar, inactivar, importar y exportar las transacciones de la aplicación.'), (0, _defineProperty3.default)(_sp, 'transactionList', 'Lista de Transacciones'), (0, _defineProperty3.default)(_sp, 'transactionName', 'Nombre de Transacción'), (0, _defineProperty3.default)(_sp, 'transactionDescription', 'Descripción de Transacción'), (0, _defineProperty3.default)(_sp, 'transactionOrder', 'Orden de Transacción'), (0, _defineProperty3.default)(_sp, 'dashboardTopMessage', 'Es opción permite dar seguimiento al uso del sistema y a la cantidad de usuarios que se logean'), (0, _defineProperty3.default)(_sp, 'userLogged', 'Usuarios Logeados'), (0, _defineProperty3.default)(_sp, 'usersLoggedByDay', 'Usuarios Logeados por Día'), (0, _defineProperty3.default)(_sp, 'topUserLogged', 'Usuarios Logeados'), (0, _defineProperty3.default)(_sp, 'actionsByUserLogged', 'Acciones por Usuarios Logeados'), (0, _defineProperty3.default)(_sp, 'usersLoggedByMonth', 'Usuarios Logeados por Mes'), (0, _defineProperty3.default)(_sp, 'modulesUsed', 'Modulos Usados'), (0, _defineProperty3.default)(_sp, 'modulesUsedByDay', 'Modulos Usados por Día'), (0, _defineProperty3.default)(_sp, 'modulesUsedByMonth', 'Modulos Usados por Mes'), (0, _defineProperty3.default)(_sp, 'transactionsUsed', 'Transacciones Usadas'), (0, _defineProperty3.default)(_sp, 'transactionsUsedByDay', 'Transacciones Usadas por Día'), (0, _defineProperty3.default)(_sp, 'transactionsUsedByMonth', 'Transacciones Usadas por Mes'), (0, _defineProperty3.default)(_sp, 'actionsUsed', 'Acciones Usadas'), (0, _defineProperty3.default)(_sp, 'actionsUsedByDay', 'Acciones Usadas por Día'), (0, _defineProperty3.default)(_sp, 'actionsUsedByMonth', 'Acciones Usadas por Mes'), (0, _defineProperty3.default)(_sp, 'year', 'Año'), (0, _defineProperty3.default)(_sp, 'month', 'Mes'), (0, _defineProperty3.default)(_sp, 'timesLogged', 'Accesos'), (0, _defineProperty3.default)(_sp, 'clicks', 'Clicks'), _sp)
 
 };
 if (module.exports.__esModule) module.exports = module.exports.default
@@ -16768,7 +16780,11 @@ module.exports = {
     },
 
     displayPopUpMessage: function displayPopUpMessage(response) {
-      this.$dispatch('displayAlert', response.status == 200 ? 'success' : 'danger', response.data + ' (' + response.status + ')');
+      try {
+        this.$dispatc('displayAlert', !response.data.error ? 'success' : 'danger', response.data.message + ' (' + response.status + ')');
+      } catch (error) {
+        this.$dispatch('displayAlert', 'danger', error.name + ' Exception: ' + error.message);
+      }
     },
 
     isValidEmail: function isValidEmail(email) {
@@ -16880,7 +16896,11 @@ module.exports = {
     },
 
     displayPopUpMessage: function displayPopUpMessage(response) {
-      this.$dispatch('displayAlert', response.status == 200 ? 'success' : 'danger', response.data + ' (' + response.status + ')');
+      try {
+        this.$dispatc('displayAlert', !response.data.error ? 'success' : 'danger', response.data.message + ' (' + response.status + ')');
+      } catch (error) {
+        this.$dispatch('displayAlert', 'danger', error.name + ' Exception: ' + error.message);
+      }
     }
   },
 
@@ -16960,7 +16980,7 @@ if (module.hot) {(function () {  module.hot.accept()
 })()}
 },{"../../components/languages/Languages.vue":80,"vue":72,"vue-hot-reload-api":70,"vueify/lib/insert-css":73}],85:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
-var __vueify_style__ = __vueify_insert__.insert("\n\n\t.cursor-hand{\n\t\tcursor: pointer;\n\t}\n  \n  .left-panel-border{\n    border-top:none;\n    border-left:none;\n    border-right:none;\n\n  }\n\n")
+var __vueify_style__ = __vueify_insert__.insert("\n\n\t.cursor-hand{\n\t\tcursor: pointer;\n\t}\n  \n  .left-panel-border{\n    border-top:none;\n    border-left:none;\n    border-right:none;\n\n  }\n  \n\n")
 'use strict';
 
 var _stringify = require('babel-runtime/core-js/json/stringify');
@@ -17006,13 +17026,13 @@ module.exports = {
 
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\t<div>\n\t  <div class=\"panel panel-default\">  \n\t\t  <div class=\"panel-heading\"> \n\t\t  \t<h3 class=\"panel-title\">{{ ts['menuOptions']}}</h3> \n\t\t  </div> \n      <div class=\"list-group \" v-for=\"subOption in subOptions\">\n         <a class=\"list-group-item left-panel-border\" style=\"color:blue\" v-link=\"subOption.method\">{{ ts[subOption.title] }}</a>\n      </div>\n\t</div>\n</div>"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\t<div>\n\t  <div class=\"panel panel-default\">  \n\t\t  <div class=\"panel-heading\"> \n\t\t  \t<h3 class=\"panel-title\">{{ ts['menuOptions']}}</h3> \n\t\t  </div> \n      <div class=\"list-group \" v-for=\"subOption in subOptions\">\n         <a class=\"list-group-item left-panel-border\" style=\"color:#428bca\" v-link=\"subOption.method\">{{ ts[subOption.title] }}</a>\n      </div>\n\t</div>\n</div>"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   module.hot.dispose(function () {
-    __vueify_insert__.cache["\n\n\t.cursor-hand{\n\t\tcursor: pointer;\n\t}\n  \n  .left-panel-border{\n    border-top:none;\n    border-left:none;\n    border-right:none;\n\n  }\n\n"] = false
+    __vueify_insert__.cache["\n\n\t.cursor-hand{\n\t\tcursor: pointer;\n\t}\n  \n  .left-panel-border{\n    border-top:none;\n    border-left:none;\n    border-right:none;\n\n  }\n  \n\n"] = false
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
@@ -17315,7 +17335,11 @@ module.exports = {
     },
 
     displayPopUpMessage: function displayPopUpMessage(response) {
-      this.$dispatch('displayAlert', response.status == 200 ? 'success' : 'danger', response.statusText + ' (' + response.status + ')');
+      try {
+        this.$dispatc('displayAlert', !response.data.error ? 'success' : 'danger', response.data.message + ' (' + response.status + ')');
+      } catch (error) {
+        this.$dispatch('displayAlert', 'danger', error.name + ' Exception: ' + error.message);
+      }
     },
 
     setSearchParam: function setSearchParam() {
@@ -17541,7 +17565,11 @@ module.exports = {
     },
 
     displayPopUpMessage: function displayPopUpMessage(response) {
-      this.$dispatch('displayAlert', response.status == 200 ? 'success' : 'danger', response.statusText + ' (' + response.status + ')');
+      try {
+        this.$dispatc('displayAlert', !response.data.error ? 'success' : 'danger', response.data.message + ' (' + response.status + ')');
+      } catch (error) {
+        this.$dispatch('displayAlert', 'danger', error.name + ' Exception: ' + error.message);
+      }
     },
 
     jsonToArray: function jsonToArray(data) {
@@ -17577,23 +17605,30 @@ if (module.hot) {(function () {  module.hot.accept()
 
 require('../js/bootstrap.js');
 
+var _store = require('../js/store/store.js');
+
 var router = new VueRouter({
     history: false
 });
 
 router.beforeEach(function (transition) {
     if (transition.to.auth) {
-        axios.get('login/userAuthenticated').then(function (response) {
-            if (response.data == 'OK') {
-                transition.next();
-            } else {
-                router.go('/login');
-                transition.next();
-            }
-        }).catch(function (response) {
-            alert(response.status + '-' + response.statusText);
-            transition.abort();
-        });
+        if (!_store.store.IsUserLogged) {
+            axios.get('login/userAuthenticated').then(function (response) {
+                if (response.data == 'OK') {
+                    _store.store.IsUserLogged = true;
+                    transition.next();
+                } else {
+                    router.go('/login');
+                    transition.next();
+                }
+            }).catch(function (response) {
+                alert(response.status + '-' + response.statusText);
+                transition.abort();
+            });
+        } else {
+            transition.next();
+        }
     } else {
         transition.next();
     }
@@ -17680,11 +17715,70 @@ router.redirect({
     '*': '/'
 });
 
-var App = Vue.extend({});
+var App = Vue.extend({
+
+    store: _store.store
+
+});
 
 router.start(App, '#app');
 
-},{"../js/bootstrap.js":74,"./views/login/LoginView.vue":92,"./views/login/ResetYourPasswordView.vue":93,"./views/security/AccessRights.vue":94,"./views/security/ActionsUsedView.vue":95,"./views/security/Modules.vue":96,"./views/security/ModulesUsedView.vue":97,"./views/security/Roles.vue":98,"./views/security/Transactions.vue":99,"./views/security/TransactionsUsedView.vue":100,"./views/security/Users.vue":101,"./views/security/UsersLoggedView.vue":102}],92:[function(require,module,exports){
+},{"../js/bootstrap.js":74,"../js/store/store.js":92,"./views/login/LoginView.vue":93,"./views/login/ResetYourPasswordView.vue":94,"./views/security/AccessRights.vue":95,"./views/security/ActionsUsedView.vue":96,"./views/security/Modules.vue":97,"./views/security/ModulesUsedView.vue":98,"./views/security/Roles.vue":99,"./views/security/Transactions.vue":100,"./views/security/TransactionsUsedView.vue":101,"./views/security/Users.vue":102,"./views/security/UsersLoggedView.vue":103}],92:[function(require,module,exports){
+"use strict";
+
+// store.js
+
+var store = {
+
+  IsUserLogged: false
+
+};
+
+module.exports = {
+
+  store: store
+
+};
+
+// import Vue from 'vue';
+// import Vuex from 'vuex';
+
+// Vue.use(Vuex);
+
+// const store = new Vuex.Store({
+
+//   state: {
+//     userLogged: false
+//   },
+
+//   mutations: {
+//     SET_USERLOGGED(state, value){
+//     	state.userLogged = value;
+//     },
+
+//   },
+
+//   actions: {
+//     setUserLogged({commit}, value) {
+//       commit('SET_USERLOGGED', value);
+//     }
+//   },
+
+//   getters: {
+//     isUserLogged: function(state){
+//      return state.userLogged;
+//     }
+//   }
+// });
+
+// export default new Vuex.Store({
+//   state,
+//   mutations,
+//   actions,
+//   getters
+// });
+
+},{}],93:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n\n\n")
 'use strict';
@@ -17815,7 +17909,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-df8ed76e", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/crud/Button.vue":75,"../../components/crud/Form.vue":76,"../../components/crud/Import.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify/lib/insert-css":73}],93:[function(require,module,exports){
+},{"../../components/crud/Button.vue":75,"../../components/crud/Form.vue":76,"../../components/crud/Import.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify/lib/insert-css":73}],94:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n\n\n")
 'use strict';
@@ -17946,7 +18040,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-2c0f3986", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/crud/Button.vue":75,"../../components/crud/Form.vue":76,"../../components/crud/Import.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify/lib/insert-css":73}],94:[function(require,module,exports){
+},{"../../components/crud/Button.vue":75,"../../components/crud/Form.vue":76,"../../components/crud/Import.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify/lib/insert-css":73}],95:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n\n")
 'use strict';
@@ -18077,7 +18171,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-3a3fb885", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/crud/Button.vue":75,"../../components/crud/Form.vue":76,"../../components/crud/Import.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify/lib/insert-css":73}],95:[function(require,module,exports){
+},{"../../components/crud/Button.vue":75,"../../components/crud/Form.vue":76,"../../components/crud/Import.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify/lib/insert-css":73}],96:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n\n.link-space[_v-4792ea36] {\n\tpadding-right: 40px;\n}\n\n")
 'use strict';
@@ -18208,7 +18302,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-4792ea36", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/crud/Button.vue":75,"../../components/crud/Form.vue":76,"../../components/crud/Import.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify/lib/insert-css":73}],96:[function(require,module,exports){
+},{"../../components/crud/Button.vue":75,"../../components/crud/Form.vue":76,"../../components/crud/Import.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify/lib/insert-css":73}],97:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n\n\n")
 'use strict';
@@ -18339,7 +18433,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-58a10f66", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/crud/Button.vue":75,"../../components/crud/Form.vue":76,"../../components/crud/Import.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify/lib/insert-css":73}],97:[function(require,module,exports){
+},{"../../components/crud/Button.vue":75,"../../components/crud/Form.vue":76,"../../components/crud/Import.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify/lib/insert-css":73}],98:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n\n.link-space[_v-40e3ea6f] {\n\tpadding-right: 40px;\n}\n\n")
 'use strict';
@@ -18470,7 +18564,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-40e3ea6f", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/crud/Button.vue":75,"../../components/crud/Form.vue":76,"../../components/crud/Import.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify/lib/insert-css":73}],98:[function(require,module,exports){
+},{"../../components/crud/Button.vue":75,"../../components/crud/Form.vue":76,"../../components/crud/Import.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify/lib/insert-css":73}],99:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n\n\n")
 'use strict';
@@ -18601,7 +18695,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-36e62ffa", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/crud/Button.vue":75,"../../components/crud/Form.vue":76,"../../components/crud/Import.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify/lib/insert-css":73}],99:[function(require,module,exports){
+},{"../../components/crud/Button.vue":75,"../../components/crud/Form.vue":76,"../../components/crud/Import.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify/lib/insert-css":73}],100:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n\n\n")
 'use strict';
@@ -18732,7 +18826,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-325bac7f", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/crud/Button.vue":75,"../../components/crud/Form.vue":76,"../../components/crud/Import.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify/lib/insert-css":73}],100:[function(require,module,exports){
+},{"../../components/crud/Button.vue":75,"../../components/crud/Form.vue":76,"../../components/crud/Import.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify/lib/insert-css":73}],101:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n\n.link-space[_v-0f79cca1] {\n\tpadding-right: 40px;\n}\n\n")
 'use strict';
@@ -18863,7 +18957,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-0f79cca1", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/crud/Button.vue":75,"../../components/crud/Form.vue":76,"../../components/crud/Import.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify/lib/insert-css":73}],101:[function(require,module,exports){
+},{"../../components/crud/Button.vue":75,"../../components/crud/Form.vue":76,"../../components/crud/Import.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify/lib/insert-css":73}],102:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n\n\n")
 'use strict';
@@ -18994,7 +19088,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-367b6c64", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../components/crud/Button.vue":75,"../../components/crud/Form.vue":76,"../../components/crud/Import.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify/lib/insert-css":73}],102:[function(require,module,exports){
+},{"../../components/crud/Button.vue":75,"../../components/crud/Form.vue":76,"../../components/crud/Import.vue":77,"../../components/crud/Table.vue":78,"../../components/graphs/Chart.vue":79,"../../components/login/Login.vue":82,"../../components/login/ResetYourPassword.vue":83,"../../components/menus/HorizontalLinks.vue":84,"../../components/menus/SubMenu.vue":85,"../../components/menus/TopMenu.vue":86,"../../components/messages/Message.vue":87,"../../components/messages/PopUp.vue":88,"../../components/table/TableSearch.vue":89,"../../components/table/TableYearMonth.vue":90,"vue":72,"vue-hot-reload-api":70,"vueify/lib/insert-css":73}],103:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n\n.link-space[_v-aef9bb96] {\n\tpadding-right: 40px;\n}\n\n")
 'use strict';

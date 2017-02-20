@@ -73,7 +73,7 @@ class RoleTransactionController extends Controller {
 
 		Event::fire(new RegisterTransactionAccessEvent('security.rolesTransactions.view'));
 
-	  return response()->json($roles_transactions, 200);
+	  return response()->json($roles_transactions);
 	}
 	
 	/**
@@ -95,12 +95,12 @@ class RoleTransactionController extends Controller {
 
 		 		Event::fire(new RegisterTransactionAccessEvent('security.rolesTransactions.store'));
 
-		 		return response()->json($result, 200);
+		 		return response()->json($result);
 			 }
 
 		} 			
 
-		return response()->json($result, 400);
+		return response()->json($result);
 	}
 
 
@@ -123,12 +123,12 @@ class RoleTransactionController extends Controller {
 
 		 		Event::fire(new RegisterTransactionAccessEvent('security.rolesTransactions.update'));
 
-		 		return response()->json($result, 200);
+		 		return response()->json($result);
 		 	}
 
 	 	}
 
-		return response()->json($result, 400);
+		return response()->json($result);
 
 	}
 
@@ -147,10 +147,10 @@ class RoleTransactionController extends Controller {
 
   		Event::fire(new RegisterTransactionAccessEvent('security.rolesTransactions.delete'));
 
-  		return response()->json($result, 200);
+  		return response()->json($result);
   	}
 
-  	return response()->json($result, 400);
+  	return response()->json($result);
 	}
 
 	/**
@@ -203,7 +203,7 @@ class RoleTransactionController extends Controller {
 	
 		$roles_transactions=$this->roleTransactionRepository->getTransactionByRole($roleSelected, $this->itemsByPage);
 
-		return response()->json($roles_transactions, 200);
+		return response()->json($roles_transactions);
 	}
 
 
@@ -221,7 +221,7 @@ class RoleTransactionController extends Controller {
 
 		$actions = $this->transactionActionRepository->getAllTransactionActions();
 		
-		return response()->json($actions, 200);
+		return response()->json($actions);
 	  	
 	}
 

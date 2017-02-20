@@ -56,7 +56,7 @@ class TransactionController extends Controller {
 
 		Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.index'));
 
-		return response()->json($transactions, 200);
+		return response()->json($transactions);
 
 	}
 
@@ -65,7 +65,7 @@ class TransactionController extends Controller {
 		
 		$transactions=$this->transactionRepository->getAllTransactionsActive(null);
 
-	  return response()->json($transactions, 200);
+	  return response()->json($transactions);
 	}
 
 
@@ -74,7 +74,7 @@ class TransactionController extends Controller {
 		
 		$transactions=$this->transactionRepository->getAllTransactionsActive($this->itemsByPage);
 
-	  return response()->json($transactions, 200);
+	  return response()->json($transactions);
 	}
 
 	/**
@@ -96,12 +96,12 @@ class TransactionController extends Controller {
 			
 				Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.store'));
 
-				return response()->json($result, 200);
+				return response()->json($result);
 			}
 
 		}
 
-		return response()->json($result, 400);
+		return response()->json($result);
 	}
 
 	/**
@@ -114,21 +114,21 @@ class TransactionController extends Controller {
 	{
 		// validate the fields base on the rules define
 		$result=$this->validationService->validateInputs($this->transactionRepository->getModel(), $request->all(), 'transaction.update', 'validation.transactions');
-      // Send to view the errors messages
-    if (! $result['error']){
-  	// update the data to the database
+		// Send to view the errors messages
+		if (! $result['error']){
+		// update the data to the database
     	$result=$this->transactionRepository->update($id, $request);
 
 		 	if (! $result['error']){
 
 		 		Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.update'));
 
-		 		return response()->json($result, 200);
+		 		return response()->json($result);
 		 	}
 
 	 	}
 
-		return response()->json($result, 400);
+		return response()->json($result);
 	}
 
 
@@ -147,10 +147,10 @@ class TransactionController extends Controller {
 
 			Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.delete'));		
 
-			return response()->json($result, 200);
+			return response()->json($result);
 		}
 
-	 	return response()->json($result, 400);
+	 	return response()->json($result);
 	}
 
 	/**
@@ -167,7 +167,7 @@ class TransactionController extends Controller {
 		//$label_search= $value;
 		Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.search'));
 		//make the view and return the item filtered
-		return response()->json($transactions, 200);
+		return response()->json($transactions);
     	
 	}
 
@@ -187,10 +187,10 @@ class TransactionController extends Controller {
 
 			Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.export'));
 
-			return response()->json($result, 200); 
+			return response()->json($result); 
 		}
 
-		return response()->json($result, 400); 
+		return response()->json($result); 
 	}
 
 
@@ -211,21 +211,22 @@ class TransactionController extends Controller {
 
 				Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.import'));
 
-				return response()->json($result, 200);
+				return response()->json($result);
 			}
 
 		}
 		
-		return response()->json($result, 400);
+		return response()->json($result);
 	}
 
 
     public function postSecurityTransactionsUsedByDay(Request $request)
     {
      	Event::fire(new RegisterTransactionAccessEvent('security.dashboard.transactions'));
+
     	$transactionsUsedByDay = $this->transactionRepository->getTransactionsUsedbyDay($request);
 
-    	return response()->json($transactionsUsedByDay, 200);
+    	return response()->json($transactionsUsedByDay);
     }
 
 
@@ -233,7 +234,7 @@ class TransactionController extends Controller {
     {
     	$transactionsUsed = $this->transactionRepository->getTransactionsUsed($request, $this->itemsByPage);
       	
-      	return response()->json($transactionsUsed, 200);
+      	return response()->json($transactionsUsed);
     }
 
 
@@ -241,7 +242,7 @@ class TransactionController extends Controller {
     {
     	$transactionsUsedByMonth = $this->transactionRepository->getTransactionsUsedbyMonth($request);
 
-    	return response()->json($transactionsUsedByMonth, 200);
+    	return response()->json($transactionsUsedByMonth);
     }
 
 

@@ -13,7 +13,6 @@ use Illuminate\Http\Request;
 use App\Events\RegisterTransactionAccessEvent;
 use MyCode\Repositories\User\UserRepositoryInterface;
 use MyCode\Repositories\Role\RoleRepositoryInterface;
-use MyCode\Services\Url\UrlServiceInterface;
 use MyCode\Services\Validation\ValidationServiceInterface;
 use MyCode\Services\Document\DocumentServiceInterface;
 
@@ -27,7 +26,6 @@ class UserController extends Controller {
 	 */
 
 	protected $userRepository;
-	protected $urlService;
 	protected $validationService;
 	protected $documentService;
 	protected $roleRepository;
@@ -39,13 +37,11 @@ class UserController extends Controller {
 
 
 	public function __construct(UserRepositoryInterface $userRepository,
-															RoleRepositoryInterface $roleRepository,
-															UrlServiceInterface $urlService, 
-															ValidationServiceInterface $validationService,
-															DocumentServiceInterface $documentService)
-		{
+								RoleRepositoryInterface $roleRepository,
+								ValidationServiceInterface $validationService,
+								DocumentServiceInterface $documentService)
+	{
 		$this->userRepository    = $userRepository;
-		$this->urlService        = $urlService;
 		$this->validationService = $validationService;
 		$this->documentService   = $documentService;
 		$this->roleRepository    = $roleRepository;
@@ -75,7 +71,7 @@ class UserController extends Controller {
 		// validate the fields base on the rules define
 		$result=$this->validationService->validateInputs($this->userRepository->getModel(), $request->all(), 'AddUserForm', 'validation.users');
        
-    if (! $result['error']){
+   		if (! $result['error']){
 
 			$result = $this->userRepository->store($request);
 
@@ -83,12 +79,12 @@ class UserController extends Controller {
 			
 				Event::fire(new RegisterTransactionAccessEvent('security.users.store'));
 
-				return response()->json($result, 200);
+				return response()->json($result);
 			}
 
 		}
 
-		return response()->json($result, 400);
+		return response()->json($result);
 	}
 
 	/**
@@ -113,12 +109,12 @@ class UserController extends Controller {
 
 		 		Event::fire(new RegisterTransactionAccessEvent('security.users.update'));
 
-		 		return response()->json($result, 200);
+		 		return response()->json($result);
 		 	}
 
 	 	}
 
-		return response()->json($result, 400);
+		return response()->json($result);
 	}
 
 
@@ -137,10 +133,10 @@ class UserController extends Controller {
 
   		Event::fire(new RegisterTransactionAccessEvent('security.users.delete'));	
 
-  		return response()->json($result, 200);
+  		return response()->json($result);
   	}
 
-	 	return response()->json($result, 400);
+	 	return response()->json($result);
 	}
 
 	/**
@@ -157,7 +153,7 @@ class UserController extends Controller {
 		//$label_search= $value;
 		Event::fire(new RegisterTransactionAccessEvent('security.users.search'));
 		//make the view and return the item filtered
-		return response()->json($users, 200);
+		return response()->json($users);
     	
 	}
 
@@ -228,7 +224,7 @@ class UserController extends Controller {
      	Event::fire(new RegisterTransactionAccessEvent('security.dashboard.users'));
     	$usersLoggedByDay= $this->userRepository->getUsersLoggedbyDay($request);
 
-    	return response()->json($usersLoggedByDay, 200);
+    	return response()->json($usersLoggedByDay);
     }
 
 
@@ -236,7 +232,7 @@ class UserController extends Controller {
     {
     	$usersLogged = $this->userRepository->getUsersLogged($request, $this->itemsByPage);
       	
-      	return response()->json($usersLogged, 200);
+      	return response()->json($usersLogged);
     }
 
 
@@ -244,7 +240,7 @@ class UserController extends Controller {
     {
     	$usersLogged = $this->userRepository->getActionsByUsersLogged($request, $this->itemsByPage);
       	
-	    return response()->json($usersLogged, 200);
+	    return response()->json($usersLogged);
     }
 
 
@@ -252,7 +248,7 @@ class UserController extends Controller {
     {
     	$usersLoggedByMonth = $this->userRepository->getUsersLoggedbyMonth($request);
 
-    	return response()->json($usersLoggedByMonth, 200);
+    	return response()->json($usersLoggedByMonth);
     }
 
 }	

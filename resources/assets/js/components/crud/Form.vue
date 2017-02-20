@@ -362,7 +362,11 @@
       },
 
       displayPopUpMessage: function(response){
-        this.$dispatch('displayAlert', (response.status==200) ? 'success' : 'danger', response.statusText + ' (' + response.status + ')');
+        try{
+          this.$dispatch('displayAlert', (!response.data.error) ? 'success' : 'danger', response.data.message + ' (' + response.status + ')');
+        }catch(error){
+          this.$dispatch('displayAlert', 'danger', error.name + ' Exception: ' + error.message);
+        }
       },
 
       expand: function(){

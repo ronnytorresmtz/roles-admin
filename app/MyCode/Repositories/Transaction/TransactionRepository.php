@@ -193,7 +193,7 @@ class TransactionRepository extends MyAbstractEloquentRepository implements Tran
 			// store the data to the database
 			$model = $this->model->withTrashed()->find($id);
 
-			$model->module_id       				= $request->input('module_name');
+			$model->module_id       		= $request->input('module_name');
 			$model->transaction_name        = $request->input('transaction_name');
 			$model->transaction_description = $request->input('transaction_description');
 			$model->transaction_order       = $request->input('transaction_order');
@@ -290,11 +290,11 @@ class TransactionRepository extends MyAbstractEloquentRepository implements Tran
 		
 					$rowId = $this->model->find($file[$i]['id']);
 					
-					$rowId->module_name        			= $file[$i]['module_name'];
+					$rowId->module_name        		= $file[$i]['module_name'];
 					$rowId->transaction_name        = $file[$i]['transaction_name'];
 					$rowId->transaction_description = $file[$i]['transaction_description'];
-					$rowId->transaction_order				= $file[$i]['transaction_order'];
-					$rowId->deleted_at       				= null;
+					$rowId->transaction_order		= $file[$i]['transaction_order'];
+					$rowId->deleted_at       		= null;
 
 					$rowId->touch();  			//touch: update timestamps
 					$rowId->save();
@@ -303,13 +303,13 @@ class TransactionRepository extends MyAbstractEloquentRepository implements Tran
 				// validate no found so ADD it
 				else{
 
-					$rowId                  				= new $this->model;
+					$rowId                  		= new $this->model;
 
-					$rowId->module_name        			= $file[$i]['module_name'];
+					$rowId->module_name        		= $file[$i]['module_name'];
 					$rowId->transaction_name        = $file[$i]['transaction_name'];
 					$rowId->transaction_description = $file[$i]['transaction_description'];
-					$rowId->transaction_order				= $file[$i]['transaction_order'];
-					$rowId->deleted_at       = null;
+					$rowId->transaction_order		= $file[$i]['transaction_order'];
+					$rowId->deleted_at       		= null;
 
 					$rowId->save();
 					$addedRecords++;
@@ -328,7 +328,7 @@ class TransactionRepository extends MyAbstractEloquentRepository implements Tran
 				
 				return array('error' => false, 'message' => Lang::get('messages.success_add') .'&nbsp;' .  $addedRecords .'&nbsp;' . Lang::get('messages.success_update') .'&nbsp;' . $updateRecords .'&nbsp;' . Lang::get('messages.successfully'));
 			} 
-	   } catch (Exception $e) {
+	  	} catch (Exception $e) {
 				DB::rollBack();
 
 				return array('error' => true, 'message' => Lang::get('messages.error_caught_exception') .'&nbsp;' . str_replace("'"," ", $e->getMessage()));

@@ -90,6 +90,22 @@ return array(
 	|	),
 	*/
 		
+	'login'                              => array(
+	
+	'email.required'                     => 'The Email field is required',
+	'remember_security_number.required'  => 'The Security Code field is required',
+	'new_password.required'              => 'The New Password field is required',
+	'new_password_confirmation.required' => 'The Confirmation Password field is required',
+	'new_password.confirmed'             => 'The Confirmation Password field does not match with the New Password field',
+	),
+	
+	'programs'                           => array(
+	
+	'program_id.required'                => 'The program id field is required.',
+	'program_name.required'              => 'The program name field is required',
+	'program_description.required'       => 'The program description field is required',
+	),
+
 	'users'                              => array(
 	
 	'person_id.required'                 => 'The person_id field is required',
@@ -102,6 +118,13 @@ return array(
 	'role_name.required'                 => 'The role name field is required',
 	'role_description.required'          => 'The role description field is required',
 	),
+	
+	// 'transactions'                       => array(
+	
+	// 'module_name.required'               => 'The module name field is required',
+	// 'transaction_name.required'          => 'The transaction name field is required',
+	// 'transaction_description.required'   => 'The transaction description field is required',
+	// ),
 
 	'roles_transactions'                 => array(
 	
@@ -110,19 +133,79 @@ return array(
 	'transaction_action_name.required'   => 'The access right field is required',
 	),
 
- 	'modules'                     		=> array(
+	'institutes'                         => array(
 	
-	'module_name.required'        		=> 'The module name field is required',
-	'module_description.required' 		=> 'The module description field is required',
-	'module_order.required' 		  	=> 'The module order field is required',
+	'institute_short_name.required'      => 'The institute name field is required',
+	'institute_long_name.required'       => 'The institute description field is required',
 	),
 
- 	'transactions'                      => array(
+	'configurations'                      => array(
 	
-	'module_name.required'       		=> 'The module name field is required',
-	'transaction_name.required'        	=> 'The transaction name field is required',
-	'transaction_description.required' 	=> 'The transaction description field is required',
-	'transaction_order.required'       	=> 'The transaction order field is required',
+	'configuration_name.required'        => 'The configuration name field is required',
+	'configuration_description.required' => 'The configuration description field is required',
+	),
+	
+	'campuss'                      => array(
+	
+	'campus_name.required'        => 'The campus name field is required',
+	'campus_description.required' => 'The campus description field is required',
+	),
+	
+	'countries'                      => array(
+	
+	'country_name.required'        => 'The country name field is required',
+	'country_description.required' => 'The country description field is required',
+	),
+	
+	'states'                      => array(
+	
+	'state_name.required'        => 'The state name field is required',
+	'state_description.required' => 'The state description field is required',
+	),
+	
+	'cities'                      => array(
+	
+	'city_name.required'        => 'The city name field is required',
+	'city_description.required' => 'The city description field is required',
+	),
+	
+	'languages'                      => array(
+	
+	'language_name.required'        => 'The language name field is required',
+	'language_description.required' => 'The language description field is required',
+	),
+	
+	'plans'                      => array(
+	
+	'plan_name.required'        => 'The plan name field is required',
+	'plan_description.required' => 'The plan description field is required',
+	),
+	
+	'companies'                      => array(
+	
+	'company_name.required'        => 'The company name field is required',
+	'company_description.required' => 'The company description field is required',
+	),
+
+  'customers'                      => array(
+	
+	'customer_name.required'        => 'The customer name field is required',
+	'customer_description.required' => 'The customer description field is required',
+	),
+
+  'modules'                      => array(
+	
+	'module_name.required'        => 'The module name field is required',
+	'module_description.required' => 'The module description field is required',
+	'module_order.required' 		  => 'The module order field is required',
+	),
+
+  'transactions'                      => array(
+	
+	'module_name.required'       			 => 'The module name field is required',
+	'transaction_name.required'        => 'The transaction name field is required',
+	'transaction_description.required' => 'The transaction description field is required',
+	'transaction_order.required'       => 'The transaction order field is required',
 	),
 
   //Validation_Template Don´t Delete This Line

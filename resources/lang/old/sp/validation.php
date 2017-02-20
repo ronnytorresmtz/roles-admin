@@ -90,6 +90,23 @@ return array(
 	|	),
 	*/
 	
+	'login'                              => array(
+	
+	'email.required'                     => 'El campo de Cuenta de Correo es requierido',
+	'remember_security_number.required'  => 'El campo de Código de Seguridad es requerido',
+	'new_password.required'              => 'El campo de la Nueva Contraseña es requerida',
+	'new_password_confirmation.required' => 'El campo de Confirmación de Contraseña es requerido',
+	'new_password.confirmed'             => 'El campo de Confirmación de Contraseña debe ser igual a la Nueva Contraseña',
+	),
+	
+	
+	'programs'                           => array(
+	
+	'program_id.required'                => 'El campo programa id es requerido',
+	'program_name.required'              => 'El campo nombre de programa es requerido',
+	'program_description.required'       => 'El campo descripcion de programa es requerido',
+	),
+
 
 	'user'                              => array(
 	
@@ -104,6 +121,13 @@ return array(
 	'role_description.required'          => 'La descripción del perfil es requerido',
 	),
 	
+	// 'transactions'                       => array(
+	
+	// 'module_name.required'               => 'La selección del módulo es requerido',
+	// 'transaction_name.required'          => 'El nombre de la transacción es requerida',
+	// 'transaction_description.required'   => 'La descripción de la transacción es requerida',
+	// ),
+	
 	
 	'roles_transactions'                 => array(
 	
@@ -112,6 +136,65 @@ return array(
 	'transaction_action_name.required'   => 'La selección del permiso es requerido',
 	),
 
+	'institutes'                          => array(
+	
+	'institute_short_name.required'       => 'El nombre del módulo es requerido',
+	'institute_long_name.required'        => 'La descripción del módulo es requerido',
+	),
+
+	'configurations'                      => array(
+	
+	'configuration_name.required'         => 'El nombre de la configuración es requerido',
+	'configuration_description.required'  => 'La descripción de la configuración es requerido',
+	),
+	
+	'campuss'                      		  => array(
+	
+	'campus_name.required'        		  => 'El nombre de campus es requierido',
+	'campus_description.required'         => 'La descripción de campus es requerida',
+	),
+	
+	'countries'                      => array(
+	
+	'country_name.required'        => 'The country name field is required',
+	'country_description.required' => 'The country description field is required',
+	),
+	
+	'states'                      => array(
+	
+	'state_name.required'        => 'The state name field is required',
+	'state_description.required' => 'The state description field is required',
+	),
+	
+	'cities'                      => array(
+	
+	'city_name.required'        => 'The city name field is required',
+	'city_description.required' => 'The city description field is required',
+	),
+	
+	'languages'                      => array(
+	
+	'language_name.required'        => 'The language name field is required',
+	'language_description.required' => 'The language description field is required',
+	),
+	
+	'plans'                      => array(
+	
+	'plan_name.required'        => 'The plan name field is required',
+	'plan_description.required' => 'The plan description field is required',
+	),
+	
+	'companies'                      => array(
+	
+	'company_name.required'        => 'The company name field is required',
+	'company_description.required' => 'The company description field is required',
+	),
+	
+	'customers'                      => array(
+	
+	'customer_name.required'        => 'The customer name field is required',
+	'customer_description.required' => 'The customer description field is required',
+	),
 	
 	'modules'                      => array(
 	
