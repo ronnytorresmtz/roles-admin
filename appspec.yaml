@@ -1,0 +1,13 @@
+version: 0.0
+os: linux
+files:
+  - source: ./public
+    destination: /var/www/html/roles-admin/public
+hooks:
+  BeforeInstall:
+    - location: scripts/before_install.sh
+      timeout: 300
+      runas: root
+    - location: scripts/start_server.sh
+      timeout: 300
+      runas: root
