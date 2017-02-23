@@ -3,6 +3,8 @@ os: linux
 files:
   - source: /public
     destination: /var/www/html/roles-admin/public
+  - source: /
+    destination: /var/www/repo/roles-admin
 hooks:
   BeforeInstall:
     - location: scripts/before_install.sh
