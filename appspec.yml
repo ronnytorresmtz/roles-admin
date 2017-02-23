@@ -1,7 +1,7 @@
 version: 0.0
 os: linux
 files:
-  - source: ./public
+  - source: /public
     destination: /var/www/html/roles-admin/public
 hooks:
   BeforeInstall:
