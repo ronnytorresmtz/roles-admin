@@ -1,8 +1,6 @@
 version: 0.0
 os: linux
 files:
-  - source: /public
-    destination: /var/www/html/roles-admin/public
   - source: /
     destination: /var/repo/roles-admin
 hooks:
