@@ -4,7 +4,7 @@ version: 0.0
 files: 
   - 
     source: /
-    destination: /var/repo/rolesadmin
+    destination: /var/repo/roles-admin
 hooks: 
   AfterInstall: 
     - 
