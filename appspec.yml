@@ -1,8 +1,10 @@
 --- 
+os: linux
+version: 0.0
 files: 
   - 
-    destination: /var/repo/rolesadmin
     source: /
+    destination: /var/repo/rolesadmin
 hooks: 
   AfterInstall: 
     - 
@@ -19,5 +21,4 @@ hooks:
       location: scripts/install.sh
       runas: root
       timeout: 300
-os: linux
-version: 0.0
+
