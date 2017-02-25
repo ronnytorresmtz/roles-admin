@@ -1,18 +1,23 @@
-version: 0.0
+--- 
+files: 
+  - 
+    destination: /var/repo/rolesadmin
+    source: /
+hooks: 
+  AfterInstall: 
+    - 
+      location: scripts/start_server.sh
+      runas: root
+      timeout: 300
+  BeforeInstall: 
+    - 
+      location: scripts/before_install.sh
+      runas: root
+      timeout: 300
+  Install: 
+    - 
+      location: scripts/install.sh
+      runas: root
+      timeout: 300
 os: linux
-files:
-  - source: /
-     destination: /var/repo/rolesadmin
-hooks:
-  BeforeInstall:
-    - location: scripts/before_install.sh
-      timeout: 300
-      runas: root
-  Install:
-    - location: scripts/install.sh
-      timeout: 300
-      runas: root
-  AfterInstall:
-    - location: scripts/start_server.sh
-      timeout: 300
-      runas: root
+version: 0.0
