@@ -5,6 +5,8 @@ files:
   - 
     source: /
     destination: /var/repo/roles-admin
+  - source: /public
+    destination: /var/www/html/roles-admin/public
 hooks: 
   AfterInstall: 
     - 
