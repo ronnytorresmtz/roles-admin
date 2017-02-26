@@ -13,14 +13,15 @@ hooks:
       location: scripts/before_install.sh
       runas: root
       timeout: 300
+  AfterInstall: 
   Install: 
     - 
-      location: scripts/install.sh
+      location: scripts/after_install.sh
       runas: root
       timeout: 300
-  AfterInstall: 
+  ApplicationStart: 
     - 
-      location: scripts/start_server.sh
+      location: scripts/start_services.sh
       runas: root
       timeout: 300
 
