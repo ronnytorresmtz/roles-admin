@@ -8,11 +8,6 @@ files:
   - source: /public
     destination: /var/www/html/roles-admin/public
 hooks: 
-  AfterInstall: 
-    - 
-      location: scripts/start_server.sh
-      runas: root
-      timeout: 300
   BeforeInstall: 
     - 
       location: scripts/before_install.sh
@@ -21,6 +16,11 @@ hooks:
   Install: 
     - 
       location: scripts/install.sh
+      runas: root
+      timeout: 300
+  AfterInstall: 
+    - 
+      location: scripts/start_server.sh
       runas: root
       timeout: 300
 
