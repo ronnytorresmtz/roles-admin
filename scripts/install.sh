@@ -1,7 +1,7 @@
 # script/after_install.sh
 #!/bin/bash
-#sudo cp -r ../public/ /var/www/html/roles-admin
-sudo mv -rf /var/www/html/roles-admin/public/index_prod.php /var/www/html/roles-admin/public/index.php
+sudo rm -r /var/www/html/roles-admin/public/index.php
+#sudo co -rf /var/www/html/roles-admin/public/index_prod.php /var/www/html/roles-admin/public/index.php
 
 
 
