@@ -4,9 +4,7 @@ version: 0.0
 files: 
   - 
     source: /
-    destination: /var/repo/roles-admin
-  - source: /public
-    destination: /var/www/html/roles-admin/public
+    destination: /var/www/html/roles-admin/
 hooks: 
   BeforeInstall: 
     - 
