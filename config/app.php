@@ -39,8 +39,8 @@ return [
 	|
 	*/
 
-	//'timezone' => 'UTC',
-	'timezone' => env('APP_TIMEZONE'),
+	'timezone' => 'UTC',
+	//'timezone' => env('APP_TIMEZONE'),
 
 	/*
 	|--------------------------------------------------------------------------
