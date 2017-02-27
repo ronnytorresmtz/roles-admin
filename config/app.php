@@ -155,7 +155,7 @@ return [
 		 * Third-Party Application Service Providers...
 		 */
 		'Maatwebsite\Excel\ExcelServiceProvider',
-		'Laracasts\Generators\GeneratorsServiceProvider',
+	//	'Laracasts\Generators\GeneratorsServiceProvider',
 		'Illuminate\Html\HtmlServiceProvider',
 		'Clockwork\Support\Laravel\ClockworkServiceProvider',
 		'Barryvdh\Debugbar\ServiceProvider',
