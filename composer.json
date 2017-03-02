@@ -24,8 +24,8 @@
 	"autoload": {
 		"classmap": [
 			"database",
-			"roles-admin/app/Http/Controllers",
-			"roles-admin/app/MyCode"			
+			"app/Http/Controllers",
+			"app/MyCode"			
 		],
 		"psr-4": {
 			"App\\": "roles-admin/app/"
