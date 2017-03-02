@@ -28,7 +28,7 @@
 			"app/MyCode"			
 		],
 		"psr-4": {
-			"App\\": "roles-admin/app/"
+			"App\\": "app/"
 		}
 	},
 	"autoload-dev": {
