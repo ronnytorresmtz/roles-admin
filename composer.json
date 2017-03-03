@@ -28,7 +28,8 @@
 			"app/MyCode"			
 		],
 		"psr-4": {
-			"App\\": "app/"
+			"App\\": "app/",
+			"Routes\\":"app/Http/Routes"
 		}
 	},
 	"autoload-dev": {
