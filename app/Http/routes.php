@@ -14,7 +14,7 @@
 // echo dirname(app_path() . '\Http\Routes');	
 // echo dirname(__DIR__ . '\Routes');
 // Get the split routes files that are in the app/Http/Routes 
-$allFiles = File::allFiles('var\www\html\roles-admin\MyCode\Routes');
+$allFiles = File::allFiles('var/www/html/roles-admin/MyCode/Routes');
 //$allFiles = File::allFiles(__DIR__ . '\Routes');
 
 foreach ($allFiles as $file) {
