@@ -25,7 +25,8 @@
 		"classmap": [
 			"database",
 			"app/Http/Controllers",
-			"app/MyCode"
+			"app/MyCode",
+			"app/Http/Routes"			
 		],
 		"psr-4": {
 			"App\\": "app/"
