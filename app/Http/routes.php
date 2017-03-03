@@ -11,19 +11,16 @@
 |
 */
 
-// echo dirname(app_path() . '\Http\Routes');	
-// echo dirname(__DIR__ . '\Routes');
 // Get the split routes files that are in the app/Http/Routes 
-$allFiles = File::allFiles('var/www/html/app/MyCode/Routes');
-//$allFiles = File::allFiles(__DIR__ . '\Routes');
+// $allFiles = File::allFiles(__DIR__ . '\Routes');
 
-foreach ($allFiles as $file) {
+// foreach ($allFiles as $file) {
 
-	require_once ($file->getPathname());
-}
-
+// 	require_once ($file->getPathname());
+// }
 
 
-// Route::get('/vue', function (){
-// 	return View::make ('home');
-// });
+
+Route::get('/vue', function (){
+	return View::make ('home');
+});
