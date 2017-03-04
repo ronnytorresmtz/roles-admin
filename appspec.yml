@@ -3,8 +3,11 @@ os: linux
 version: 0.0
 files: 
   - 
+    source: /public
+    destination: /var/www/html/roles-admin/public
+  - 
     source: /
-    destination: /var/www/html/roles-admin/
+    destination: /var/repo
 hooks: 
   BeforeInstall: 
     - 
