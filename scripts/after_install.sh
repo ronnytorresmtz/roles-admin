@@ -3,7 +3,8 @@
 
 #replace the laravel public/index.php with a index.php for production enviroment
 sudo cp -rf /var/www/html/roles-admin/public/index_prod.php /var/www/html/roles-admin/public/index.php
-sudo /var/repo/roles-admin/composer install --no-dev
+
+
 
 
 
