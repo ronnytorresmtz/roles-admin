@@ -7,7 +7,7 @@ files:
     destination: /var/www/html/roles-admin/public
   - 
     source: /
-    destination: /var/repo
+    destination: /var/repo/roles-admin
 hooks: 
   BeforeInstall: 
     - 
