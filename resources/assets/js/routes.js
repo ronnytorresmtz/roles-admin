@@ -111,7 +111,6 @@ router.redirect({
     '*': '/'
 });
 
-
 var App = Vue.extend({
 
     store
